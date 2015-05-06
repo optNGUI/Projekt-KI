@@ -1,1 +1,3 @@
 # Projekt-KI
+
+[Wiki](wiki)
