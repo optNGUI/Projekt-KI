@@ -3,7 +3,6 @@
 # initialized.
 
 
-import opt_neuron.gui.test as test
 
 def run(*args):
     print("run.run called with "+str(args))
@@ -14,5 +13,6 @@ def run(*args):
     if args[0] == "Von der GUI":
         print("Call kam von GUI zurück")
     if args[0] == "call gui":
+        import opt_neuron.gui.test as test
         print("Calling GUI...")
         test.start_calc()   

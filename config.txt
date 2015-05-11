@@ -1,0 +1,7 @@
+[GENERAL]
+#input=
+
+[SECTION 2]
+
+[RUN]
+command line=test
