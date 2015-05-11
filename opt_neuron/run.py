@@ -2,27 +2,17 @@
 # Call this script with the correct arguments and the core will be 
 # initialized.
 
-#from  . import core.whatever
-import importlib
 
+import opt_neuron.gui.test as test
 
-def run(args):
-    print(args)
-    print("Exiting core...")
-
-
-
-if __name__ == "__main__":
-    print("Main entry point.")
-    #print("run.py called with "+str(argv))
+def run(*args):
+    print("run.run called with "+str(args))
+        
+    # Evaluate arguments and initialize the IO streams and the core
+    # TODO what arguments?
     
-    # Evaluate command line arguments here and call main function.
-    # arg0 = ....
-    
-    # _main(args)
-    
-    gui_name = "gui2"
-    
-    if True: # --gui flag
-        test = importlib.import_module("."+gui_name+".test", package='opt_neuron')
-        test.import_func()
+    if args[0] == "Von der GUI":
+        print("Call kam von GUI zurück")
+    if args[0] == "call gui":
+        print("Calling GUI...")
+        test.start_calc()   
