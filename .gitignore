@@ -1,8 +1,13 @@
+# Got this file from https://github.com/github/gitignore/blob/master/Python.gitignore
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 
+# Recursive exclusion of __pycache__ dirs [thanks to Julian ;)]
+**/__pycache__
 # C extensions
 *.so
 
