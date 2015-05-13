@@ -3,11 +3,22 @@
 
 from . import core
 from . import __version__
-import argparse, configparser, importlib
+import argparse, configparser, importlib, queue, logging, threading
+import sys
 
+def __outqueue_to_stdout(out_queue):
+    def writer():
+        while True:
+            msg = out_queue.get()
+            print(str(msg))
+            out_queue.task_done()
+    t = threading.Thread(target=writer)
+    t.daemon = True
+    t.start()
 
 def run(*sysargs):
     print(sysargs)
+    print('')
     # Step 1: Parse the arguments
     
     parser = argparse.ArgumentParser()
@@ -29,47 +40,71 @@ def run(*sysargs):
         print("\tKalelioglu, Can")
         print("\tWolff, Julian")
         print("Version of installed opt_neuron package: {ver}\n".format(ver=__version__))
+        return
     
     # Step 2: Load the config
     
-    #print(args)
-    if args.config:
-        config = configparser.ConfigParser()
-        config.read(args.config)
-        #print(config.sections())
-        general = config['GENERAL']
-        input_method = general.get('input', "stdin")
-        run_args = config['RUN']['command line']
-        if input_method == 'stdin':
-            input_method = sys.stdin
-        else:
-            input_method = open(input_method, mode='r', buffering=1, newline=None)
-        for line in input_method:
-            print(line.rstrip("\r\n")+'X')
+    config = configparser.ConfigParser()
+    tmp = config.read(args.config)
+    if len(tmp) == 0:
+        print("Config is empty!")
+    del tmp
+    
+    
+    
+    logging_level = config.get('LOGGING', 'level', fallback='WARNING')
+    logging_level = logging_level.upper()
+    if logging_level not in ['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG']:
+        logging_level = logging.WARNING
+    else:
+        levels = {'CRITICAL' : logging.CRITICAL,
+                    'ERROR' : logging.ERROR,
+                    'WARNING' : logging.WARNING,
+                    'INFO' : logging.INFO,
+                    'DEBUG' : logging.DEBUG
+                }
+        logging_level = levels[logging_level]
+        del levels
+    logfilename = config.get('LOGGING', 'logfile', fallback='logfile.txt')
+    
+    
+    
+    # Initialize logging
+    logging.basicConfig(filename=logfilename, level=logging_level, filemode='w')
+    logging.debug("First test")
+    
+    # Initialize queues
+    in_queue = queue.Queue()
+    out_queue = queue.Queue()
+    
+    # Initialize Core, now waiting for commands
+    core_thread = core.init(in_queue, out_queue)
+    
+
     
     # Step 3: Depending on args/config do one of the following:
         # a. Load the GUI/CLI and wait for input
         
     if args.gui:
         gui = importlib.import_module('opt_neuron.'+args.gui, package='opt_neuron')
-        test = importlib.import_module('opt_neuron.'+args.gui+'.main', package='opt_neuron')
-        test.main()
+        guimain = importlib.import_module('opt_neuron.'+args.gui+'.main', package='opt_neuron')
+        guimain.main()
         
         
         # b. No GUI/CLI: Execute the commands in the config and set output to stdout
+    else:
+        #__outqueue_to_stdout(out_queue)
+        pass
     
+    print("This is an echo input. If you wish to exit, type 'exit'")
     
+    for line in sys.stdin:
+        in_queue.put(line)
+        msg = out_queue.get()
+        if msg.startswith('TERMINATE'):
+            break
+        print(msg)
     
-    
-    
-    
-    
-    
-    
-    
-
-
-        
-        opt_neuron.run.run(run_args)
-    
+    #print("Waiting for Core to join")
+    core_thread.join()
     

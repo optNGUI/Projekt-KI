@@ -5,3 +5,16 @@
 
 [RUN]
 command line=test
+
+[LOGGING]
+
+# Use a filename for a file in the current directory
+# or use an absolute path
+# If the file already exists, it will be overwritten
+# If the file doesn't exist, it will be created.
+logfile=logfile.log
+
+
+# Specify the logging level. You may choose from DEBUG, INFO, WARNING, ERROR, CRITICAL
+# If no valid level is given, the level will be set to WARNING.
+level=debug
