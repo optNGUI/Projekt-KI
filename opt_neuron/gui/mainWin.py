@@ -36,7 +36,16 @@ class MainFrame:
                 index = "%i,%i" % (y, x)
                 self.params[index] = index
 
-        self.table = tktable.Table(self.topwin, rows = 6, cols = 6, state = 'disabled', width = 6, height = 6, titlerows = 1, titlecols = 0, roworigin = 0, colorigin = 0, selectmode = 'browse', selecttype = 'row', rowstretch = 'unset', colstrech = 'last', flashmode = 'on', variable = self.params)
+        self.table = tktable.Table(self.topwin,
+            rows = 6, cols = 6,
+            state = 'disabled',
+            width = 6, height = 6,
+            titlerows = 1, titlecols = 0,
+            roworigin = 0, colorigin = 0,
+            selectmode = 'browse', selecttype = 'row',
+            rowstretch = 'unset', colstrech = 'last',
+            flashmode = 'on',
+            variable = self.params)
         self.table.pack(expand = 1, fill = 'both')
         self.table.tag_configure('sel', background = 'yellow')
         self.table.tag_configure('active', background = 'blue')
