@@ -1,6 +1,6 @@
 ### Contains base class for algorithms ###
 from threading import Thread
-from . import send_msg
+from .main import send_msg
 import types
 from enum import IntEnum
 
