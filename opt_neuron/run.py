@@ -2,7 +2,7 @@
 
 
 from .core import main as core_main
-from .gui import main as gui_main
+#from .gui import main as gui_main
 #import core.main
 from . import __version__
 import argparse, configparser, importlib, queue, logging, threading
@@ -50,10 +50,12 @@ def run(*sysargs):
     
     config = configparser.ConfigParser()
     
-    ##tmp = config.read(args.config)
-    #if len(tmp) == 0:
-        #print("Config is empty!")
-    #del tmp
+    if args.config is None:
+        args.config = []
+    tmp = config.read(args.config)
+    if len(tmp) == 0:
+        print("Config is empty!")
+    del tmp
     
     
     
