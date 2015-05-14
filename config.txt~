@@ -1,0 +1,11 @@
+[GENERAL]
+#input=
+
+[SECTION 2]
+
+[RUN]
+command line=test
+
+{LOGGING]
+logfile=logfile.log
+level=debug

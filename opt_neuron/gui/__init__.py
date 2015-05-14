@@ -1,7 +1,6 @@
 ### Init file for GUI
 
-# List here every submodule which should be imported via from core import * statement.
+# List here every submodule which should be imported via 'from gui import *' statement.
 __all__ = []
 
 
-print("GUI imported.")
