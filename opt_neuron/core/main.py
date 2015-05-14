@@ -3,7 +3,6 @@
 import logging
 from threading import Thread
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -15,6 +14,7 @@ def send_msg(msg):
     __out_queue.put(msg)
     
 
+from . import algorithms
 
 
 def main_loop(in_queue):

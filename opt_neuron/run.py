@@ -1,7 +1,8 @@
 ### This script will take the parameter and initialize the core.
 
 
-import .core.main
+from .core import main as core_main
+#import core.main
 from . import __version__
 import argparse, configparser, importlib, queue, logging, threading
 import sys
@@ -80,7 +81,7 @@ def run(*sysargs):
     out_queue = queue.Queue()
     
     # Initialize Core, now waiting for commands
-    core_thread = core.main.init(in_queue, out_queue)
+    core_thread = core_main.init(in_queue, out_queue)
     
 
     
