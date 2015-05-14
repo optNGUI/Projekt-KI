@@ -4,4 +4,4 @@ import opt_neuron.run
 from . import mainWin
 
 def main(*args):
-    mainWin.MainFrame().mainloop()
+    mainWin.MainFrame().topwin.mainloop()

@@ -2,6 +2,7 @@
 
 
 from .core import main as core_main
+from .gui import main as gui_main
 #import core.main
 from . import __version__
 import argparse, configparser, importlib, queue, logging, threading
@@ -48,10 +49,11 @@ def run(*sysargs):
     # Step 2: Load the config
     
     config = configparser.ConfigParser()
-    tmp = config.read(args.config)
-    if len(tmp) == 0:
-        print("Config is empty!")
-    del tmp
+    
+    ##tmp = config.read(args.config)
+    #if len(tmp) == 0:
+        #print("Config is empty!")
+    #del tmp
     
     
     
@@ -89,9 +91,10 @@ def run(*sysargs):
         # a. Load the GUI/CLI and wait for input
         
     if args.gui:
-        gui = importlib.import_module('opt_neuron.'+args.gui, package='opt_neuron')
-        guimain = importlib.import_module('opt_neuron.'+args.gui+'.main', package='opt_neuron')
-        guimain.main()
+        #gui = importlib.import_module('opt_neuron.'+args.gui, package='opt_neuron')
+        #guimain = importlib.import_module('opt_neuron.'+args.gui+'.main', package='opt_neuron')
+        #guimain.main()
+        gui_main.main()
         
         
         # b. No GUI/CLI: Execute the commands in the config and set output to stdout
