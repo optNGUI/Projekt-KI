@@ -16,6 +16,8 @@ def __outqueue_to_stdout(out_queue):
     t.daemon = True
     t.start()
 
+
+
 def run(*sysargs):
     print(sysargs)
     print('')
@@ -98,13 +100,20 @@ def run(*sysargs):
     
     print("This is an echo input. If you wish to exit, type 'exit'")
     
+    break_ = False
     for line in sys.stdin:
         in_queue.put(line)
-        msg = out_queue.get()
-        if msg.startswith('TERMINATE'):
+        while True:
+            try:
+                msg = out_queue.get_nowait()
+            except queue.Empty:
+                break
+            if msg.startswith('TERMINATE'):
+                break_=True
+            print(msg)
+        if break_:
             break
-        print(msg)
     
-    #print("Waiting for Core to join")
+    # Step 4: Wait for the core main loop to join
     core_thread.join()
     

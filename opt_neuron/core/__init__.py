@@ -1,14 +1,21 @@
-__all__ = []
+### Init for core. ###
+
+# List here every submodule which should be imported via 'from core import *' statement.
+__all__ = ['algorithms', ]
+
 __out_queue = None
-__terminate = False
-### Init for core.
+__terminate = False # Indicates whether the core shall exit
+
+def send_msg(msg):
+    logger.debug("Sent message: {msg}".format(msg=str(msg)))
+    __out_queue.put(msg)
+    
 import logging
 from threading import Thread
 from . import *
 logger = logging.getLogger('core')
 
 
-# List here every submodule which should be imported via 'from core import *' statement.
 
 def main_loop(in_queue):
     logger.debug('in_queue listener started')
@@ -22,8 +29,7 @@ def main_loop(in_queue):
         in_queue.task_done()
     logger.info("Core exited")
     
-def send_msg(msg):
-    __out_queue.put(msg)
+
         
 def parse_msg(msg):
     global __terminate
@@ -31,6 +37,10 @@ def parse_msg(msg):
         logger.info("Terminating Core...")
         __terminate = True
         send_msg('TERMINATE')
+    
+    elif msg.startswith('start dummy'):
+        dummy = algorithms.ThreadedAlgorithm(algorithms.dummy_algorithm)
+        dummy('TEST')
         
     # First a simple echo
     send_msg(msg)
