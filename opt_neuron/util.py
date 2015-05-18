@@ -1,0 +1,66 @@
+from abc import ABCMeta
+from abc import abstractmethod
+from enum import Enum
+from queue import PriorityQueue
+
+import logging
+logger = logging.getLogger(__name__)
+
+
+
+class MessageType(Enum):
+    STATUS = 1,
+    COMMAND = 2,
+
+
+class Message(metaclass=ABCMeta):
+    
+    def __init__(self, content, priority=0):
+        if type(content) is not str:
+            logger.warning('Ey du Vollhorst')
+            return None
+        self.__content = content
+        self.__priority = priority
+    
+    @abstractmethod
+    def type(self):
+        return self.__type
+        
+    @property
+    def priority(self):
+        return self.__priority
+        
+    @property
+    def content(self):
+        return self.__content
+    
+    def __repr__(self):
+        return type(self).__name__ + '(content=' + repr(self.content) + ', priority=' + str(self.priority) + ')'
+    
+    def __eq__(self, other):
+        return self.content == other.content and self.priority == other.priority
+    
+    def __lt__(self, other): # Just for the PriorityQueue
+        return True
+
+
+class CommandMessage(Message):
+    def type(self):
+        return MessageType.COMMAND
+
+EXIT_MESSAGE = CommandMessage('EXIT', priority=9001)
+
+
+class MessageQueue(PriorityQueue):
+    def put(self, item, block=True, timeout=None):
+        if not isinstance(item, Message) :
+            logger.warning(str(type(item)))
+            logger.warning('Ey du Vollhorst!')
+            return
+        logger.debug("Called super method from MessageQueue")
+        patricia = (item.priority, item)
+        logger.debug("Sending tuple: " + str(patricia))
+        super(MessageQueue, self).put(patricia, block=block, timeout=timeout)
+    def get(self, block=True, timeout=None):
+        return (super(MessageQueue, self).get(block=block, timeout=timeout))[1]
+        

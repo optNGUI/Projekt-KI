@@ -3,11 +3,12 @@ from threading import Thread
 from .main import send_msg
 import types
 from enum import IntEnum
+from .. import util
 
 class Status(IntEnum):
     NOT_STARTED = -1
     RUNNING = 0
-    TERMINATED = 1
+    RETURNED = 1
 
 
 class ThreadedAlgorithm():
@@ -20,12 +21,18 @@ class ThreadedAlgorithm():
     """
     # TODO : Refactoring!
     
+    def __callWrapper(self, *args, **kwargs):
+        print("Call Wrapper: Initiated")
+        self.__return_value = self.func(*args, **kwargs)
+        self.__status = Status.RETURNED
+    
     def __init__(self, func):
         
         # Bind the func object as instance method
         self.func = types.MethodType(func, self)
         
         self.__status = Status.NOT_STARTED
+        self.__return_value = None
         # You may extend this feature to support requesting 
         # some values, e.g. the current fitness
     
@@ -33,14 +40,18 @@ class ThreadedAlgorithm():
     def status(self):
         return self.__status
         
+    @property
+    def return_value(self):
+        return self.__return_value
     
     def __call__(self, *args, **kwargs):
-        t = Thread(target=self.func, args=args, kwargs=kwargs)
+        t = Thread(target=self.__callWrapper, args=args, kwargs=kwargs)
+        t.daemon = True
         t.start()
         return t
 
 
 def dummy_algorithm(self, arg):
-    print("I'm a dummy algorithm and doing nothing other than printing this little message.")
-    print("Given arg: {arg}".format(arg=arg))
-    send_msg("RETURNED: Dummy algorithm")
+    while True:
+        pass
+

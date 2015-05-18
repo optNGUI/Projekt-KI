@@ -2,6 +2,7 @@
 
 import logging
 from threading import Thread
+from .. import util
 
 logger = logging.getLogger(__name__)
 
@@ -33,17 +34,17 @@ def main_loop(in_queue):
         
 def parse_msg(msg):
     global __terminate
-    if msg.startswith('exit'):
+    if msg.content.startswith('exit'):
         logger.info("Terminating Core...")
         __terminate = True
-        send_msg('TERMINATE')
+        send_msg(util.CommandMessage(content = 'TERMINATE', priority=0))
     
-    elif msg.startswith('start dummy'):
+    elif msg.content.startswith('start dummy'):
         dummy = algorithms.ThreadedAlgorithm(algorithms.dummy_algorithm)
         dummy('TEST')
         
     # First a simple echo
-    send_msg(msg)
+    send_msg(util.CommandMessage(content = ('ECHO: '+msg.content)))
     
     
 __runOnce=False

@@ -2,10 +2,10 @@
 
 
 from .core import main as core_main
-#from .gui import main as gui_main
 #import core.main
 from . import __version__
-import argparse, configparser, importlib, queue, logging, threading
+from . import util
+import argparse, configparser, importlib, logging, threading, queue
 import sys
 
 def __outqueue_to_stdout(out_queue):
@@ -81,8 +81,8 @@ def run(*sysargs):
     logging.debug("First test")
     
     # Initialize queues
-    in_queue = queue.Queue()
-    out_queue = queue.Queue()
+    in_queue = util.MessageQueue()
+    out_queue = util.MessageQueue()
     
     # Initialize Core, now waiting for commands
     core_thread = core_main.init(in_queue, out_queue)
@@ -96,7 +96,11 @@ def run(*sysargs):
         #gui = importlib.import_module('opt_neuron.'+args.gui, package='opt_neuron')
         #guimain = importlib.import_module('opt_neuron.'+args.gui+'.main', package='opt_neuron')
         #guimain.main()
-        gui_main.main()
+        from .gui import main as gui_main
+        try:
+            gui_main.main()
+        except :
+            print("GUI failed")
         
         
         # b. No GUI/CLI: Execute the commands in the config and set output to stdout
@@ -108,15 +112,16 @@ def run(*sysargs):
     
     break_ = False
     for line in sys.stdin:
-        in_queue.put(line)
+        msg = util.CommandMessage(content = line, priority=-1)
+        in_queue.put(msg)
         while True:
             try:
                 msg = out_queue.get_nowait()
             except queue.Empty:
                 break
-            if msg.startswith('TERMINATE'):
+            if msg.content =='TERMINATE':
                 break_=True
-            print(msg)
+            print(msg.content)
         if break_:
             break
     
