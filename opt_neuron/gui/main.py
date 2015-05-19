@@ -10,7 +10,10 @@ from MainFrame import *
 
 
 if __name__ == "__main__":
-    mainframe = MainFrame() #MainFrame(root)
+    #mainframe = MainFrame() #MainFrame(root)
+    #mainframe.connect("delete-event", Gtk.main_quit)
+    #mainframe.show_all()
+    mainframe = AddFrame()
     mainframe.connect("delete-event", Gtk.main_quit)
     mainframe.show_all()
     Gtk.main()
