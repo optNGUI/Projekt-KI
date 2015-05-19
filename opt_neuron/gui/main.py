@@ -1,7 +1,16 @@
-###  This file is used by the core dev team for testing purposes. ###
+#!/usr/bin/env python3
+#import tkinter as tk
+#from tkinter import *
+#from tkinter import ttk
+#from tkinter.filedialog import askopenfilename, askopenfile
+#from tkinter.messagebox import showerror
+from AddFrame import *
+from MainFrame import *
+#from Tktable import tktable
 
-import opt_neuron.run
-from . import mainWin
 
-def main(*args):
-    mainWin.MainFrame().topwin.mainloop()
+if __name__ == "__main__":
+    mainframe = MainFrame() #MainFrame(root)
+    mainframe.connect("delete-event", Gtk.main_quit)
+    mainframe.show_all()
+    Gtk.main()
