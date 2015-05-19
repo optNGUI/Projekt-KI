@@ -4,12 +4,14 @@
 [SECTION 2]
 
 [RUN]
-command line=test
+
+# Specify commands here. Use commas ',' to seperate the commands
+# Example:
+# command line = get hello_world, start dummy,
+#		get hello_world
+command line = get hello_world, start dummy
 
 [LOGGING]
-
-# Use a filename for a file in the current directory
-# or use an absolute path
 # If the file already exists, it will be overwritten
 # If the file doesn't exist, it will be created.
 logfile=logfile.log

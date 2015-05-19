@@ -34,17 +34,25 @@ def main_loop(in_queue):
         
 def parse_msg(msg):
     global __terminate
-    if msg.content.startswith('exit'):
+    content = msg.content.split(' ', 1)
+    
+    if msg == util.EXIT_MESSAGE:
         logger.info("Terminating Core...")
         __terminate = True
-        send_msg(util.CommandMessage(content = 'TERMINATE', priority=0))
+        send_msg(util.EXIT_MESSAGE)
     
-    elif msg.content.startswith('start dummy'):
-        dummy = algorithms.ThreadedAlgorithm(algorithms.dummy_algorithm)
-        dummy('TEST')
-        
-    # First a simple echo
-    send_msg(util.CommandMessage(content = ('ECHO: '+msg.content)))
+    elif content[0] == 'get':
+        if content[1] == 'hello_world':
+            send_msg(util.StatusMessage(content = 'Hello World'))
+         #...
+    
+    elif content[0] == 'start':
+        if content[1] == 'dummy':
+            dummy = algorithms.ThreadedAlgorithm(algorithms.dummy_algorithm)
+            dummy('TEST')
+            
+    elif content[0] == 'echo':
+        send_msg(util.CommandMessage(content = ('ECHO: '+content[1])))
     
     
 __runOnce=False

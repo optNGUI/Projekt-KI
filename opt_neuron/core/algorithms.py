@@ -22,9 +22,10 @@ class ThreadedAlgorithm():
     # TODO : Refactoring!
     
     def __callWrapper(self, *args, **kwargs):
-        print("Call Wrapper: Initiated")
+        self.__status = Status.RUNNING
         self.__return_value = self.func(*args, **kwargs)
         self.__status = Status.RETURNED
+        send_msg(util.StatusMessage(content='terminated ' + self.func.__name__))
     
     def __init__(self, func):
         
@@ -52,6 +53,8 @@ class ThreadedAlgorithm():
 
 
 def dummy_algorithm(self, arg):
-    while True:
-        pass
+    import time
+    send_msg(util.StatusMessage(content='Going to sleep for five seconds...'))
+    time.sleep(5)
+    send_msg(util.StatusMessage(content='Waking up...'))
 

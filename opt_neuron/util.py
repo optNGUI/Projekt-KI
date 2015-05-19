@@ -18,7 +18,8 @@ class Message(metaclass=ABCMeta):
     def __init__(self, content, priority=0):
         if type(content) is not str:
             logger.warning('Ey du Vollhorst')
-            return None
+            raise TypeError("Expected string, but got " + \
+                    str(type(content)))
         self.__content = content
         self.__priority = priority
     
@@ -35,10 +36,14 @@ class Message(metaclass=ABCMeta):
         return self.__content
     
     def __repr__(self):
-        return type(self).__name__ + '(content=' + repr(self.content) + ', priority=' + str(self.priority) + ')'
+        return type(self).__name__ + \
+                '(content=' + repr(self.content) + \
+                ', priority=' + str(self.priority) + ')'
     
     def __eq__(self, other):
-        return self.content == other.content and self.priority == other.priority
+        return self.content == other.content and \
+                self.priority == other.priority and \
+                type(self) == type(other)
     
     def __lt__(self, other): # Just for the PriorityQueue
         return True
@@ -48,7 +53,11 @@ class CommandMessage(Message):
     def type(self):
         return MessageType.COMMAND
 
-EXIT_MESSAGE = CommandMessage('EXIT', priority=9001)
+class StatusMessage(Message):
+    def type(self):
+        return MessageType.STATUS
+
+EXIT_MESSAGE = CommandMessage('CORE-EXIT', priority=-9001)
 
 
 class MessageQueue(PriorityQueue):
@@ -56,11 +65,12 @@ class MessageQueue(PriorityQueue):
         if not isinstance(item, Message) :
             logger.warning(str(type(item)))
             logger.warning('Ey du Vollhorst!')
-            return
-        logger.debug("Called super method from MessageQueue")
+            raise TypeError("Expected Message, but got "
+                    + str(type(item)))
         patricia = (item.priority, item)
-        logger.debug("Sending tuple: " + str(patricia))
+        logger.debug("MessageQueue: Sending tuple: " + str(patricia))
         super(MessageQueue, self).put(patricia, block=block, timeout=timeout)
+        
     def get(self, block=True, timeout=None):
         return (super(MessageQueue, self).get(block=block, timeout=timeout))[1]
         

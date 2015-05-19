@@ -8,29 +8,15 @@ from . import util
 import argparse, configparser, importlib, logging, threading, queue
 import sys
 
-def __outqueue_to_stdout(out_queue):
-    def writer():
-        while True:
-            msg = out_queue.get()
-            print(str(msg))
-            out_queue.task_done()
-    t = threading.Thread(target=writer)
-    t.daemon = True
-    t.start()
-
-
 
 def run(*sysargs):
-    print(sysargs)
-    print('')
     # Step 1: Parse the arguments
     
     parser = argparse.ArgumentParser()
     parser.add_argument("--version", help="Displays author and version info.",
                             action="store_true")
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("--gui", help="Loads a GUI.", const='gui', nargs='?')
-    group.add_argument("--config", help="Loads a config file.")
+    parser.add_argument("--gui", help="Loads a GUI.", const='gui', nargs='?')
+    parser.add_argument("--config", help="Loads a config file.")
     
     args = parser.parse_args(*sysargs)
     if args.version:
@@ -72,13 +58,17 @@ def run(*sysargs):
                 }
         logging_level = levels[logging_level]
         del levels
-    logfilename = config.get('LOGGING', 'logfile', fallback='logfile.txt')
-    
+    logfilename = config.get('LOGGING', 'logfile', fallback='logfile.log')
+    # Load initial commands
+    commands = config.get('RUN', 'command line', fallback='echo Hello World')
+    commands = commands.split(',')
+    commands = [command.lstrip(' ').rstrip(' ') for command in commands]
     
     
     # Initialize logging
     logging.basicConfig(filename=logfilename, level=logging_level, filemode='w')
     logging.debug("First test")
+    logger = logging.getLogger(__name__)
     
     # Initialize queues
     in_queue = util.MessageQueue()
@@ -107,24 +97,57 @@ def run(*sysargs):
     else:
         #__outqueue_to_stdout(out_queue)
         pass
-    
-    print("This is an echo input. If you wish to exit, type 'exit'")
-    
-    break_ = False
-    for line in sys.stdin:
-        msg = util.CommandMessage(content = line, priority=-1)
-        in_queue.put(msg)
+        
+    # Start simple listener
+    def listener():
         while True:
-            try:
-                msg = out_queue.get_nowait()
-            except queue.Empty:
-                break
-            if msg.content =='TERMINATE':
-                break_=True
-            print(msg.content)
-        if break_:
-            break
+            msg = out_queue.get()
+            print('\n'+msg.content)
+            out_queue.task_done()
+    t = threading.Thread(target=listener)
+    t.daemon = True # This listener won't block the whole process
+    t.start()
+    import cmd
     
-    # Step 4: Wait for the core main loop to join
+    print("Executing commands from config...")
+    for command in commands:
+        in_queue.put(util.CommandMessage(content=command))
+    
+    
+    class SimpleShell(cmd.Cmd):
+        intro = '\nWelcome to the default Command Line Interface. '+ \
+            'You may enter a command now, e.g. "echo MESSAGE"\n' +\
+            'To exit the program, type "exit" or hit Ctrl-D\n'
+        prompt = ''
+        
+        def default(self, arg):
+            in_queue.put(util.CommandMessage(content=arg))
+            
+        def do_exit(self, line):
+            in_queue.put(util.EXIT_MESSAGE)
+            return True
+        
+        def do_EOF(self, line):
+            in_queue.put(util.EXIT_MESSAGE)
+            return True
+    
+    SimpleShell().cmdloop()
+    
+    
+    
+    
+    #for line in sys.stdin:
+        #if line.rstrip('\r\n') == 'exit':
+            #in_queue.put(util.EXIT_MESSAGE)
+            #break
+        #else:
+            #msg = util.CommandMessage(content = line.rstrip('\r\n'))
+            #in_queue.put(msg)
+        #sys.stdout
+    #else: # In case the for-loop was terminated using EOL character (Ctrl-D)
+        #in_queue.put(util.EXIT_MESSAGE)
+    
+    
+    # Step 4: Wait for the core main loop to join (should not take too long)
     core_thread.join()
     
