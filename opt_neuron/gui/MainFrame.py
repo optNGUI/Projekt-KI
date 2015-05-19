@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
-#import tkinter as tk
-#from tkinter import *
-#from tkinter import ttk
-#from tkinter.filedialog import askopenfilename, askopenfile
-#from tkinter.messagebox import showerror
 from AddFrame import *
-#from Tktable import tktable
 
 from gi.repository import Gtk
 
@@ -21,8 +15,7 @@ class MainFrame(Gtk.Window):
 #        self.topwin.geometry('{}x{}'.format(500, 300))
 # XXX SHITS NOT WORKING MAN!!!
 #        self.topwin.grid(column=1)#(sticky = (N,W,E,S))
-
-
+        self.set_border_width(10)
         self.search = Gtk.Button(label = "...")
         self.search.connect("clicked", self.load_file)
         self.add(self.search)
