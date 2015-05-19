@@ -1,4 +1,3 @@
-from gi.repository import Gtk
 
 class AddFrame(Gtk.Window):
     def __init__(self):
