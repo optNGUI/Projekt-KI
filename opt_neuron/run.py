@@ -5,7 +5,7 @@ from .core import main as core_main
 #import core.main
 from . import __version__
 from . import util
-import argparse, configparser, importlib, logging, threading, queue
+import argparse, configparser, importlib, logging, threading, queue, traceback
 import sys
 
 
@@ -86,11 +86,13 @@ def run(*sysargs):
         #gui = importlib.import_module('opt_neuron.'+args.gui, package='opt_neuron')
         #guimain = importlib.import_module('opt_neuron.'+args.gui+'.main', package='opt_neuron')
         #guimain.main()
-        from .gui import main as gui_main
         try:
+            from .gui import main as gui_main
             gui_main.main()
-        except :
-            print("GUI failed")
+        except Exception as e:
+            print("###\n!!! GUI failed !!!" )
+            traceback.print_exc()
+            print('\n')
         
         
         # b. No GUI/CLI: Execute the commands in the config and set output to stdout
