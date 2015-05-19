@@ -7,15 +7,18 @@ class MainFrame(Gtk.Window):
     def __init__(self):
         Gtk.Window.__init__(self, title="GtkWin")
 
-#        self.topwin.connect("delete-event", Gtk.main_quit)
-
-#        self.topwin.title("topwin")
-#        self.topwin.columnconfigure(5, weight = 1)
-#        self.topwin.rowconfigure(5, weight = 1)
-#        self.topwin.geometry('{}x{}'.format(500, 300))
-# XXX SHITS NOT WORKING MAN!!!
-#        self.topwin.grid(column=1)#(sticky = (N,W,E,S))
         self.set_border_width(10)
+        self.set_default_size(500, 450)
+
+        self.hb = Gtk.HeaderBar()
+        self.hb.set_show_close_button(True)
+        self.hb.props.title = "OPT Algorithmen Kommandant"
+
+        self.set_titlebar(self.hb)
+
+        self.hbox = Gtk.Box(spacing = 6)
+        self.add(hbox)
+
         self.search = Gtk.Button(label = "...")
         self.search.connect("clicked", self.load_file)
         self.add(self.search)
