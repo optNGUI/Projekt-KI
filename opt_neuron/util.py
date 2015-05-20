@@ -14,6 +14,7 @@ class MessageType(Enum):
 
 
 class Message(metaclass=ABCMeta):
+    __id_  = 0
     
     def __init__(self, content, priority=0):
         if type(content) is not str:
@@ -22,11 +23,19 @@ class Message(metaclass=ABCMeta):
                     str(type(content)))
         self.__content = content
         self.__priority = priority
+        self.__id = Message.__id_
+        Message.__id_ += 1
     
+    @property
     @abstractmethod
     def type(self):
         return self.__type
         
+    @property
+    def id(self):
+        return self.__id
+    
+    
     @property
     def priority(self):
         return self.__priority
@@ -43,13 +52,24 @@ class Message(metaclass=ABCMeta):
     def __eq__(self, other):
         return self.content == other.content and \
                 self.priority == other.priority and \
-                type(self) == type(other)
+                self.type == other.type
     
     def __lt__(self, other): # Just for the PriorityQueue
         return True
 
 
 class CommandMessage(Message):
+    def __init__(self, content, priority=0):
+        if type(content) is not str:
+            logger.warning('Ey du Vollhorst')
+            raise TypeError("Expected string, but got " + \
+                    str(type(content)))
+        self.__content = content
+        self.__priority = priority
+        self.__id = Message.__id_
+        Message.__id_ += 1
+    
+    
     def type(self):
         return MessageType.COMMAND
 
