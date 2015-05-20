@@ -67,7 +67,19 @@ def dummy_algorithm(self, arg=5, blub = 7, *args, **kwargs):
     time.sleep(5)
     send_msg(util.StatusMessage(content='Waking up...'))
 
-
+def lassDasMalDenMoritzMachen(self):
+    import genetic_testbench.genetic as ga
+    print(str(ga))
+    alg = ga.Genetic_Algorithm(first =     ga.get_init_from_greedy(), 
+        terminate = ga.terminate_at_optimum, 
+        select =    ga.select, 
+        crossover = ga.get_spread_crossover(n=1), 
+        mutate =    ga.get_mutate_uniform(p=1/10), 
+        replace =   ga.replace_append, 
+        fitness =   ga.fitness)
+    import genetic_testbench.graphs as graphs
+    graph = graphs.construct_star_graph(c=4, d=5)
+    print(str(alg(graph))+' <- Der Moritz macht das gut.')
 
 
 def list_of_algorithms():
