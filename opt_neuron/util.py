@@ -14,17 +14,13 @@ class MessageType(Enum):
 
 
 class Message(metaclass=ABCMeta):
-    __id_  = 0
+    _id_  = 0
     
     def __init__(self, content, priority=0):
-        if type(content) is not str:
-            logger.warning('Ey du Vollhorst')
-            raise TypeError("Expected string, but got " + \
-                    str(type(content)))
         self.__content = content
         self.__priority = priority
-        self.__id = Message.__id_
-        Message.__id_ += 1
+        self.__id = Message._id_
+        Message._id_ += 1
     
     @property
     @abstractmethod
@@ -64,10 +60,7 @@ class CommandMessage(Message):
             logger.warning('Ey du Vollhorst')
             raise TypeError("Expected string, but got " + \
                     str(type(content)))
-        self.__content = content
-        self.__priority = priority
-        self.__id = Message.__id_
-        Message.__id_ += 1
+        super(CommandMessage, self).__init__(content=content, priority=priority)
     
     
     def type(self):

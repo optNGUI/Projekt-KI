@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-from AddFrame import *
-from MainFrame import *
+#from AddFrame import *
+from . import AddFrame
+#from MainFrame import *
+from . import MainFrame
 
-if __name__ == "__main__":
+def main(in_queue, out_queue):
     mainframe = MainFrame() #MainFrame(root)
     mainframe.connect("delete-event", Gtk.main_quit)
     mainframe.show_all()

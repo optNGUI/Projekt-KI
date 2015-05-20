@@ -88,7 +88,7 @@ def run(*sysargs):
         #guimain.main()
         try:
             from .gui import main as gui_main
-            gui_main.main()
+            gui_main.main(out_queue, in_queue)
         except Exception as e:
             print("###\n!!! GUI failed !!!" )
             traceback.print_exc()

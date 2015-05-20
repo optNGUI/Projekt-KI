@@ -1,3 +1,5 @@
+import Gtk.Window
+
 
 class AddFrame(Gtk.Window):
     def __init__(self):
