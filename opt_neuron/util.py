@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 class MessageType(Enum):
     STATUS = 1,
     COMMAND = 2,
+    RETVAL = 3,
 
 
 class Message(metaclass=ABCMeta):
@@ -70,7 +71,33 @@ class StatusMessage(Message):
     def type(self):
         return MessageType.STATUS
 
-EXIT_MESSAGE = CommandMessage('CORE-EXIT', priority=-9001)
+
+class RetValMessage(Message):
+    def __init__(self, cmd_msg, appendix=None, priority=0):
+        self.__cmd_id = cmd_msg.id
+        self.__apendix = appendix
+        super(RetValMessage, self).__init__(content=str(appendix), priority=priority)
+        
+    @property
+    def appendix(self):
+        return self.__appendix
+    
+    
+    @property
+    def cmd_id(self):
+        return self.__cmd_id
+    
+    def type(self):
+        return MessageType.RETVAL
+
+MESSAGE_EXIT = CommandMessage('CORE-EXIT', priority=-9001)
+
+def MESSAGE_FAILURE(msg, status=None):
+    if status:
+        status = StatusMessage("FAILURE: "+status)
+        return (RetValMessage(msg, appendix = False),status)
+    else:
+        return RetValMessage(msg, appendix = False)
 
 
 class MessageQueue(PriorityQueue):

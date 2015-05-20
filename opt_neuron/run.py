@@ -75,7 +75,7 @@ def run(*sysargs):
     out_queue = util.MessageQueue()
     
     # Initialize Core, now waiting for commands
-    core_thread = core_main.init(in_queue, out_queue)
+    core_thread = core_main.init(in_queue, out_queue, config)
     
 
     
@@ -104,7 +104,10 @@ def run(*sysargs):
     def listener():
         while True:
             msg = out_queue.get()
-            print('\n'+msg.content)
+            if isinstance(msg,util.RetValMessage):
+                print('\nreturn: '+msg.content)
+            else:
+                print('\n'+msg.content)
             out_queue.task_done()
     t = threading.Thread(target=listener)
     t.daemon = True # This listener won't block the whole process
@@ -126,11 +129,11 @@ def run(*sysargs):
             in_queue.put(util.CommandMessage(content=arg))
             
         def do_exit(self, line):
-            in_queue.put(util.EXIT_MESSAGE)
+            in_queue.put(util.MESSAGE_EXIT)
             return True
         
         def do_EOF(self, line):
-            in_queue.put(util.EXIT_MESSAGE)
+            in_queue.put(util.MESSAGE_EXIT)
             return True
     
     SimpleShell().cmdloop()

@@ -1,9 +1,11 @@
 ### Contains base class for algorithms ###
 from threading import Thread
 from .main import send_msg
-import types
+import types, inspect, logging, sys
 from enum import IntEnum
 from .. import util
+
+logger = logging.getLogger(__name__)
 
 class Status(IntEnum):
     NOT_STARTED = -1
@@ -19,7 +21,7 @@ class ThreadedAlgorithm():
     IMPORTANT: While binding the function object, the first argument will
     be converted to implicit self argument!
     """
-    # TODO : Refactoring!
+    # TODO : HEAVY Refactoring!
     
     def __callWrapper(self, *args, **kwargs):
         self.__status = Status.RUNNING
@@ -38,6 +40,13 @@ class ThreadedAlgorithm():
         # some values, e.g. the current fitness
     
     @property
+    def name(self):
+        return self.__name
+    
+    def arguments(self):
+        return self.__arguments
+    
+    @property
     def status(self):
         return self.__status
         
@@ -52,9 +61,21 @@ class ThreadedAlgorithm():
         return t
 
 
-def dummy_algorithm(self, arg):
+def dummy_algorithm(self, arg=5, blub = 7, *args, **kwargs):
     import time
     send_msg(util.StatusMessage(content='Going to sleep for five seconds...'))
     time.sleep(5)
     send_msg(util.StatusMessage(content='Waking up...'))
 
+
+
+
+def list_of_algorithms():
+    list_names = [i[0] for i in inspect.getmembers(sys.modules[__name__], predicate=inspect.isfunction)]
+    list_names.remove('list_of_algorithms')
+    list_names.remove('send_msg')
+    logger.warning(str(list_names))
+    return [(alg, eval(alg), inspect.getargspec(eval(alg))) for alg in list_names]
+    
+    
+    

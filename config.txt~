@@ -8,7 +8,7 @@
 # Specify commands here. Use commas ',' to seperate the commands
 # Example:
 # command line = get hello_world, start dummy,
-		get hello_world
+#		get hello_world
 command line = get hello_world, start dummy
 
 [LOGGING]

@@ -9,7 +9,7 @@
 # Example:
 # command line = get hello_world, start dummy,
 #		get hello_world
-command line = get hello_world, start dummy
+command line = get hello_world, start dummy_algorithm
 
 [LOGGING]
 # If the file already exists, it will be overwritten

@@ -1,25 +1,37 @@
 ### This file contains the main entry point for the core ###
 
-import logging
+import logging, configparser
 from threading import Thread
 from .. import util
 
 logger = logging.getLogger(__name__)
+__config = None
+__algorithm_names = None
+__algorithm_funcs = None
+__algorithm_argspec = None
+
 
 
 __out_queue = None
 __terminate = False # Indicates whether the core shall exit
 
-def send_msg(msg):
-    logger.debug("Sent message: {msg}".format(msg=str(msg)))
-    __out_queue.put(msg)
+def send_msg(*msg):
+    for i in msg:
+        logger.debug("Sent message: {msg}".format(msg=str(msg)))
+        __out_queue.put(i)
     
 
 from . import algorithms
 
 
 def main_loop(in_queue):
+    global __algorithm_argspec
+    global __algorithm_funcs
+    global __algorithm_names
     logger.debug('in_queue listener started')
+    __algorithm_names = [i[0] for i in algorithms.list_of_algorithms()]
+    __algorithm_funcs = [i[1] for i in algorithms.list_of_algorithms()]
+    __algorithm_argspec = [i[2] for i in algorithms.list_of_algorithms()]
     while not __terminate:
         msg = in_queue.get()
         logger.debug("Received message: {msg}".format(msg=str(msg)))
@@ -34,37 +46,74 @@ def main_loop(in_queue):
         
 def parse_msg(msg):
     global __terminate
-    content = msg.content.split(' ', 1)
     
-    if msg == util.EXIT_MESSAGE:
+    if msg == util.MESSAGE_EXIT:
         logger.info("Terminating Core...")
         __terminate = True
-        send_msg(util.EXIT_MESSAGE)
+        send_msg(util.MESSAGE_EXIT)
     
-    elif content[0] == 'get':
-        if content[1] == 'hello_world':
-            send_msg(util.StatusMessage(content = 'Hello World'))
-         #...
+    elif isinstance(msg, util.CommandMessage):
+        
+        content = msg.content.split(' ')
     
-    elif content[0] == 'start':
-        if content[1] == 'dummy':
-            dummy = algorithms.ThreadedAlgorithm(algorithms.dummy_algorithm)
-            dummy('TEST')
-            
-    elif content[0] == 'echo':
-        send_msg(util.CommandMessage(content = ('ECHO: '+content[1])))
-    
-    
+        if content[0] == 'get':
+            if content[1] == 'hello_world':
+                send_msg(util.StatusMessage(content = 'Hello World'))
+            elif content[1] == 'algorithms':
+                send_msg(util.RetValMessage(msg, appendix=algorithms.list_of_algorithms()))
+            elif content[1] == 'config':
+                if len(content) < 3:
+                    send_msg(util.RetValMessage(msg, appendix = __config))
+                elif len(content) < 4:
+                    try:
+                        send_msg(util.RetValMessage(msg, appendix = __config.options(content[2])))
+                    except configparser.NoSectionError:
+                        send_msg(util.RetValMessage(msg, appendix = []))
+                else:
+                    try:
+                        send_msg(util.RetValMessage(msg, appendix = __config.get(content[2],content[3])))
+                    except (configparser.NoSectionError, configparser.NoOptionError):
+                        send_msg(util.RetValMessage(msg, appendix = []))
+                
+        elif content[0] == 'set':
+            if content[1] == 'config':
+                if len(content) < 5:
+                    send_msg(util.MESSAGE_FAILURE(msg))
+                else:
+                    try: 
+                        __config.add_section(content[2])
+                    except configparser.DuplicateSectionError:
+                        pass
+                    __config.set(content[2],content[3],content[4])
+                    send_msg(util.RetValMessage(msg, appendix = True))
+                    
+                    
+             #HierKannManWasErgänzen. Ui....Tolles Ding...
+        
+        elif content[0] == 'start':
+            if content[1] in __algorithm_names:
+                    func = algorithms.ThreadedAlgorithm(__algorithm_funcs[__algorithm_names.index(content[1])])
+                    func(*content[2:])
+            else:
+                send_msg(*util.MESSAGE_FAILURE(msg, 'could not identify algorithm '+content[1]))
+                
+        elif content[0] == 'echo':
+            send_msg(util.RetValMessage(msg, appendix = content[1]))
+        
+        else:
+            send_msg(util.MESSAGE_FAILURE(msg))
+        
 __runOnce=False
 
-def init(in_queue, out_queue):
+def init(in_queue, out_queue, config):
     global __runOnce
     global __out_queue
+    global __config
     if __runOnce:
         logger.warning('Core init after already initialized')
         return
     logger.debug("CORE INIT")
-    
+    __config = config
     # Start queue listener
     __out_queue = out_queue
     mainloop = Thread(target=main_loop, args=(in_queue,))
