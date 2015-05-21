@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-from AddFrame import *
-
+from . import addframe
 from gi.repository import Gtk
 
 class MainFrame(Gtk.Window):
@@ -17,7 +16,7 @@ class MainFrame(Gtk.Window):
         self.set_titlebar(self.hb)
 
         self.hbox = Gtk.Box(spacing = 6)
-        self.add(hbox)
+        self.add(self.hbox)
 
         self.search = Gtk.Button(label = "...")
         self.search.connect("clicked", self.load_file)

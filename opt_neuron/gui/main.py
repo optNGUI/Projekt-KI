@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
-#from AddFrame import *
-from . import AddFrame
-#from MainFrame import *
-from . import MainFrame
+from . import addframe
+from . import mainframe
+from gi.repository import Gtk
 
 def main(in_queue, out_queue):
-    mainframe = MainFrame() #MainFrame(root)
-    mainframe.connect("delete-event", Gtk.main_quit)
-    mainframe.show_all()
-    addframe = AddFrame()
-    addframe.connect("delete-event", Gtk.main_quit)
-    addframe.show_all()
+    mf = mainframe.MainFrame() #MainFrame(root)
+    mf.connect("delete-event", Gtk.main_quit)
+    mf.show_all()
+
+    af = addframe.AddFrame()
+    af.connect("delete-event", Gtk.main_quit)
+    af.show_all()
+
     Gtk.main()
+

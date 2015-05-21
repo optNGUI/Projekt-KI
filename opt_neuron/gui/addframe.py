@@ -1,4 +1,4 @@
-import Gtk.Window
+from gi.repository import Gtk
 
 
 class AddFrame(Gtk.Window):
