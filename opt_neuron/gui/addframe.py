@@ -9,7 +9,7 @@ class AddFrame(Gtk.Window):
 	
 	self.out_queue = out_queue
 	
-	#horizontale Box für Buttons 
+	#horizontal box for buttons 
         self.buttonRow = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing=6)
         self.add(self.buttonRow)
 
@@ -22,19 +22,21 @@ class AddFrame(Gtk.Window):
         self.quitButton.connect("clicked", self.on_quitButton_clicked)
         self.buttonRow.pack_start(self.quitButton,True,True,0) 
         
-	#horizontale Box zur Algo/Paramauswahl
+	#horizontal box for algo/params
 	self.paramBox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 6)
 
-        #scrollbar mit Algorithmen aus der config
+        #scrollbar with algorithms from config
 	#TODO: import algorithms from config, read in
         self.algoScrollbar = Gtk.Scrollbar(orientation = Gtk.Orientation.VERTICAL, adjustment = layout.get_vadjustment())
 	self.paramBox.pack_start(self.algoScrollbar, True, True, 0)
-	
-	#box für die gewünschten Parameter
+	self.scrollbarLabel = Gtk.Label()
+	self.scrollbarLabel.set_text("Auszuführender Algorithmus")
+
+	#box for wished parameters
 	self.chooseParams = Gtk.Box(spacing = 6)
 	self.paramBox.pack_start(self.chooseParams, True, True, 0)
 
-	#Entries für die Parameter
+	#Entries for parameters
 	#TODO: Parameter spezifisch für jeden möglichen Algo?!
 	self.param1 = Gtk.Entry()
 	self.param1.set_text("param1")
