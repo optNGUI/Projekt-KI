@@ -1,4 +1,5 @@
 #!/usr/bin/env/
+# coding: utf8
 
 ### Calls the opt_neuron package. ###
 

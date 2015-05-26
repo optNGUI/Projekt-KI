@@ -1,8 +1,10 @@
+#!/usr/bin/env python3
+# coding: utf8
+
 from gi.repository import Gtk
 
-
 class AddFrame(Gtk.Window):
-    def __init__(self):
+    def __init__(self,out_queue):
         Gtk.Window.__init__(self, title = "Algorithmusauswahl")
 
         self.chooseAlgo = Gtk.Box(spacing=6)
@@ -17,7 +19,7 @@ class AddFrame(Gtk.Window):
         self.quitButton.connect("clicked", self.on_quitButton_clicked)
         self.chooseAlgo.pack_start(self.quitButton,True,True,0) 
 
-    def on_editButton_clicked(self,widget):
+    def on_editButton_clicked(self,widget,out_queue):
         #TODO: send messages to queue, fill algo+params in table
         print("hinzugefügt")
 
