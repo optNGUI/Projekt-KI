@@ -6,7 +6,7 @@ from . import mainframe
 from gi.repository import Gtk
 
 def main(in_queue, out_queue):
-    mf = mainframe.MainFrame() #MainFrame(root)
+    mf = mainframe.MainFrame(in_queue, out_queue) #MainFrame(root)
     mf.connect("delete-event", Gtk.main_quit)
     mf.show_all()
 

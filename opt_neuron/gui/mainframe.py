@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 from . import addframe
+from .. import util
 from gi.repository import Gtk
 
 class MainFrame(Gtk.Window):
-    def __init__(self):
+    def __init__(self, in_queue, out_queue):
         Gtk.Window.__init__(self, title="GtkWin")
+        self.in_queue = in_queue
+        self.out_queue = out_queue
+        self.connect("delete-event", self.close_call)
+
+
 
         self.set_border_width(10)
         self.set_default_size(500, 450)
@@ -15,12 +21,39 @@ class MainFrame(Gtk.Window):
 
         self.set_titlebar(self.hb)
 
-        self.hbox = Gtk.Box(spacing = 6)
-        self.add(self.hbox)
+        self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing = 6)
+        self.add(self.vbox)
+
+    # +++ TOP BAR THINGY +++
+        self.tophbox = Gtk.Box(spacing = 6)
+        self.vbox.pack_start(self.tophbox, False, True, 0)
+
+        self.label_one = Gtk.Label("something...")
+        self.tophbox.pack_start(self.label_one, False, True, 3)
 
         self.search = Gtk.Button(label = "...")
         self.search.connect("clicked", self.load_file)
-        self.add(self.search)
+        self.tophbox.pack_start(self.search, False, True, 3)
+
+        self.addbutton = Gtk.Button(label = "add")
+        self.addbutton.connect("clicked", self.on_add)
+        self.tophbox.pack_end(self.addbutton, False, True, 3)
+
+
+        self.scrollspace = Gtk.ScrolledWindow()
+        self.scrollspace.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self.scrollspace.set_vexpand(True)
+
+        #self.
+
+        self.vbox.pack_start(self.scrollspace, False, False, 3)
+
+
+    def on_add(self, arg1):
+        print("Addwin opens...")
+    
+
+
 
 #        self.search.grid(column = 2, row = 2, sticky = W)
 
@@ -83,4 +116,13 @@ class MainFrame(Gtk.Window):
         if messagebox.askokcancel("Quit", "Close without change?"):
             self.add_task.config(state=NORMAL)
             self.addwin.destroy()
+
+    def close_call(self, arg1, arg2):
+        # XXX check ob noch was läuft, etc...
+        #self.out_queue.put(util.StatusMessage(content = "out OH MEIN GOTT WAS IST GESCHEHEN!?"))
+        self.in_queue.put(util.StatusMessage(content = "in OH MEIN GOTT WAS IST GESCHEHEN!?"))
+        self.in_queue.put(util.MESSAGE_EXIT)
+        self.destroy()
+        Gtk.main_quit()
+        return True
 
