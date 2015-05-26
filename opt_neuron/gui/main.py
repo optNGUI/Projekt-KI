@@ -10,7 +10,7 @@ def main(in_queue, out_queue):
     mf.connect("delete-event", Gtk.main_quit)
     mf.show_all()
 
-    af = addframe.AddFrame()
+    af = addframe.AddFrame(out_queue)
     af.connect("delete-event", Gtk.main_quit)
     af.show_all()
 
