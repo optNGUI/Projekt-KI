@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# coding: utf8
+
 from . import addframe
 from . import mainframe
 from gi.repository import Gtk
