@@ -14,10 +14,14 @@ class AddFrame(Gtk.Window):
         self.editButton = Gtk.Button(label="Hinzufügen")
         self.editButton.connect("clicked", self.on_editButton_clicked)
         self.chooseAlgo.pack_start(self.editButton,True,True,0)        
-
+        #quit button
         self.quitButton = Gtk.Button(label="Abbrechen")
         self.quitButton.connect("clicked", self.on_quitButton_clicked)
         self.chooseAlgo.pack_start(self.quitButton,True,True,0) 
+        
+        #scrollbar for choosing algorithm
+        algoScrollbar = Gtk.Scrollbar(orientation = Gtk.Orientation.VERTICAL, adjustment = layout.get_vadjustment())
+        grid.attach(algoScrollbar,1,1,0,0)
 
     def on_editButton_clicked(self,widget,out_queue):
         #TODO: send messages to queue, fill algo+params in table
