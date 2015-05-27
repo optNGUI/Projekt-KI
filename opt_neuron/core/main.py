@@ -1,3 +1,5 @@
+# coding: utf8
+
 ### This file contains the main entry point for the core ###
 
 import logging, configparser
