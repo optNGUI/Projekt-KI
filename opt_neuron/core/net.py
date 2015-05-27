@@ -1,22 +1,18 @@
 from .. import util
-import subprocess, sys, threading
+import subprocess, sys, threading, time
 
 def call(host,command):
-    terminate = False
-    def writer():
-        #while not terminate:
-            sys.stdin.write(input('>>>>>'))
-    t = threading.Thread(target=writer)
-    t.daemon = True
-    t.start()
-    ssh = subprocess.Popen(["ssh", host, command],
+    out = open('/home/dannehl/out.txt', 'w')
+    ssh = subprocess.Popen(['ssh', '617529@ssh-gate.informatik.uni-luebeck.de', '-i', '/home/dannehl/.ssh/id_rsa'],
         stdin=subprocess.PIPE, 
-        stdout=subprocess.PIPE, 
-        stderr=subprocess.PIPE, 
-        shell=True, 
-        universal_newlines=True)
-    result = ssh.stdout.readlines()
-    if result == []:
-        error = ssh.stderr.readlines()
-        main.send_msg(util.StatusMessage('SSH Error:\n'+error))
-    return result
+        stdout=out, 
+        stderr=out, 
+        shell=False,
+        universal_newlines= True)
+    ssh.stdin.write('ls -la\n')
+    time.sleep(1)
+    ssh.stdin.write('ls\n')
+    #tmp = ssh.communicate('ls -la')
+    #tmp = ssh.communicate('ls -la')
+    #ssh.communicate(bytes('exit', 'utf-8'))
+    #print(str(tmp))
