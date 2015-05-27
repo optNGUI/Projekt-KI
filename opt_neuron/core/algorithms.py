@@ -7,11 +7,18 @@ from .. import util
 from . import net
 
 logger = logging.getLogger(__name__)
+algs = []
+
+def __add_alg(func):
+    global algs
+    algs.append(func)
+    return func
 
 class Status(IntEnum):
     NOT_STARTED = -1
     RUNNING = 0
     RETURNED = 1
+
 
 
 class ThreadedAlgorithm():
@@ -61,34 +68,30 @@ class ThreadedAlgorithm():
         t.start()
         return t
 
-
+@__add_alg
 def dummy_algorithm(self, arg=5, blub = 7, *args, **kwargs):
     import time
     send_msg(util.StatusMessage(content='Going to sleep for five seconds...'))
     time.sleep(5)
     send_msg(util.StatusMessage(content='Waking up...'))
 
+@__add_alg
 def lassDasMalDenMoritzMachen(self):
-    import genetic_testbench.genetic as ga
-    send_msg(util.StatusMessage(content=str(ga)))
-    alg = ga.Genetic_Algorithm(first =     ga.get_init_from_greedy(), 
-        terminate = ga.terminate_at_optimum, 
-        select =    ga.select, 
-        crossover = ga.get_spread_crossover(n=1), 
-        mutate =    ga.get_mutate_uniform(p=1/10), 
-        replace =   ga.replace_append, 
-        fitness =   ga.fitness)
-    import genetic_testbench.graphs as graphs
-    graph = graphs.construct_star_graph(c=4, d=5)
-    send_msg(util.StatusMessage(content=str(alg(graph))+' <- Der Moritz macht das gut.'))
+    ## Deprecated Function calls!
+    pass
+    #import genetic_testbench.genetic as ga
+    #send_msg(util.StatusMessage(content=str(ga)))
+    #alg = ga.Genetic_Algorithm(first =     ga.get_init_from_greedy(), 
+        #terminate = ga.terminate_at_optimum, 
+        #select =    ga.select, 
+        #crossover = ga.get_spread_crossover(n=1), 
+        #mutate =    ga.get_mutate_uniform(p=1/10), 
+        #replace =   ga.replace_append, 
+        #fitness =   ga.fitness)
+    #import genetic_testbench.graphs as graphs
+    #graph = graphs.construct_star_graph(c=4, d=5)
+    #send_msg(util.StatusMessage(content=str(alg(graph))+' <- Der Moritz macht das gut.'))
 
 
 def list_of_algorithms():
-    list_names = [i[0] for i in inspect.getmembers(sys.modules[__name__], predicate=inspect.isfunction)]
-    list_names.remove('list_of_algorithms')
-    list_names.remove('send_msg')
-    logger.warning(str(list_names))
-    return [(alg, eval(alg), inspect.getargspec(eval(alg))) for alg in list_names]
-    
-    
-    
+    return [(i[0], i[1], inspect.getargspec(i[1])) for i in inspect.getmembers(sys.modules[__name__], predicate=lambda x: x in algs)]

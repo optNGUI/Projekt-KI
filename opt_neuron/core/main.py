@@ -33,9 +33,10 @@ def main_loop(in_queue):
     global __algorithm_funcs
     global __algorithm_names
     logger.debug('in_queue listener started')
-    __algorithm_names = [i[0] for i in algorithms.list_of_algorithms()]
-    __algorithm_funcs = [i[1] for i in algorithms.list_of_algorithms()]
-    __algorithm_argspec = [i[2] for i in algorithms.list_of_algorithms()]
+    tmp = algorithms.list_of_algorithms()
+    __algorithm_names = [i[0] for i in tmp]
+    __algorithm_funcs = [i[1] for i in tmp]
+    __algorithm_argspec = [i[2] for i in tmp]
     while not __terminate:
         msg = in_queue.get()
         logger.debug("Received message: {msg}".format(msg=str(msg)))
