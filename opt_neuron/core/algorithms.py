@@ -4,6 +4,7 @@ from .main import send_msg
 import types, inspect, logging, sys
 from enum import IntEnum
 from .. import util
+from . import net
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +70,7 @@ def dummy_algorithm(self, arg=5, blub = 7, *args, **kwargs):
 
 def lassDasMalDenMoritzMachen(self):
     import genetic_testbench.genetic as ga
-    print(str(ga))
+    send_msg(util.StatusMessage(content=str(ga)))
     alg = ga.Genetic_Algorithm(first =     ga.get_init_from_greedy(), 
         terminate = ga.terminate_at_optimum, 
         select =    ga.select, 
@@ -79,7 +80,7 @@ def lassDasMalDenMoritzMachen(self):
         fitness =   ga.fitness)
     import genetic_testbench.graphs as graphs
     graph = graphs.construct_star_graph(c=4, d=5)
-    print(str(alg(graph))+' <- Der Moritz macht das gut.')
+    send_msg(util.StatusMessage(content=str(alg(graph))+' <- Der Moritz macht das gut.'))
 
 
 def list_of_algorithms():

@@ -37,14 +37,18 @@ def run(*sysargs):
     config = configparser.ConfigParser()
     
     if args.config is None:
-        args.config = []
+        args.config = 'conf.ini'
     tmp = config.read(args.config)
     if len(tmp) == 0:
         print("Config is empty!")
     del tmp
     
-    
-    
+    try: 
+        config.add_section('INTERNAL')
+    except configparser.DuplicateSectionError:
+        pass
+    config.set('INTERNAL','configPath',args.config)
+   
     logging_level = config.get('LOGGING', 'level', fallback='WARNING')
     logging_level = logging_level.upper()
     if logging_level not in ['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG']:

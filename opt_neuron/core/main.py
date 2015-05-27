@@ -3,9 +3,11 @@
 import logging, configparser
 from threading import Thread
 from .. import util
+import shlex
+from . import net
 
 logger = logging.getLogger(__name__)
-__config = None
+config = None
 __algorithm_names = None
 __algorithm_funcs = None
 __algorithm_argspec = None
@@ -54,7 +56,12 @@ def parse_msg(msg):
     
     elif isinstance(msg, util.CommandMessage):
         
-        content = msg.content.split(' ')
+        content = shlex.split(msg.content)
+        
+        if content[0] == 'ssh':
+            host = config.get("SSH", "host")
+            command = config.get("SSH", "net")+''.join([str(i)+" " for i in content[1:]])+"&& "+config.get("SSH", "analysis")
+            net.call(host,command)
     
         if content[0] == 'get':
             if content[1] == 'hello_world':
@@ -63,15 +70,15 @@ def parse_msg(msg):
                 send_msg(util.RetValMessage(msg, appendix=algorithms.list_of_algorithms()))
             elif content[1] == 'config':
                 if len(content) < 3:
-                    send_msg(util.RetValMessage(msg, appendix = __config))
+                    send_msg(util.RetValMessage(msg, appendix = config))
                 elif len(content) < 4:
                     try:
-                        send_msg(util.RetValMessage(msg, appendix = __config.options(content[2])))
+                        send_msg(util.RetValMessage(msg, appendix = config.options(content[2])))
                     except configparser.NoSectionError:
                         send_msg(util.RetValMessage(msg, appendix = []))
                 else:
                     try:
-                        send_msg(util.RetValMessage(msg, appendix = __config.get(content[2],content[3])))
+                        send_msg(util.RetValMessage(msg, appendix = config.get(content[2],content[3])))
                     except (configparser.NoSectionError, configparser.NoOptionError):
                         send_msg(util.RetValMessage(msg, appendix = []))
                 
@@ -81,15 +88,19 @@ def parse_msg(msg):
                     send_msg(util.MESSAGE_FAILURE(msg))
                 else:
                     try: 
-                        __config.add_section(content[2])
+                        config.add_section(content[2])
                     except configparser.DuplicateSectionError:
                         pass
-                    __config.set(content[2],content[3],content[4])
+                    config.set(content[2],content[3],content[4])
                     send_msg(util.RetValMessage(msg, appendix = True))
                     
                     
              #HierKannManWasErgänzen. Ui....Tolles Ding...
-        
+             
+        elif content[0] == 'save':
+            if content[1] == 'config':
+                config.write(open(config.get('INTERNAL','configPath'),'w'))
+         
         elif content[0] == 'start':
             if content[1] in __algorithm_names:
                     func = algorithms.ThreadedAlgorithm(__algorithm_funcs[__algorithm_names.index(content[1])])
@@ -105,15 +116,15 @@ def parse_msg(msg):
         
 __runOnce=False
 
-def init(in_queue, out_queue, config):
+def init(in_queue, out_queue, config_):
     global __runOnce
     global __out_queue
-    global __config
+    global config
     if __runOnce:
         logger.warning('Core init after already initialized')
         return
     logger.debug("CORE INIT")
-    __config = config
+    config = config_
     # Start queue listener
     __out_queue = out_queue
     mainloop = Thread(target=main_loop, args=(in_queue,))
