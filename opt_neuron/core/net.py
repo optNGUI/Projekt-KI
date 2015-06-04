@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from .. import util
 import subprocess
 
