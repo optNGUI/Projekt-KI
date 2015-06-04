@@ -1,0 +1,153 @@
+Starting Genesis
+Xodus: Couldn't open display.  Check DISPLAY envariable
+The diskio library uses the netcdf-version 3.4 library, which is provided
+"as is" under the terms of distribution and usage by UCAR/Unidata.
+Please see src/diskio/interface/netcdf/netcdf-3.4/copyright.html
+for the full notice.
+
+reading 'pyr_4_asym_AIS.p'.... 
+reading 'bask.p'.... 
+==========================================================================
+                               G E N E S I S
+                           Release Version: 2.3
+
+
+GENESIS is made available under the GNU General Public License,
+GNU Library General Public License, or by the originating institution 
+with the permission of the authors.
+
+Type "help" for help with GENESIS.
+==========================================================================
+
+Executable:         /usr/bin/genesis
+
+--------------------------- Starting XODUS 2.0 ---------------------------
+
+The kinetics library is copylefted under the LGPL, see kinetics/COPYRIGHT.
+
+TERM variable is undefined, therefore terminal type is unknown.
+Assuming vt100.
+Startup script:     /home/bachelor1/.simrc
+SIMPATH=. /usr/share/genesis-2.3/startup /usr/share/genesis-2.3/Scripts/neurokit /usr/share/genesis-2.3/Scripts/neurokit/prototypes
+SIMPATH=. /usr/share/genesis-2.3/startup /usr/share/genesis-2.3/Scripts/neurokit /usr/share/genesis-2.3/Scripts/neurokit/prototypes /usr/share/genesis-2.3/Scripts/X1compat
+SIMNOTES=/home/bachelor1/.notes
+GENESIS_HELP=/usr/share/genesis-2.3/startup/Doc
+Simulation Script:  acnet2.g
+Using SPRNG random number generator
+changing clock [0] from 1 to 2e-05
+/library
+/
+pyr_4_asym_AIS.p read: 10 compartments, 11 channels, 0 shells, 3 others
+bask.p read: 2 compartments, 5 channels, 0 shells, 2 others
+/Ex_layer/pyr
+Crank-Nicolson. Note : applies only to hsolve elements
+/
+/Inh_layer/bask
+Crank-Nicolson. Note : applies only to hsolve elements
+/
+Starting connection set up:  Wed Jun  3 15:13:40 2015
+Finished connection set up:  Wed Jun  3 15:14:25 2015
+................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+................................................................................................................................................
+................................................................................................................................................
+All maxium synaptic weights set to 0
+................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+................................................................................................................................................
+Using simple pulsed spiketrain input
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.

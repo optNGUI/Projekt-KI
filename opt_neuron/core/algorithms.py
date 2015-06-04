@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ### Contains base class for algorithms ###
 from threading import Thread
 from .main import send_msg
