@@ -15,4 +15,7 @@ def main(in_queue, out_queue):
     af.show_all()
 
     Gtk.main()
+    
+if __name__ == "__main__":
+    test = main(in_queue,out_queue)
 

@@ -10,7 +10,7 @@ class AddFrame(Gtk.Window):
 	
         #horizontal box for buttons 
         self.buttonRow = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing=6)
-        self.add(buttonRow)
+        self.add(self.buttonRow)
 
         #edit button
         self.editButton = Gtk.Button(label="Hinzufügen")
@@ -55,6 +55,7 @@ class AddFrame(Gtk.Window):
 
     def on_editButton_clicked(self,widget,out_queue):
         #TODO: send messages to queue, fill algo+params in table
+        
         print("hinzugefügt")
 
     def on_quitButton_clicked(self,widget):
