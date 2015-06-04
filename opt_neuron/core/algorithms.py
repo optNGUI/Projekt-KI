@@ -94,4 +94,4 @@ def lassDasMalDenMoritzMachen(self):
 
 
 def list_of_algorithms():
-    return [(i[0], i[1], inspect.getargspec(i[1])) for i in inspect.getmembers(sys.modules[__name__], predicate=lambda x: x in algs)]
+    return [(i.__name__, i, inspect.getargspec(i)) for i in algs]
