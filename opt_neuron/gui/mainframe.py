@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-import addframe
-#import util
+from . import addframe
+from .. import util
 from gi.repository import Gtk
 
 class MainFrame(Gtk.Window):

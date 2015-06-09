@@ -9,6 +9,11 @@ class AddFrame(Gtk.Window):
         Gtk.Window.__init__(self, title = "Algorithmusauswahl")
         self.in_queue = in_queue
 	
+        self.layout = Gtk.Layout()
+        self.layout.set_size(800, 500)
+        self.layout.set_vexpand(True)
+        self.layout.set_hexpand(True)
+
         #horizontal box for buttons 
         self.buttonRow = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing=6)
         self.add(self.buttonRow)
@@ -27,7 +32,7 @@ class AddFrame(Gtk.Window):
 
         #scrollbar with algorithms from config
         #TODO: import algorithms from config, read in
-        self.algoScrollbar = Gtk.Scrollbar(orientation = Gtk.Orientation.VERTICAL, adjustment = layout.get_vadjustment())
+        self.algoScrollbar = Gtk.Scrollbar(orientation = Gtk.Orientation.VERTICAL, adjustment = self.layout.get_vadjustment())
         self.paramBox.pack_start(self.algoScrollbar, True, True, 0)
         self.scrollbarLabel = Gtk.Label()
         self.scrollbarLabel.set_text("Auszuführender Algorithmus")
@@ -40,27 +45,27 @@ class AddFrame(Gtk.Window):
         #TODO: Parameter spezifisch für jeden möglichen Algo?!
         self.param1 = Gtk.Entry()
         self.param1.set_text("param1")
-        chooseParams.pack_start(self.param1, True, True, 0)
+        self.chooseParams.pack_start(self.param1, True, True, 0)
 
         self.param2 = Gtk.Entry()
         self.param2.set_text("param2")
-        chooseParams.pack_start(self.param2, True, True, 0)
+        self.chooseParams.pack_start(self.param2, True, True, 0)
 
         self.param3 = Gtk.Entry()
         self.param3.set_text("param3")
-        chooseParams.pack_start(self.param3, True, True, 0)
+        self.chooseParams.pack_start(self.param3, True, True, 0)
 
         self.param4 = Gtk.Entry()
         self.param4.set_text("param4")
-        chooseParams.pack_start(self.param4, True, True, 0)
+        self.chooseParams.pack_start(self.param4, True, True, 0)
 
     def on_editButton_clicked(self,widget,in_queue):
         #TODO: send messages to queue, fill algo+params in table
-        in_queue.put(self, util.StatusMessage(('choosed algorithm: %s', algorithm), priority = 1)
-    	#print("hinzugefügt")
+        #self.in_queue.put(util.StatusMessage(content = "choosed algorithm: %s" % algorithm))
+    	print("hinzugefügt")
 
     def on_quitButton_clicked(self,widget):
         #closes frame without saving anything
         self.connect("delete_event",self.close_call)
-        self.destroy(
+
         
