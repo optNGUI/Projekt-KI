@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-from . import addframe
-from .. import util
+import addframe
+#import util
 from gi.repository import Gtk
 
 class MainFrame(Gtk.Window):
@@ -118,7 +118,7 @@ class MainFrame(Gtk.Window):
             self.addwin.destroy()
 
     def close_call(self, arg1, arg2):
-        # XXX check ob noch was läuft, etc...
+        # TODO check ob noch was laeuft, etc...
         #self.out_queue.put(util.StatusMessage(content = "out OH MEIN GOTT WAS IST GESCHEHEN!?"))
         self.in_queue.put(util.StatusMessage(content = "in OH MEIN GOTT WAS IST GESCHEHEN!?"))
         self.in_queue.put(util.MESSAGE_EXIT)

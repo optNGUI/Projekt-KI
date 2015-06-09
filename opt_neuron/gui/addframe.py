@@ -3,10 +3,11 @@
 
 from gi.repository import Gtk
 
+
 class AddFrame(Gtk.Window):
-    def __init__(self,out_queue):
+    def __init__(self,in_queue):
         Gtk.Window.__init__(self, title = "Algorithmusauswahl")
-        self.out_queue = out_queue
+        self.in_queue = in_queue
 	
         #horizontal box for buttons 
         self.buttonRow = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing=6)
@@ -53,14 +54,13 @@ class AddFrame(Gtk.Window):
         self.param4.set_text("param4")
         chooseParams.pack_start(self.param4, True, True, 0)
 
-    def on_editButton_clicked(self,widget,out_queue):
+    def on_editButton_clicked(self,widget,in_queue):
         #TODO: send messages to queue, fill algo+params in table
-        
-        print("hinzugefügt")
+        in_queue.put(self, util.StatusMessage(('choosed algorithm: %s', algorithm), priority = 1)
+    	#print("hinzugefügt")
 
     def on_quitButton_clicked(self,widget):
         #closes frame without saving anything
         self.connect("delete_event",self.close_call)
-        self.destroy()
-	
+        self.destroy(
         
