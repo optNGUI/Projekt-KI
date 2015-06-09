@@ -37,7 +37,7 @@ class AddFrame(Gtk.Window):
         self.paramBox.pack_start(self.algoScrollbar, True, True, 0)
         self.scrollbarLabel = Gtk.Label()
         self.scrollbarLabel.set_text("Auszuführender Algorithmus")
-	grid.attach(layout,0,0,1,1)
+        grid.attach(layout,0,0,1,1)
 
         #box for wished parameters
         self.chooseParams = Gtk.Box(spacing = 6)
@@ -69,5 +69,5 @@ class AddFrame(Gtk.Window):
     def on_quitButton_clicked(self,widget):
         #closes frame without saving anything
         #self.connect("delete_event",self.close_call)
-	self.destroy()
+        self.destroy()
         
