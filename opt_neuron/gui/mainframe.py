@@ -2,6 +2,9 @@
 from . import addframe
 from .. import util
 from gi.repository import Gtk
+import logging
+
+logger = logging.getLogger(__name__)
 
 class MainFrame(Gtk.Window):
     def __init__(self, in_queue, out_queue):
@@ -51,6 +54,8 @@ class MainFrame(Gtk.Window):
 
     def on_add(self, arg1):
         print("Addwin opens...")
+        self.out_queue.put(util.MESSAGE_EXIT)
+        self.out_queue.put(util.StatusMessage(content = "TEST"))
     
 
 
@@ -119,10 +124,10 @@ class MainFrame(Gtk.Window):
 
     def close_call(self, arg1, arg2):
         # TODO check ob noch was laeuft, etc...
-        #self.out_queue.put(util.StatusMessage(content = "out OH MEIN GOTT WAS IST GESCHEHEN!?"))
-        self.in_queue.put(util.StatusMessage(content = "in OH MEIN GOTT WAS IST GESCHEHEN!?"))
-        self.in_queue.put(util.MESSAGE_EXIT)
-        self.destroy()
-        Gtk.main_quit()
+        self.out_queue.put(util.StatusMessage(content = "in OH MEIN GOTT WAS IST GESCHEHEN!?"))
+        self.out_queue.put(util.MESSAGE_EXIT)
+        print("end")
+        #self.destroy()
+        #Gtk.main_quit()
         return True
 
