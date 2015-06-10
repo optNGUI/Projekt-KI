@@ -2,7 +2,7 @@
 
 ### This file contains the main entry point for the core ###
 
-import logging, configparser
+import logging, configparser, getpass
 from threading import Thread
 from .. import util
 import shlex
@@ -96,7 +96,11 @@ def parse_msg(msg):
                         pass
                     config.set(content[2],content[3],content[4])
                     send_msg(util.RetValMessage(msg, appendix = True))
-                    
+            if content[1] == 'password':
+                if len(content) < 3:
+                    net.password = getpass.getpass("password: ")
+                else:
+                    net.password = content[2]
                     
              #HierKannManWasErgänzen. Ui....Tolles Ding...
              
@@ -113,9 +117,15 @@ def parse_msg(msg):
                 
         elif content[0] == 'echo':
             send_msg(util.RetValMessage(msg, appendix = content[1]))
+            
+        
+        elif content[0] == 'run':
+            net.start_net(config.get("SSH", "host"), config.get("net", "exe"), config.get("net", "analysis"), content[1:])
+            
         
         else:
             send_msg(util.MESSAGE_FAILURE(msg))
+            
         
 __runOnce=False
 

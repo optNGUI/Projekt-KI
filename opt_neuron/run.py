@@ -127,7 +127,7 @@ def run(*sysargs):
         intro = '\nWelcome to the default Command Line Interface. '+ \
             'You may enter a command now, e.g. "echo MESSAGE"\n' +\
             'To exit the program, type "exit" or hit Ctrl-D\n'
-        prompt = ''
+        prompt = '>'
         
         def default(self, arg):
             in_queue.put(util.CommandMessage(content=arg))
