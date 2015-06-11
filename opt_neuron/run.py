@@ -8,6 +8,8 @@ from . import util
 import argparse, configparser, importlib, logging, threading, queue, traceback
 import sys, getpass
 
+shell = None
+
 
 def run(*sysargs):
     # Step 1: Parse the arguments
@@ -110,6 +112,7 @@ def run(*sysargs):
             msg = out_queue.get()
             if isinstance(msg,util.RetValMessage):
                 print('\nreturn: '+msg.content)
+                shell.cmdloop()#wait for new command after a return message was received
             else:
                 print('\n'+msg.content)
             out_queue.task_done()
@@ -124,14 +127,10 @@ def run(*sysargs):
     
     
     class SimpleShell(cmd.Cmd):
-        intro = '\nWelcome to the default Command Line Interface. '+ \
-            'You may enter a command now, e.g. "echo MESSAGE"\n' +\
-            'To exit the program, type "exit" or hit Ctrl-D\n'
+        intro = ''
         prompt = '>'
         
         def default(self, arg):
-            if arg=='set password':
-                arg = arg+' '+getpass.getpass("password: ")
             in_queue.put(util.CommandMessage(content=arg))
             
         def do_exit(self, line):
@@ -140,16 +139,15 @@ def run(*sysargs):
         
         def do_EOF(self, line):
             in_queue.put(util.MESSAGE_EXIT)
-            return True
         
-        def cmdloop(self):
-            try:
-                cmd.Cmd.cmdloop(self)
-            except KeyboardInterrupt as e:
-                self.cmdloop()
-            
+        def postcmd(self, stop, line):
+            return True
     
-    SimpleShell().cmdloop()
+    shell = SimpleShell()
+    print('\nWelcome to the default Command Line Interface. '+ \
+            'You may enter a command now, e.g. "echo MESSAGE"\n' +\
+            'To exit the program, type "exit" or hit Ctrl-D\n')
+    shell.cmdloop()
     
     
     

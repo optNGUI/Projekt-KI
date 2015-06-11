@@ -59,6 +59,9 @@ def parse_msg(msg):
     
     elif isinstance(msg, util.CommandMessage):
         
+        #default return message is true meaning "yep, I handled that message."
+        retval = util.RetValMessage(msg, appendix = True)
+        
         content = shlex.split(msg.content)
         
         if content[0] == 'ssh':
@@ -68,39 +71,40 @@ def parse_msg(msg):
     
         if content[0] == 'get':
             if content[1] == 'hello_world':
-                send_msg(util.StatusMessage(content = 'Hello World'))
+                retval = util.StatusMessage(content = 'Hello World')
             elif content[1] == 'algorithms':
-                send_msg(util.RetValMessage(msg, appendix=algorithms.list_of_algorithms()))
+                retval = util.RetValMessage(msg, appendix=algorithms.list_of_algorithms())
             elif content[1] == 'config':
                 if len(content) < 3:
-                    send_msg(util.RetValMessage(msg, appendix = config))
+                    retval = util.RetValMessage(msg, appendix = config)
                 elif len(content) < 4:
                     try:
-                        send_msg(util.RetValMessage(msg, appendix = config.options(content[2])))
+                        retval = util.RetValMessage(msg, appendix = config.options(content[2]))
                     except configparser.NoSectionError:
-                        send_msg(util.RetValMessage(msg, appendix = []))
+                        retval = util.RetValMessage(msg, appendix = [])
                 else:
                     try:
-                        send_msg(util.RetValMessage(msg, appendix = config.get(content[2],content[3])))
+                        retval = util.RetValMessage(msg, appendix = config.get(content[2],content[3]))
                     except (configparser.NoSectionError, configparser.NoOptionError):
-                        send_msg(util.RetValMessage(msg, appendix = []))
+                        retval = util.RetValMessage(msg, appendix = [])
                 
         elif content[0] == 'set':
             if content[1] == 'config':
                 if len(content) < 5:
-                    send_msg(util.MESSAGE_FAILURE(msg))
+                    retval = util.MESSAGE_FAILURE(msg)
                 else:
                     try: 
                         config.add_section(content[2])
                     except configparser.DuplicateSectionError:
                         pass
                     config.set(content[2],content[3],content[4])
-                    send_msg(util.RetValMessage(msg, appendix = True))
+                    retval = util.RetValMessage(msg, appendix = True)
             if content[1] == 'password':
                 if len(content) < 3:
-                    send_msg(*util.MESSAGE_FAILURE(msg, 'no password specified'))
+                    net.password = getpass.getpass("password: ")
                 else:
                     net.password = content[2]
+
              
         elif content[0] == 'save':
             if content[1] == 'config':
@@ -111,10 +115,10 @@ def parse_msg(msg):
                     func = algorithms.ThreadedAlgorithm(__algorithm_funcs[__algorithm_names.index(content[1])])
                     func(*content[2:])
             else:
-                send_msg(*util.MESSAGE_FAILURE(msg, 'could not identify algorithm '+content[1]))
+                retval = util.MESSAGE_FAILURE(msg, 'could not identify algorithm '+content[1])
                 
         elif content[0] == 'echo':
-            send_msg(util.RetValMessage(msg, appendix = content[1]))
+            retval = util.RetValMessage(msg, appendix = content[1])
             
         
         elif content[0] == 'run':
@@ -122,7 +126,10 @@ def parse_msg(msg):
             
         
         else:
-            send_msg(util.MESSAGE_FAILURE(msg))
+            retval = util.MESSAGE_FAILURE(msg)
+            
+        #send return message
+        send_msg(retval)
             
         
 __runOnce=False
