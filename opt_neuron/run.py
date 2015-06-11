@@ -6,7 +6,7 @@ from .core import main as core_main
 from . import __version__
 from . import util
 import argparse, configparser, importlib, logging, threading, queue, traceback
-import sys
+import sys, getpass
 
 
 def run(*sysargs):
@@ -130,6 +130,8 @@ def run(*sysargs):
         prompt = '>'
         
         def default(self, arg):
+            if arg=='set password':
+                arg = arg+' '+getpass.getpass("password: ")
             in_queue.put(util.CommandMessage(content=arg))
             
         def do_exit(self, line):
@@ -139,6 +141,13 @@ def run(*sysargs):
         def do_EOF(self, line):
             in_queue.put(util.MESSAGE_EXIT)
             return True
+        
+        def cmdloop(self):
+            try:
+                cmd.Cmd.cmdloop(self)
+            except KeyboardInterrupt as e:
+                self.cmdloop()
+            
     
     SimpleShell().cmdloop()
     

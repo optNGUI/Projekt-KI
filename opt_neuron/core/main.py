@@ -2,7 +2,7 @@
 
 ### This file contains the main entry point for the core ###
 
-import logging, configparser, getpass
+import logging, configparser, getpass, sys, subprocess
 from threading import Thread
 from .. import util
 import shlex
@@ -98,11 +98,9 @@ def parse_msg(msg):
                     send_msg(util.RetValMessage(msg, appendix = True))
             if content[1] == 'password':
                 if len(content) < 3:
-                    net.password = getpass.getpass("password: ")
+                    send_msg(*util.MESSAGE_FAILURE(msg, 'no password specified'))
                 else:
                     net.password = content[2]
-                    
-             #HierKannManWasErgänzen. Ui....Tolles Ding...
              
         elif content[0] == 'save':
             if content[1] == 'config':
