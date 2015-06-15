@@ -3,6 +3,7 @@
 
 from . import addframe
 from . import mainframe
+from . import sshframe
 from gi.repository import Gtk
 
 def main(in_queue, out_queue):
@@ -13,6 +14,10 @@ def main(in_queue, out_queue):
     af = addframe.AddFrame(in_queue,out_queue)
     af.connect("delete-event", Gtk.main_quit)
     af.show_all()
+    
+    sf = sshframe.SshFrame(in_queue,out_queue)
+    sf.connect("delete-event", Gtk.main_quit)
+    sf.show_all()
 
     Gtk.main()
     
