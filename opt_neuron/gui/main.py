@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 __out_queue = None
 
 def main(out_queue, in_queue):
+    global __out_queue
     __out_queue = out_queue
     testWin = test(in_queue, out_queue)
     Gtk.main()
