@@ -5,9 +5,6 @@ from .main import send_msg
 from .. import util
 from gi.repository import Gtk
 
-logger = logging.getLogger(__name__)
-__out_queue = None
-
 class AddFrame(Gtk.Window):
     def __init__(self,in_queue,out_queue):
         Gtk.Window.__init__(self, title = "Algorithmusauswahl")
