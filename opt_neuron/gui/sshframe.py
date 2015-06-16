@@ -1,13 +1,18 @@
-#!/usr/bin/env python3
 # coding: utf8
 
+import logging
+from .main import send_msg
+from .. import util
 from gi.repository import Gtk
+
+logger = logging.getLogger(__name__)
+__out_queue = None
 
 class SshFrame(Gtk.Window):
     def __init__(self,in_queue,out_queue):
-        Gtk.Window.__init__(self,title = "Ssh-Gate")
-        self.in_queue = in_queue
-        self.out_queue = out_queue
+        Gtk.Window.__init__(self,title = "ssh-Gate")
+        self.__in_queue = in_queue
+        self.__out_queue = out_queue
 
         self.set_default_size(200,90)
         self.set_border_width(10)
@@ -16,10 +21,10 @@ class SshFrame(Gtk.Window):
         grid = Gtk.Grid()
         self.add(grid)
                 
-        usrLabel = Gtk.Label("Benutzername")
+        usrLabel = Gtk.Label("Host")
                 
         usrEntry = Gtk.Entry()
-        usrEntry.set_text("Moritz Dan Noel")
+        usrEntry.set_text("616863@ssh-gate.uni-luebeck.de")
                 
         pwdLabel = Gtk.Label("Passwort")
                 
@@ -29,7 +34,7 @@ class SshFrame(Gtk.Window):
         pwdEntry.set_invisible_char("*")
 
         loginButton = Gtk.Button(label = "Login")
-        loginButton.connect("clicked", self.on_loginButton_clicked)
+        loginButton.connect("clicked", self.on_loginButton_clicked(self,usrEntry,pwdEntry))
         
         quitButton = Gtk.Button(label = "Abbrechen")
         quitButton.connect("clicked", self.on_quitButton_clicked)
@@ -41,9 +46,12 @@ class SshFrame(Gtk.Window):
         grid.attach_next_to(loginButton,usrEntry, Gtk.PositionType.BOTTOM,1,1)
         grid.attach_next_to(quitButton,loginButton, Gtk.PositionType.RIGHT,1,1)
 
-    def on_loginButton_clicked(self,widget):
-       # out_queue.put(StatusMessage("host: %s, pwd: %s", % usrEntry.get_text() , % pwdEntry.get_text())
+    def on_loginButton_clicked(self,widget,usrEntry,pwdEntry):
+        send_msg(util.CommandMessage(content = 'set config SSH host '+usrEntry.get_text()))
+        send_msg(util.CommandMessage(content = 'password '+pwdEntry.get_text()))
         print("login happened")
+        self.destroy()
 
     def on_quitButton_clicked(self,widget):
         self.destroy()
+    
