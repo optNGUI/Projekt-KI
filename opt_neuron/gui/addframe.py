@@ -71,7 +71,7 @@ class AddFrame(Gtk.Window):
         self.add(vbox)
         self.show_all()
         
-    def on_editButton_clicked(self,widget,in_queue):
+    def on_editButton_clicked(self,widget):
         #TODO: send messages to queue, fill algo+params in table
         self.out_queue.put(util.StatusMessage(content = "choosed algorithm: %s" %algorithm))
         print("hinzugefügt")
@@ -82,7 +82,11 @@ class AddFrame(Gtk.Window):
         self.destroy()
         
     def on_algo_combo_changed(self,widget):
-        print("algorithm changed")
+        algo_iter = widget.get_active_iter()
+        if algo_iter != None:
+            model = widget.get_model()
+            algo = model[algo_iter][0]
+        print("selected algorithm: %s" %algo)
         
     #def fillAlgoStore(self):
         #asks algorithms from core and fills the combobox
@@ -92,5 +96,6 @@ class AddFrame(Gtk.Window):
         
         #for x in in_queue:
             #algoStore.append(x)
+
     def destroyFrame(self):
         self.destroy()
