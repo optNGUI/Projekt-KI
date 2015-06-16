@@ -1,10 +1,4 @@
 # coding: utf8
-
-from . import addframe
-from . import mainframe
-from . import sshframe
-from gi.repository import Gtk
-
 logger = logging.getLogger(__name__)
 __out_queue = None
 
@@ -12,6 +6,12 @@ def send_msg(*msg):
     for i in msg:
         logger.debug("Sent message: {msg}".format(msg=str(msg)))
         __out_queue.put(i)
+from . import addframe
+from . import mainframe
+from . import sshframe
+from gi.repository import Gtk
+
+
 
 def main(out_queue, in_queue):
 
