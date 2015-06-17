@@ -69,6 +69,36 @@ class ThreadedAlgorithm():
         return t
 
 @__add_alg
+def genetic_alg(self):
+
+    def fit_net(self, individuum):
+        arg0= individuum[0:4]
+        arg1= individuum[4:8]
+        arg2= individuum[8:12]
+        arg3= individuum[12:16]
+        return fitness(arg0,arg1,arg2,arg3)
+
+
+    import genetic_testbench as gt
+
+    g = gt.genetic.Genetic_Algorithm(first = gt.genetic.get_first('zero 10'),
+                                terminate = gt.genetic.get_terminate('number 0.8'),
+                                select = gt.genetic.get_select('roulette 3'),
+                                mutate = gt.genetic.get_mutate('uniform 0.001')
+                                crossover = gt.genetic.get_crossover('spread 3')
+                                replace = gt.genetic.get_replace('append'),
+                                fitness = net.fit_net)
+
+    class Foo():
+        pass
+
+    graph = Foo()
+    graph.size = 16
+
+    ret = g(graph)
+    return (fit_net(None, ret), ret[0:4], ret[4:8], ret[8:12], ret[12:16])
+
+@__add_alg
 def dummy_algorithm(self, arg=5, blub = 7, *args, **kwargs):
     import time
     send_msg(util.StatusMessage(content='Going to sleep for five seconds...'))
