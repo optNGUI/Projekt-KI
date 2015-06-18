@@ -63,6 +63,7 @@ class AddFrame(Gtk.Window):
         #TODO: fill algo+params in table in mainframe
         #return [...,param1.get_text(),param2.get_text(),param3.get_text(),param4.get_text()]
         print("hinzugefügt")
+        self.destroy()
 
     def on_quitButton_clicked(self,widget):
         #closes frame without saving anything
