@@ -94,8 +94,8 @@ MESSAGE_EXIT = CommandMessage('CORE-EXIT', priority=-9001)
 
 def MESSAGE_FAILURE(msg, status=None):
     if status:
-        status = StatusMessage("FAILURE: "+status)
-        return (RetValMessage(msg, appendix = False),status)
+        statusmsg = StatusMessage("FAILURE: "+status)
+        return (RetValMessage(msg, appendix = False),statusmsg)
     else:
         return RetValMessage(msg, appendix = False)
 

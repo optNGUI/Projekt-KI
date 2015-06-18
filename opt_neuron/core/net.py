@@ -1,8 +1,9 @@
 from .. import util
 import subprocess
-import logging, uuid, time, sys
+import logging, uuid, time, sys, os
 from io import StringIO
 from contextlib import redirect_stdout
+from functools import lru_cache
 
 logger = logging.getLogger(__name__)
 
@@ -11,16 +12,18 @@ password = ''
 
 def call(host, passwd, command):
     try:
+        FNULL = open(os.devnull, 'w')
         ssh = subprocess.check_output(['sshpass','-p', passwd, 'ssh', '-o', '''PubkeyAuthentication=no''', host,
                                 command],
             shell=False,
             universal_newlines= True)
         return ssh
-    except subprocess.CalledProcessError:
-        pass
+    except subprocess.CalledProcessError as e:
+        return e
     
     
 # TODO: Annotation: Cache similar calls
+@lru_cache()
 def start_net(host,net,analysis,*args):
     """Starts the net with the given parameters and
     returns the fitness value calculated by the
@@ -35,13 +38,16 @@ def start_net(host,net,analysis,*args):
     if args:
         for arg in args: 
             commandlist.extend(arg)
-    command = " ".join(commandlist)
+    command = " ".join(commandlist)+" "+fnum
     
     logger.warning("executing "+command)
-    call(host,password,command)
-
-    command = analysis
     val = call(host,password,command)
-    print (val)
+
+    command = analysis+" "+fnum
+    
+    val = call(host,password,command)
         
-    return 0
+    val = val[:val.rfind('\n')]
+    val = val[val.rfind('\n'):]
+
+    return float(val)

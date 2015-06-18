@@ -20,7 +20,6 @@ class Status(IntEnum):
     RETURNED = 1
 
 
-
 class ThreadedAlgorithm():
     """
     This class represents a threaded algorithm.
@@ -33,15 +32,23 @@ class ThreadedAlgorithm():
     
     def __callWrapper(self, *args, **kwargs):
         self.__status = Status.RUNNING
-        self.__return_value = self.func(*args, **kwargs)
+        try:
+            self.__return_value = self.func(*args, **kwargs)
+        except Exception as e:
+            print(e)            
+            return None
         self.__status = Status.RETURNED
         send_msg(util.StatusMessage(content='terminated ' + self.func.__name__))
     
-    def __init__(self, func):
+    def __init__(self, host, net, analysis, func):
         
         # Bind the func object as instance method
         self.func = types.MethodType(func, self)
         
+        self.host = host
+        self.net = net
+        self.analysis = analysis
+ 
         self.__status = Status.NOT_STARTED
         self.__return_value = None
         # You may extend this feature to support requesting 
@@ -67,27 +74,39 @@ class ThreadedAlgorithm():
         t.daemon = True
         t.start()
         return t
+    
+    
+    def fitness(self, *args):
+        ret = net.start_net(self.host, self.net, self.analysis, args)
+        if ret is None:
+            raise(Exception("error running net. maybe wrong SSH password?"))
+        return ret
+
 
 @__add_alg
 def genetic_alg(self):
+    
+    t = self
 
     def fit_net(self, individuum):
-        arg0= individuum[0:4]
-        arg1= individuum[4:8]
-        arg2= individuum[8:12]
-        arg3= individuum[12:16]
-        return fitness(arg0,arg1,arg2,arg3)
+        arg0= str(individuum[0:4])
+        arg1= str(individuum[4:8])
+        arg2= str(individuum[8:12])
+        arg3= str(individuum[12:16])
+        return t.fitness(arg0,arg1,arg2,arg3)
 
 
     import genetic_testbench as gt
 
-    g = gt.genetic.Genetic_Algorithm(first = gt.genetic.get_first('zero 10'),
-                                terminate = gt.genetic.get_terminate('number 0.8'),
-                                select = gt.genetic.get_select('roulette 3'),
-                                mutate = gt.genetic.get_mutate('uniform 0.001')
-                                crossover = gt.genetic.get_crossover('spread 3')
+    g = gt.genetic.Genetic_Algorithm(first = gt.genetic.get_first('zero', '2'),
+                                terminate = gt.genetic.get_terminate('max_generation', '10'),
+                                select = gt.genetic.get_select('roulette', '1'),
+                                mutate = gt.genetic.get_mutate('uniform', '0.001'),
+                                crossover = gt.genetic.get_crossover('spread', '1'),
                                 replace = gt.genetic.get_replace('append'),
-                                fitness = net.fit_net)
+                                fitness = fit_net)
+    
+    g.set_outputstream(sys.stdout)
 
     class Foo():
         pass

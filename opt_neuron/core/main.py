@@ -19,10 +19,14 @@ __algorithm_argspec = None
 __out_queue = None
 __terminate = False # Indicates whether the core shall exit
 
-def send_msg(*msg):
-    for i in msg:
+def send_msg(msg):
+    try:
+        for i in msg:
+            logger.debug("Sent message: {msg}".format(msg=str(i)))
+            __out_queue.put(i)
+    except TypeError:
         logger.debug("Sent message: {msg}".format(msg=str(msg)))
-        __out_queue.put(i)
+        __out_queue.put(msg)
     
 
 from . import algorithms
@@ -112,18 +116,26 @@ def parse_msg(msg):
          
         elif content[0] == 'start':
             if content[1] in __algorithm_names:
-                    func = algorithms.ThreadedAlgorithm(__algorithm_funcs[__algorithm_names.index(content[1])])
-                    func(*content[2:])
+                func = algorithms.ThreadedAlgorithm(
+                    config.get("SSH","host"),
+                    config.get("SSH","net"),
+                    config.get("SSH","analysis"),
+                    __algorithm_funcs[__algorithm_names.index(content[1])])
+                func(*content[2:])
             else:
+                print(msg)
+                print(content[1])
                 retval = util.MESSAGE_FAILURE(msg, 'could not identify algorithm '+content[1])
                 
         elif content[0] == 'echo':
             retval = util.RetValMessage(msg, appendix = content[1])
             
-        
         elif content[0] == 'run':
-            net.start_net(config.get("SSH", "host"), config.get("net", "exe"), config.get("net", "analysis"), content[1:])
-            
+            retval = net.start_net(
+                    config.get("SSH","host"),
+                    config.get("SSH","net"),
+                    config.get("SSH","analysis"),
+                    tuple(content[1:]))
         
         else:
             retval = util.MESSAGE_FAILURE(msg)

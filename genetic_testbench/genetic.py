@@ -376,7 +376,7 @@ def get_mutate(alg, *args):
                     individuum[v] ^= 1  # flips the bit
         return mutate_uniform
     elif alg == 'uniform':
-        p = int(args[0])
+        p = float(args[0])
         def mutate_uniform(self, individuum):
             for v in range(individuum.length()):
                 if random.random() < p:
