@@ -32,10 +32,10 @@ def test(in_queue, out_queue):
     mf.connect("delete-event", Gtk.main_quit)
     mf.show_all()
 
-    af = addframe.AddFrame(in_queue)
+    af = addframe.AddFrame()
     af.connect("delete-event", Gtk.main_quit)
     af.show_all()
     
-    sf = sshframe.SshFrame(in_queue)
+    sf = sshframe.SshFrame()
     sf.connect("delete-event", Gtk.main_quit)
     sf.show_all()
