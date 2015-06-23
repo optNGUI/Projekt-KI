@@ -5,18 +5,22 @@ from .main import send_msg
 from .. import util
 from gi.repository import Gtk
 
+__algoBox = None
+
 class AddFrame(Gtk.Window):
-    def __init__(self,in_queue):
+    def __init__(self):
         Gtk.Window.__init__(self, title = "Algorithmusauswahl")
-        __in_queue = in_queue
         
         self.set_default_size(300,200)
         self.set_border_width(10)
         
         Header = Gtk.HeaderBar(title = "Algorithmusauswahl")
         
+        hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 6)
         vbox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 6)
-        vbox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 6)
+
+        global __algoBox
+        __algoBox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 6)
 
         #edit button
         editButton = Gtk.Button(label="Hinzufügen")
@@ -56,13 +60,15 @@ class AddFrame(Gtk.Window):
         param4.set_text("param4")
         vbox.pack_start(param4,False,False,0)
         
-        self.add(vbox)
+        hbox.pack_start(vbox,False,False,0)
+        hbox.pack_end(__algoBox,False,False,0)
+        self.add(hbox)
         
     def on_editButton_clicked(self,widget):
         #TODO: fill algo+params in table in mainframe
         #return [...,param1.get_text(),param2.get_text(),param3.get_text(),param4.get_text()]
         print("hinzugefügt")
-        self.destroy()
+        #self.destroy()
 
     def on_quitButton_clicked(self,widget):
         #closes frame without saving anything
@@ -73,13 +79,25 @@ class AddFrame(Gtk.Window):
         if algo_iter != None:
             model = widget.get_model()
             algo = model[algo_iter][0]
+            self.build_param_entries(model[algo_iter])
         print("selected algorithm: %s" %algo)
         
     def fillAlgoStore(self,widget):
         #asks algorithms from core and fills the combobox
         send_msg(util.CommandMessage(content = 'get algorithms'))
-        #try
-            #self.in_queue.get(RetValMessage)
-        
-        #for x in in_queue:
-            #algoStore.append(x)
+        algoList = None
+        received = 0
+    
+       # while received == 0:
+           # algoList = get_msg()
+           # if algoList != None:
+               # received = 1
+ 
+       # for x in algoList:
+          #  algoStore.append(x)#[0])
+
+    def build_param_entries(self,algo):
+        for i in range(1,len(algo)):
+            param[i] = Gtk.Entry()
+            param[i].set_text(algo[i])
+            __algoBox.pack_start(param(i),False,False,0)

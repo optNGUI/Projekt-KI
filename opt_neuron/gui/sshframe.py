@@ -7,13 +7,10 @@ from gi.repository import Gtk
 
 __pwdEntry = None
 __usrEntry = None
-__in_queue = None
 
 class SshFrame(Gtk.Window):
-    def __init__(self,in_queue):
-        Gtk.Window.__init__(self,title = "ssh-Gate")
-        __in_queue = in_queue
-        
+    def __init__(self):
+        Gtk.Window.__init__(self,title = "ssh-Gate")      
 
         self.set_default_size(200,90)
         self.set_border_width(10)
