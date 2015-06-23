@@ -71,12 +71,12 @@ class MainFrame(Gtk.Window):
             print("waiting...")
             msg = self.in_queue.get()
             print("message received!")
+            print(msg)
 
             alert = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, msg)
             alert.connect("delete-event", alert.destroy)
             alert.run()
             print("msg box closed")
-            print(msg)
             alert.destroy()
         
         print("closed?")
@@ -91,9 +91,9 @@ class MainFrame(Gtk.Window):
     def on_add(self, arg1):
         print("Addwin opens...")
         #send_msg(util.MESSAGE_EXIT)
-        #send_msg(util.CommandMessage("CORE-EXIT"))
-        self.t = Thread( target=self.sendit, args=(util.CommandMessage(content="echo SHIT"),) )
-        self.t.start()
+        send_msg(util.CommandMessage("echo asd"))
+        #self.t = Thread( target=self.sendit, args=(util.CommandMessage(content="echo SHIT"),) )
+        #self.t.start()
 
 
 
