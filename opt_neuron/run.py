@@ -54,7 +54,7 @@ def run(*sysargs):
     logging_level = config.get('LOGGING', 'level', fallback='WARNING')
     logging_level = logging_level.upper()
     if logging_level not in ['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG']:
-        logging_level = logging.WARNING
+        logging_level = logging.DEBUG
     else:
         levels = {'CRITICAL' : logging.CRITICAL,
                     'ERROR' : logging.ERROR,
@@ -94,7 +94,9 @@ def run(*sysargs):
         #guimain.main()
         try:
             from .gui import main as gui_main
-            gui_main.main(out_queue, in_queue)
+            threading.Thread(target=gui_main.main, args=(out_queue, in_queue,)).start()
+            
+            #gui_main.main(out_queue, in_queue)
         except Exception as e:
             print("###\n!!! GUI failed !!!" )
             traceback.print_exc()
@@ -104,50 +106,50 @@ def run(*sysargs):
         # b. No GUI/CLI: Execute the commands in the config and set output to stdout
     else:
         #__outqueue_to_stdout(out_queue)
-        pass
+#        pass
         
-    # Start simple listener
-    def listener():
-        while True:
-            msg = out_queue.get()
-            if isinstance(msg,util.RetValMessage):
-                print('\nreturn: '+msg.content)
-                shell.cmdloop()#wait for new command after a return message was received
-            else:
-                print('\n'+msg.content)
-            out_queue.task_done()
-    t = threading.Thread(target=listener)
-    t.daemon = True # This listener won't block the whole process
-    t.start()
-    import cmd
+       # Start simple listener
+        def listener():
+            while True:
+                msg = out_queue.get()
+                if isinstance(msg,util.RetValMessage):
+                    print('\nreturn: '+msg.content)
+                    shell.cmdloop()#wait for new command after a return message was received
+                else:
+                    print('\n'+msg.content)
+                out_queue.task_done()
+        t = threading.Thread(target=listener)
+        t.daemon = True # This listener won't block the whole process
+        t.start()
+        import cmd
+
+        print("Executing commands from config...")
+        for command in commands:
+            in_queue.put(util.CommandMessage(content=command))
     
-    print("Executing commands from config...")
-    for command in commands:
-        in_queue.put(util.CommandMessage(content=command))
     
-    
-    class SimpleShell(cmd.Cmd):
-        intro = ''
-        prompt = '>'
+        class SimpleShell(cmd.Cmd):
+            intro = ''
+            prompt = '>'
         
-        def default(self, arg):
-            in_queue.put(util.CommandMessage(content=arg))
+            def default(self, arg):
+                in_queue.put(util.CommandMessage(content=arg))
             
-        def do_exit(self, line):
-            in_queue.put(util.MESSAGE_EXIT)
-            return True
+            def do_exit(self, line):
+                in_queue.put(util.MESSAGE_EXIT)
+                return True
         
-        def do_EOF(self, line):
-            in_queue.put(util.MESSAGE_EXIT)
+            def do_EOF(self, line):
+                in_queue.put(util.MESSAGE_EXIT)
         
-        def postcmd(self, stop, line):
-            return True
+            def postcmd(self, stop, line):
+                return True
     
-    shell = SimpleShell()
-    print('\nWelcome to the default Command Line Interface. '+ \
+        shell = SimpleShell()
+        print('\nWelcome to the default Command Line Interface. '+ \
             'You may enter a command now, e.g. "echo MESSAGE"\n' +\
             'To exit the program, type "exit" or hit Ctrl-D\n')
-    shell.cmdloop()
+        shell.cmdloop()
     
     
     

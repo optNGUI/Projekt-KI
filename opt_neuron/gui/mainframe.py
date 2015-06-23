@@ -3,11 +3,14 @@ from . import addframe
 from .. import util
 from gi.repository import Gtk
 import logging
+from .main import send_msg
+from threading import Thread
 
 logger = logging.getLogger(__name__)
 
 class MainFrame(Gtk.Window):
     def __init__(self, in_queue, out_queue):
+        self.__running = True
         Gtk.Window.__init__(self, title="GtkWin")
         self.in_queue = in_queue
         self.out_queue = out_queue
@@ -47,16 +50,50 @@ class MainFrame(Gtk.Window):
         self.scrollspace.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.scrollspace.set_vexpand(True)
 
-        #self.
-
         self.vbox.pack_start(self.scrollspace, False, False, 3)
+
+        self.liststore = Gtk.ListStore(str, str)
+
+
+        self.receiver_t = Thread( target=self.receive )
+        self.receiver_t.start()
+
+    def __on_destroy(self):
+        print("closing Gui!")
+        self.__running = False
+        Thread( target=self.sendit, args=(util.MESSAGE_EXIT,) ).start()
+        Gtk.main_quit()
+        print("asd")
+
+    def receive(self):
+        print("thread started")
+        while self.__running:
+            print("waiting...")
+            msg = self.in_queue.get()
+            print("message received!")
+
+            alert = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, msg)
+            alert.connect("delete-event", alert.destroy)
+            alert.run()
+            print("msg box closed")
+            print(msg)
+            alert.destroy()
+        
+        print("closed?")
+
+    def sendit(self, message):
+        print(self)
+        print(message)
+        send_msg(message)
+        #send_msg(message)
 
 
     def on_add(self, arg1):
         print("Addwin opens...")
-        self.out_queue.put(util.MESSAGE_EXIT)
-        self.out_queue.put(util.StatusMessage(content = "TEST"))
-    
+        #send_msg(util.MESSAGE_EXIT)
+        #send_msg(util.CommandMessage("CORE-EXIT"))
+        self.t = Thread( target=self.sendit, args=(util.CommandMessage(content="echo SHIT"),) )
+        self.t.start()
 
 
 
@@ -124,10 +161,12 @@ class MainFrame(Gtk.Window):
 
     def close_call(self, arg1, arg2):
         # TODO check ob noch was laeuft, etc...
-        self.out_queue.put(util.StatusMessage(content = "in OH MEIN GOTT WAS IST GESCHEHEN!?"))
-        self.out_queue.put(util.MESSAGE_EXIT)
+        #self.out_queue.put(util.StatusMessage(content = "in OH MEIN GOTT WAS IST GESCHEHEN!?"))
+        #self.out_queue.put(util.MESSAGE_EXIT)
         print("end")
-        #self.destroy()
+        self.destroy()
+        self.__on_destroy()
         #Gtk.main_quit()
+        
         return True
 
