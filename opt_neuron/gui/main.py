@@ -39,7 +39,3 @@ def test(in_queue, out_queue):
     sf = sshframe.SshFrame(in_queue)
     sf.connect("delete-event", Gtk.main_quit)
     sf.show_all()
-
-if __name__ == "__main__":
-    test = main(out_queue,in_queue)
-
