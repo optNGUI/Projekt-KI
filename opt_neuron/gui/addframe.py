@@ -6,11 +6,10 @@ from .. import util
 from gi.repository import Gtk
 
 class AddFrame(Gtk.Window):
-    def __init__(self,in_queue,out_queue):
+    def __init__(self,in_queue):
         Gtk.Window.__init__(self, title = "Algorithmusauswahl")
         __in_queue = in_queue
-        __out_queue = out_queue
-	
+        
         self.set_default_size(300,200)
         self.set_border_width(10)
         
@@ -78,7 +77,7 @@ class AddFrame(Gtk.Window):
         
     def fillAlgoStore(self,widget):
         #asks algorithms from core and fills the combobox
-        send_msg(util.CommandMessage('get algorithms'))
+        send_msg(util.CommandMessage(content = 'get algorithms'))
         #try
             #self.in_queue.get(RetValMessage)
         
