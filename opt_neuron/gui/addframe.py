@@ -1,7 +1,7 @@
 # coding: utf8
 
 import logging
-from .main import send_msg, get_msg
+from .main import send_msg
 from .. import util
 from gi.repository import Gtk
 
@@ -88,13 +88,13 @@ class AddFrame(Gtk.Window):
         algoList = None
         received = 0
     
-        while received == 0:
-            algoList = get_msg()
-            if algoList != None:
-                received = 1
+       # while received == 0:
+           # algoList = get_msg()
+           # if algoList != None:
+               # received = 1
  
-        for x in algoList:
-            algoStore.append(x)#[0])
+       # for x in algoList:
+          #  algoStore.append(x)#[0])
 
     def build_param_entries(self,algo):
         for i in range(1,len(algo)):
