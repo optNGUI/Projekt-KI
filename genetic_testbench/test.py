@@ -41,8 +41,11 @@ def start_ini(filename):
                                 # os.path.join(tmp_path,fn))
             subprocess.call(["lualatex","-interaction=batchmode", 
                                 os.path.join(tmp_path,fn)])
-            os.remove('graph.aux')
-            os.remove('graph.log')
+            try:
+                os.remove('graph.aux')
+                os.remove('graph.log')
+            except:
+                pass
         os.chdir(current)
         counts = []
         
@@ -91,9 +94,10 @@ def start_ini(filename):
             counts.append(ret[2])
             print("---Run {i} finished".format(i=i))
             
-        fo = open(os.path.join(outpath, g, 'result.txt'), 'w')
-        for c in counts:
-            fo.write(str(c)+'\n')
+        fo = open(os.path.join(outpath, g, 'result' + name + '.txt'), 'w')
+        fo.write('N, generations\n')
+        for i, c in enumerate(counts):
+            fo.write(str(i) + ',' + str(c)+'\n')
         fo.close()
 
 

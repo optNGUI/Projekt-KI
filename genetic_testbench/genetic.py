@@ -448,7 +448,7 @@ def get_terminate(alg, *args):
         return terminate_at_gen
         
     elif alg == 'number':
-        num = int(args[0])
+        num = float(args[0])
         def terminate_at_num(self):
             best = self.extract_best()
             if mds.is_dominating(self.graph, util.subset_from_bitv(best, self.graph)) and best.count_bits() <= num:

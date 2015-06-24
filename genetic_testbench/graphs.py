@@ -91,7 +91,7 @@ class SimpleGraph(Graph):
         """
         if not filename.endswith('.SimpleGraph'):
             filename += '.SimpleGraph'
-        with open(filename+'.SimpleGraph', "wb") as handle:
+        with open(filename, "wb") as handle:
             pickle.dump(self, handle)
 
     def to_tex(self, filename="graph.tex"):
