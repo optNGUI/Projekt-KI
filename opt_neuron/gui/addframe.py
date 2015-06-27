@@ -1,7 +1,7 @@
 # coding: utf8
 
 import logging
-from .main import send_msg
+from .main import send_msg, get_msg, clear_msg
 from .. import util
 from gi.repository import Gtk
 
@@ -36,7 +36,8 @@ class AddFrame(Gtk.Window):
         vbox.pack_end(buttonBox,False,False,0)
         
         algoStore = Gtk.ListStore(str)
-        #self.fillAlgoStore()
+        #self.fillAlgoStore(algoStore)
+        
         algo_combo = Gtk.ComboBox.new_with_model(algoStore)
         algo_combo.connect("changed", self.on_algo_combo_changed)
         vbox.pack_start(algo_combo,False,False,0)
@@ -63,7 +64,7 @@ class AddFrame(Gtk.Window):
         hbox.pack_start(vbox,False,False,0)
         hbox.pack_end(__algoBox,False,False,0)
         self.add(hbox)
-        
+
     def on_editButton_clicked(self,widget):
         #TODO: fill algo+params in table in mainframe
         #return [...,param1.get_text(),param2.get_text(),param3.get_text(),param4.get_text()]
@@ -85,14 +86,9 @@ class AddFrame(Gtk.Window):
     def fillAlgoStore(self,widget):
         #asks algorithms from core and fills the combobox
         send_msg(util.CommandMessage(content = 'get algorithms'))
-        algoList = None
-        received = 0
-    
-       # while received == 0:
-           # algoList = get_msg()
-           # if algoList != None:
-               # received = 1
- 
+        algoList = get_msg()
+        print('algoList = ',algoList)
+        
        # for x in algoList:
           #  algoStore.append(x)#[0])
 
