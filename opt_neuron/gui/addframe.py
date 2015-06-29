@@ -1,7 +1,7 @@
 # coding: utf8
 
 import logging
-from .main import send_msg, get_msg, clear_msg
+from .main import send_msg, get_msg
 from .. import util
 from gi.repository import Gtk
 
@@ -36,7 +36,7 @@ class AddFrame(Gtk.Window):
         vbox.pack_end(buttonBox,False,False,0)
         
         algoStore = Gtk.ListStore(str)
-        #self.fillAlgoStore(algoStore)
+        self.fillAlgoStore(algoStore)
         
         algo_combo = Gtk.ComboBox.new_with_model(algoStore)
         algo_combo.connect("changed", self.on_algo_combo_changed)
@@ -45,25 +45,25 @@ class AddFrame(Gtk.Window):
         #Entries for parameters
         #TODO: Parameter spezifisch für jeden möglichen Algo?!
         
-        param1 = Gtk.Entry()
-        param1.set_text("param1")
-        vbox.pack_start(param1,False,False,0)
+        # param1 = Gtk.Entry()
+        # param1.set_text("param1")
+        # vbox.pack_start(param1,False,False,0)
 
-        param2 = Gtk.Entry()
-        param2.set_text("param2")
-        vbox.pack_start(param2,False,False,0)
+        # param2 = Gtk.Entry()
+        # param2.set_text("param2")
+        # vbox.pack_start(param2,False,False,0)
         
-        param3 = Gtk.Entry()
-        param3.set_text("param3")
-        vbox.pack_start(param3,False,False,0)
+        # param3 = Gtk.Entry()
+        # param3.set_text("param3")
+        # vbox.pack_start(param3,False,False,0)
         
-        param4 = Gtk.Entry()
-        param4.set_text("param4")
-        vbox.pack_start(param4,False,False,0)
+        # param4 = Gtk.Entry()
+        # param4.set_text("param4")
+        # vbox.pack_start(param4,False,False,0)
         
-        hbox.pack_start(vbox,False,False,0)
-        hbox.pack_end(__algoBox,False,False,0)
-        self.add(hbox)
+        # hbox.pack_start(vbox,False,False,0)
+        # hbox.pack_end(__algoBox,False,False,0)
+        # self.add(hbox)
 
     def on_editButton_clicked(self,widget):
         #TODO: fill algo+params in table in mainframe

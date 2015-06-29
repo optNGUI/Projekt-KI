@@ -9,21 +9,21 @@ logger = logging.getLogger(__name__)
 __out_queue = None
 __in_queue = None
 __msg = None
-__running = 1
 
 def main(in_queue, out_queue):
     global __out_queue 
     global __in_queue 
     global __msg
     global __running
+    
     __out_queue = out_queue
     __in_queue = in_queue
 
     testWin = test(__in_queue, __out_queue)
     Gtk.main()
     
-    self.receiver_t = Thread( target=self.receive )
-    self.receiver_t.start()
+    receiver_t = Thread( target=receive )
+    receiver_t.start()
 
 def send_msg(*msg):
     for i in msg:
@@ -39,27 +39,26 @@ def __on_destroy():
 
 def receive():
     print("thread started")
-    while __running:
+    __msg_read = 0
+    while not __msg_read:
         print("waiting...")
         __msg = __in_queue.get()
-        print("message received!")
-        print(msg)
-
-        alert = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, msg)
-        alert.connect("delete-event", alert.destroy)
-        alert.run()
-        print("msg box closed")
-        alert.destroy()
+        if __msg is not None:
+            print("message received!")
+            print(__msg)
+            __msg_read = 1
+    __msg_read = 0
+            #alert = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, msg)
+            #alert.connect("delete-event", alert.destroy)
+            #alert.run()
+            #print("msg box closed")
+            #alert.destroy()
+        
 
 # returns __msg, which is containing the msg after using receive()     
 def get_msg():
-    while __msg is None:
-        receive()
+    receive()
     return __msg
-    
-# sets _msg to 'None', use after 'get_msg', to secure that get_msg is working correctly!!
-def clear_msg():
-    __msg = None
     
 from . import addframe
 from . import mainframe

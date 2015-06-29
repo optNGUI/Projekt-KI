@@ -55,8 +55,8 @@ class MainFrame(Gtk.Window):
         self.liststore = Gtk.ListStore(str, str)
 
 
-        self.receiver_t = Thread( target=self.receive )
-        self.receiver_t.start()
+        # self.receiver_t = Thread( target=self.receive )
+        # self.receiver_t.start()
 
     def __on_destroy(self):
         print("closing Gui!")
@@ -65,21 +65,21 @@ class MainFrame(Gtk.Window):
         Gtk.main_quit()
         print("asd")
 
-    def receive(self):
-        print("thread started")
-        while self.__running:
-            print("waiting...")
-            msg = self.in_queue.get()
-            print("message received!")
-            print(msg)
+    # def receive(self):
+        # print("thread started")
+        # while self.__running:
+            # print("waiting...")
+            # msg = self.in_queue.get()
+            # print("message received!")
+            # print(msg)
 
-            alert = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, msg)
-            alert.connect("delete-event", alert.destroy)
-            alert.run()
-            print("msg box closed")
-            alert.destroy()
+            # alert = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, msg)
+            # alert.connect("delete-event", alert.destroy)
+            # alert.run()
+            # print("msg box closed")
+            # alert.destroy()
         
-        print("closed?")
+        # print("closed?")
 
     def sendit(self, message):
         print(self)
