@@ -61,9 +61,9 @@ class AddFrame(Gtk.Window):
         # param4.set_text("param4")
         # vbox.pack_start(param4,False,False,0)
         
-        # hbox.pack_start(vbox,False,False,0)
-        # hbox.pack_end(__algoBox,False,False,0)
-        # self.add(hbox)
+        hbox.pack_start(vbox,False,False,0)
+        hbox.pack_end(__algoBox,False,False,0)
+        self.add(hbox)
 
     def on_editButton_clicked(self,widget):
         #TODO: fill algo+params in table in mainframe
