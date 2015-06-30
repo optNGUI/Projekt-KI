@@ -104,12 +104,16 @@ class AddFrame(Gtk.Window):
        
         appendix = __algoList.appendix
         num_algos = len(appendix)
-
-        print("appendix = ",appendix)
         
-        #for x in range(num_algos): 
-            #__algoStore.append(appendix[x])
-           # __algoCombo.append_text(x)
+        names = appendix[0]
+        function = appendix[1]
+        argSpecs = appendix[2]
+
+        #print("appendix = ",appendix)
+        
+        for x in range(num_algos-1): 
+            #__algoStore.append([names[x],function[x],argSpecs[x]])
+            __algoCombo.append_text(names[x])
             
     def build_param_entries(self,algo):
         global __algoBox
