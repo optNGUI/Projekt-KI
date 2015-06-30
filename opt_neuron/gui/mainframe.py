@@ -176,7 +176,8 @@ class MainFrame(Gtk.Window):
         send_msg(message)
         #send_msg(message)
 
-    def on_runstop(self):
+    def on_runstop(self, arg1):
+        self.runstop.set_label("STOP")
         print("runstop")
 
     def on_add(self, arg1):
@@ -193,7 +194,7 @@ class MainFrame(Gtk.Window):
     def set_alg(self, alg):
         print("set alg")
 
-    def set_addButton_active(self):
+    def set_addButton_active(self, arg1):
         self.addbutton.set_sensitive(True)
 
 
