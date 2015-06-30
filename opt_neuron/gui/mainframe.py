@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 from . import addframe
+from . import sshframe
 from .. import util
 from gi.repository import Gtk
 import logging
-from .main import send_msg
+from .main import send_msg, get_msg
 from threading import Thread
 
 logger = logging.getLogger(__name__)
@@ -15,7 +16,6 @@ class MainFrame(Gtk.Window):
         self.in_queue = in_queue
         self.out_queue = out_queue
         self.connect("delete-event", self.close_call)
-
 
 
         self.set_border_width(10)
@@ -45,18 +45,72 @@ class MainFrame(Gtk.Window):
         self.addbutton.connect("clicked", self.on_add)
         self.tophbox.pack_end(self.addbutton, False, True, 3)
 
-
+    # +++ scroll pane +++
         self.scrollspace = Gtk.ScrolledWindow()
-        self.scrollspace.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        #self.scrollspace.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.scrollspace.set_vexpand(True)
+        self.scrollspace.set_hexpand(True)
 
-        self.vbox.pack_start(self.scrollspace, False, False, 3)
+        self.vbox.pack_start(self.scrollspace, True, True, 3)
 
+    # +++ list store +++
         self.liststore = Gtk.ListStore(str, str)
+        self.liststore.append(("hallo", "welt0"))
+        self.liststore.append(("hallo", "welt1"))
+        self.liststore.append(("hallo", "welt2"))
+        self.liststore.append(("hallo", "welt3"))
+        self.liststore.append(("hallo", "welt4"))
+        self.liststore.append(("hallo", "welt5"))
+        self.liststore.append(("hallo", "welt6"))
+        self.liststore.append(("hallo", "welt7"))
+        self.liststore.append(("hallo", "welt8"))
+        self.liststore.append(("hallo", "welt9"))
+        self.liststore.append(("hallo", "welt0"))
+        self.liststore.append(("hallo", "welt1"))
+        self.liststore.append(("hallo", "welt2"))
+        self.liststore.append(("hallo", "welt3"))
+        self.liststore.append(("hallo", "welt4"))
+        self.liststore.append(("hallo", "welt5"))
+        self.liststore.append(("hallo", "welt6"))
+        self.liststore.append(("hallo", "welt7"))
+        self.liststore.append(("hallo", "welt8"))
+        self.liststore.append(("hallo", "welt9"))
+        self.liststore.append(("hallo", "welt0"))
+        self.liststore.append(("hallo", "welt1"))
+        self.liststore.append(("hallo", "welt2"))
+        self.liststore.append(("hallo", "welt3"))
+        self.liststore.append(("hallo", "welt4"))
+        self.liststore.append(("hallo", "welt5"))
+        self.liststore.append(("hallo", "welt6"))
+        self.liststore.append(("hallo", "welt7"))
+        self.liststore.append(("hallo", "welt8"))
+        self.liststore.append(("hallo", "welt9"))
+        self.liststore.append(("hallo", "welt0"))
+        self.liststore.append(("hallo", "welt1"))
+        self.liststore.append(("hallo", "welt2"))
+        self.liststore.append(("hallo", "welt3"))
+        self.liststore.append(("hallo", "welt4"))
+        self.liststore.append(("hallo", "welt5"))
 
+
+    # +++ view +++
+        self.tree = Gtk.TreeView(self.liststore)
+
+        self.renderer = Gtk.CellRendererText()
+        self.column = Gtk.TreeViewColumn("links", self.renderer, text=0)
+        self.tree.append_column(self.column)
+
+        self.renderer = Gtk.CellRendererText()
+        self.column = Gtk.TreeViewColumn("rechts", self.renderer, text=1)
+        self.tree.append_column(self.column)
+        
+        self.scrollspace.add(self.tree)
+
+        
 
         # self.receiver_t = Thread( target=self.receive )
         # self.receiver_t.start()
+        self.show_all()
 
     def __on_destroy(self):
         print("closing Gui!")
@@ -91,43 +145,20 @@ class MainFrame(Gtk.Window):
     def on_add(self, arg1):
         print("Addwin opens...")
         #send_msg(util.MESSAGE_EXIT)
-        send_msg(util.CommandMessage("echo asd"))
+        self.addbutton.set_sensitive(False)
+
+        af = addframe.AddFrame()
         #self.t = Thread( target=self.sendit, args=(util.CommandMessage(content="echo SHIT"),) )
         #self.t.start()
+        af.show_all()
 
+    # add alg to list
+    def set_alg(self, alg) 
+        return
 
+    def set_addbutton_active(self)
+        self.addbutton.set_sensitive(True)
 
-#        self.search.grid(column = 2, row = 2, sticky = W)
-
-#        self.searchEntry = StringVar()
-#        self.searchEntry = ttk.Entry(self.topwin, width = 30, textvariable=self.searchEntry)
-#        self.searchEntry.grid(column = 1, row = 2, sticky = W)
-
-#        ttk.Label(self.topwin, text = "File to analyse:").grid(column = 1, row = 1, sticky = W) 
-
-#        self.add_task = Button(self.topwin, text="add", command = self.add_task_f, width=2, height=2)	
-#        self.add_task.grid(column = 3, row = 3, sticky = W)
-
-#        self.params = tktable.ArrayVar(self.topwin)
-#        for y in range(6):
-#            for x in range(6):
-#                index = "%i,%i" % (y, x)
-#                self.params[index] = index
-
-#        self.table = tktable.Table(self.topwin,
-#            rows = 6, cols = 6,
-#            state = 'disabled',
-#            width = 6, height = 6,
-#            titlerows = 1, titlecols = 0,
-#            roworigin = 0, colorigin = 0,
-#            selectmode = 'browse', selecttype = 'row',
-#            rowstretch = 'unset', colstrech = 'last',
-#            flashmode = 'on',
-#            variable = self.params)
-#        self.table.pack(expand = 1, fill = 'both')
-#        self.table.tag_configure('sel', background = 'yellow')
-#        self.table.tag_configure('active', background = 'blue')
-#        self.table.tag_configure('title', anchor = 'w', bg = 'red', relief = 'sunken')
 
     def load_file(self):
         fname = askopenfilename()
