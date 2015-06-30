@@ -2,12 +2,13 @@
 from . import addframe
 from . import sshframe
 from .. import util
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 import logging
 from .main import send_msg, get_msg
 from threading import Thread
 
 logger = logging.getLogger(__name__)
+
 
 class MainFrame(Gtk.Window):
     def __init__(self, in_queue, out_queue):
@@ -34,14 +35,14 @@ class MainFrame(Gtk.Window):
         self.tophbox = Gtk.Box(spacing = 6)
         self.vbox.pack_start(self.tophbox, False, True, 0)
 
-        self.label_one = Gtk.Label("something...")
+        self.label_one = Gtk.Label("wtf..?")
         self.tophbox.pack_start(self.label_one, False, True, 3)
 
-        self.search = Gtk.Button(label = "...")
+        self.search = Gtk.Button(label = "load config")
         self.search.connect("clicked", self.load_file)
         self.tophbox.pack_start(self.search, False, True, 3)
 
-        self.addbutton = Gtk.Button(label = "add")
+        self.addbutton = Gtk.Button(label = "add algorithm")
         self.addbutton.connect("clicked", self.on_add)
         self.tophbox.pack_end(self.addbutton, False, True, 3)
 
@@ -53,60 +54,94 @@ class MainFrame(Gtk.Window):
 
         self.vbox.pack_start(self.scrollspace, True, True, 3)
 
+    # +++ BOTTOM BAR THINGY +++
+        self.bottomhbox = Gtk.Box(spacing = 6)
+        self.vbox.pack_start(self.bottomhbox, False, True, 0)
+
+#        self.label_one = Gtk.Label("wtf..?")
+#        self.tophbox.pack_start(self.label_one, False, True, 3)
+
+        self.runstop = Gtk.Button(label = "Run", name = "RunStop")
+        self.runstop.connect("clicked", self.on_runstop)
+        #self.runstop.set_sensitive(False)
+        self.bottomhbox.pack_start(self.runstop, False, True, 3)
+
+        self.export = Gtk.Button(label = "Export Data")
+        #self.export.connect("clicked", self.on_add)
+        self.bottomhbox.pack_end(self.export, False, True, 3)
+
+
     # +++ list store +++
-        self.liststore = Gtk.ListStore(str, str)
-        self.liststore.append(("hallo", "welt0"))
-        self.liststore.append(("hallo", "welt1"))
-        self.liststore.append(("hallo", "welt2"))
-        self.liststore.append(("hallo", "welt3"))
-        self.liststore.append(("hallo", "welt4"))
-        self.liststore.append(("hallo", "welt5"))
-        self.liststore.append(("hallo", "welt6"))
-        self.liststore.append(("hallo", "welt7"))
-        self.liststore.append(("hallo", "welt8"))
-        self.liststore.append(("hallo", "welt9"))
-        self.liststore.append(("hallo", "welt0"))
-        self.liststore.append(("hallo", "welt1"))
-        self.liststore.append(("hallo", "welt2"))
-        self.liststore.append(("hallo", "welt3"))
-        self.liststore.append(("hallo", "welt4"))
-        self.liststore.append(("hallo", "welt5"))
-        self.liststore.append(("hallo", "welt6"))
-        self.liststore.append(("hallo", "welt7"))
-        self.liststore.append(("hallo", "welt8"))
-        self.liststore.append(("hallo", "welt9"))
-        self.liststore.append(("hallo", "welt0"))
-        self.liststore.append(("hallo", "welt1"))
-        self.liststore.append(("hallo", "welt2"))
-        self.liststore.append(("hallo", "welt3"))
-        self.liststore.append(("hallo", "welt4"))
-        self.liststore.append(("hallo", "welt5"))
-        self.liststore.append(("hallo", "welt6"))
-        self.liststore.append(("hallo", "welt7"))
-        self.liststore.append(("hallo", "welt8"))
-        self.liststore.append(("hallo", "welt9"))
-        self.liststore.append(("hallo", "welt0"))
-        self.liststore.append(("hallo", "welt1"))
-        self.liststore.append(("hallo", "welt2"))
-        self.liststore.append(("hallo", "welt3"))
-        self.liststore.append(("hallo", "welt4"))
-        self.liststore.append(("hallo", "welt5"))
+        # (id, Alg_name, status, params)
+        self.liststore = Gtk.ListStore(int, str, str, str)
+        self.liststore.append((1, "smart algo1", "stand_by", "params"))
+        self.liststore.append((2, "smart algo2", "stand_by", "params"))
+        self.liststore.append((3, "smart algo3", "stand_by", "params"))
+        self.liststore.append((4, "smart algo4", "stand_by", "params"))
+        self.liststore.append((5, "smart algo5", "stand_by", "params"))
+        self.liststore.append((6, "smart algo6", "stand_by", "params"))
+        self.liststore.append((7, "smart algo7", "stand_by", "params"))
+        self.liststore.append((8, "smart algo8", "stand_by", "params"))
+        self.liststore.append((9, "smart algo9", "stand_by", "params"))
+        self.liststore.append((10, "smart algo10", "stand_by", "params"))
+        self.liststore.append((11, "smart algo11", "stand_by", "params"))
+        self.liststore.append((12, "smart algo12", "stand_by", "params"))
+        self.liststore.append((13, "smart algo13", "stand_by", "params"))
+        self.liststore.append((14, "smart algo14", "stand_by", "params"))
+        self.liststore.append((15, "smart algo15", "stand_by", "params"))
+        self.liststore.append((16, "smart algo16", "stand_by", "params"))
+        self.liststore.append((17, "smart algo17", "stand_by", "params"))
+        self.liststore.append((18, "smart algo18", "stand_by", "params"))
+        self.liststore.append((19, "smart algo19", "stand_by", "params"))
+        self.liststore.append((20, "smart algo20", "stand_by", "params"))
+        self.liststore.append((21, "smart algo21", "stand_by", "params"))
+        self.liststore.append((22, "smart algo22", "stand_by", "params"))
+        self.liststore.append((23, "smart algo23", "stand_by", "params"))
+        self.liststore.append((24, "smart algo24", "stand_by", "params"))
 
 
     # +++ view +++
         self.tree = Gtk.TreeView(self.liststore)
 
         self.renderer = Gtk.CellRendererText()
-        self.column = Gtk.TreeViewColumn("links", self.renderer, text=0)
+        self.column = Gtk.TreeViewColumn("ID", self.renderer, text=0)
+        self.column.set_resizable(True)
+        self.column.set_min_width(20)
         self.tree.append_column(self.column)
 
         self.renderer = Gtk.CellRendererText()
-        self.column = Gtk.TreeViewColumn("rechts", self.renderer, text=1)
+        self.column = Gtk.TreeViewColumn("Algorithm", self.renderer, text=1)
+        self.column.set_resizable(True)
+        self.column.set_min_width(20)
+        self.tree.append_column(self.column)
+
+        self.renderer = Gtk.CellRendererText()
+        self.column = Gtk.TreeViewColumn("Status", self.renderer, text=1)
+        self.column.set_resizable(True)
+        self.column.set_min_width(20)
         self.tree.append_column(self.column)
         
+        self.renderer = Gtk.CellRendererText()
+        self.column = Gtk.TreeViewColumn("Parameters", self.renderer, text=1)
+        self.column.set_resizable(True)
+        self.column.set_min_width(20)
+        self.tree.append_column(self.column)
+
         self.scrollspace.add(self.tree)
 
-        
+        style_provider = Gtk.CssProvider()
+
+        css = """
+            #RunStop             { background: #d56a00; font-weight: bold; color: #202020}
+            #RunStop:hover       { background: shade(#d56a00, 1.2); }
+            #RunStop:insensitive { background: shade(#d56a00, 0.8); }
+            #RunStop:active      { background: shade(#d56a00, 2.0); }
+        """
+
+        style_provider.load_from_data(bytes(css.encode()))
+ 
+        Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), style_provider,
+                                                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
         # self.receiver_t = Thread( target=self.receive )
         # self.receiver_t.start()
@@ -141,6 +176,8 @@ class MainFrame(Gtk.Window):
         send_msg(message)
         #send_msg(message)
 
+    def on_runstop(self):
+        print("runstop")
 
     def on_add(self, arg1):
         print("Addwin opens...")
@@ -156,7 +193,7 @@ class MainFrame(Gtk.Window):
     def set_alg(self, alg):
         print("set alg")
 
-    def set_addbutton_active(self):
+    def set_addButton_active(self):
         self.addbutton.set_sensitive(True)
 
 
