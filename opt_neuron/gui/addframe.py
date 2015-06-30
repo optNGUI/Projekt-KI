@@ -77,13 +77,13 @@ class AddFrame(Gtk.Window):
         #TODO: fill algo+params in table in mainframe
 
         #set_alg(__alg+param)
-        set_addButton_active()
+        #set_addButton_active()
         print("hinzugefügt")
         #self.destroy()
 
     def on_quitButton_clicked(self,widget):
         #closes frame without saving anything
-        set_addButton_active()
+        #set_addButton_active()
         self.destroy()
         
     def on_algo_combo_changed(self,widget):
@@ -104,12 +104,9 @@ class AddFrame(Gtk.Window):
         __algoList = get_msg()
        
         appendix = __algoList.appendix
-        #num_algos = len(appendix)
+        num_algos = len(appendix)
 
-        cmd_id = __algoList.cmd_id
-
-        print(["appendix = ",appendix])
-        print(cmd_id)
+        print("appendix = ",appendix)
         
         #for x in range(num_algos): 
             #__algoStore.append(x)
