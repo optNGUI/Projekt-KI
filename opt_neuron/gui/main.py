@@ -59,7 +59,6 @@ def receive():
 def get_msg():
     global __msg
     receive()
-    print(__msg)
     return __msg
     
 from . import addframe
