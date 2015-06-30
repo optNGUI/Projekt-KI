@@ -77,7 +77,11 @@ def parse_msg(msg):
             if content[1] == 'hello_world':
                 retval = util.StatusMessage(content = 'Hello World')
             elif content[1] == 'algorithms':
-                retval = util.RetValMessage(msg, appendix=algorithms.list_of_algorithms())
+                tmp = algorithms.list_of_algorithms()
+                __algorithm_names = [i[0] for i in tmp]
+                __algorithm_funcs = [i[1] for i in tmp]
+                __algorithm_argspec = [i[2] for i in tmp]
+                retval = util.RetValMessage(msg, appendix=[__algorithm_names,__algorithm_funcs,__algorithm_argspec])
             elif content[1] == 'config':
                 if len(content) < 3:
                     retval = util.RetValMessage(msg, appendix = config)
