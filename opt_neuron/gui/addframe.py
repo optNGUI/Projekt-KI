@@ -47,7 +47,6 @@ class AddFrame(Gtk.Window):
         
         __algoCombo = Gtk.ComboBox.new_with_model(__algoStore)
         __algoCombo.connect("changed", self.on_algo_combo_changed)
-        __algoCombo.set_entry_text_column(1)
         vbox.pack_start(__algoCombo,False,False,0)
         
         #Entries for parameters
@@ -109,8 +108,8 @@ class AddFrame(Gtk.Window):
         print("appendix = ",appendix)
         
         #for x in range(num_algos): 
-            #__algoStore.append(x)
-            #__algoCombo.append_text(x)
+            #__algoStore.append(appendix[x])
+           # __algoCombo.append_text(x)
             
     def build_param_entries(self,algo):
         global __algoBox
