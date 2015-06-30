@@ -153,10 +153,10 @@ class MainFrame(Gtk.Window):
         af.show_all()
 
     # add alg to list
-    def set_alg(self, alg) 
-        return
+    def set_alg(self, alg):
+        print("set alg")
 
-    def set_addbutton_active(self)
+    def set_addbutton_active(self):
         self.addbutton.set_sensitive(True)
 
 
