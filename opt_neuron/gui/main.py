@@ -39,13 +39,13 @@ def __on_destroy():
 
 def receive():
     print("thread started")
+    global __msg
     __msg_read = 0
     while not __msg_read:
         print("waiting...")
         __msg = __in_queue.get()
         if __msg is not None:
             print("message received!")
-            print(__msg)
             __msg_read = 1
     __msg_read = 0
             #alert = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, msg)
@@ -57,7 +57,9 @@ def receive():
 
 # returns __msg, which is containing the msg after using receive()     
 def get_msg():
+    global __msg
     receive()
+    print(__msg)
     return __msg
     
 from . import addframe
