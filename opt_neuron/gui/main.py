@@ -1,70 +1,67 @@
-<<<<<<< HEAD
 # coding: utf8
 
 import logging
 from .. import util
 from gi.repository import Gtk
+from threading import Thread
 
 logger = logging.getLogger(__name__)
 __out_queue = None
 __in_queue = None
+__msg = None
 
 def main(in_queue, out_queue):
     global __out_queue 
     global __in_queue 
+    global __msg
+    global __running
+    
     __out_queue = out_queue
     __in_queue = in_queue
 
     testWin = test(__in_queue, __out_queue)
     Gtk.main()
     
+    receiver_t = Thread( target=receive )
+    receiver_t.start()
+
 def send_msg(*msg):
     for i in msg:
         logger.debug("Sent message: {msg}".format(msg=str(msg)))
-        __out_queue.put(i)
+        __out_queue.put(i)    
+    
+def __on_destroy():
+    print("closing Gui!")
+    __running = False
+    Thread( target=self.sendit, args=(util.MESSAGE_EXIT,) ).start()
+    Gtk.main_quit()
+    print("asd")
+
+def receive():
+    print("thread started")
+    global __msg
+    __msg_read = 0
+    while not __msg_read:
+        print("waiting...")
+        __msg = __in_queue.get()
+        if __msg is not None:
+            print("message received!")
+            __msg_read = 1
+    __msg_read = 0
+            #alert = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, msg)
+            #alert.connect("delete-event", alert.destroy)
+            #alert.run()
+            #print("msg box closed")
+            #alert.destroy()
         
-from . import addframe
-from . import mainframe
-from . import sshframe
 
-
-def test(in_queue, out_queue):   
-    mf = mainframe.MainFrame(in_queue, out_queue) #MainFrame(root)
-    mf.connect("delete-event", Gtk.main_quit)
-    mf.show_all()
-
-    af = addframe.AddFrame(in_queue)
-    af.connect("delete-event", Gtk.main_quit)
-    af.show_all()
+# returns __msg, which is containing the msg after using receive()     
+def get_msg():
+    global __msg
+    receive()
+    print(__msg)
+    return __msg
     
-    sf = sshframe.SshFrame(in_queue)
-    sf.connect("delete-event", Gtk.main_quit)
-    sf.show_all()
-=======
-# coding: utf8
-
-import logging
-from .. import util
-from gi.repository import Gtk
-
-logger = logging.getLogger(__name__)
-__out_queue = None
-__in_queue = None
-
-def main(out_queue, in_queue):
-    global __out_queue 
-    global __in_queue 
-    __out_queue = out_queue
-    __in_queue = in_queue
-    
-    testWin = test(__in_queue, __out_queue)
-    Gtk.main()
-    
-def send_msg(*msg):
-    for i in msg:
-        logger.debug("Sent message: {msg}".format(msg=str(msg)))
-        __out_queue.put(i)
-        
 from . import addframe
 from . import mainframe
 from . import sshframe
@@ -76,10 +73,10 @@ def test(in_queue, out_queue):
     mf.show_all()
 
     af = addframe.AddFrame()
-    af.connect("delete-event", Gtk.main_quit)
+    #af.connect("delete-event", Gtk.main_quit)      Das zerstört nur die komplette GUI, wenn das x genutzt wird!
     af.show_all()
     
     sf = sshframe.SshFrame()
-    sf.connect("delete-event", Gtk.main_quit)
+    #sf.connect("delete-event", Gtk.main_quit)      Das zerstört nur die komplette GUI, wenn das x genutzt wird!
     sf.show_all()
->>>>>>> 466205ac2f854a633dd96b4d3859209a2283d354
+

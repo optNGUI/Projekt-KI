@@ -1,11 +1,13 @@
 # coding: utf8
 
 import logging
-from .main import send_msg
+from .main import send_msg, get_msg
+#from .mainframe import set_alg, set_addButton_active
 from .. import util
 from gi.repository import Gtk
 
 __algoBox = None
+__algoList = None
 
 class AddFrame(Gtk.Window):
     def __init__(self):
@@ -19,6 +21,7 @@ class AddFrame(Gtk.Window):
         hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 6)
         vbox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 6)
 
+        global __algoList
         global __algoBox
         __algoBox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 6)
 
@@ -36,7 +39,8 @@ class AddFrame(Gtk.Window):
         vbox.pack_end(buttonBox,False,False,0)
         
         algoStore = Gtk.ListStore(str)
-        #self.fillAlgoStore()
+        self.fillAlgoStore(algoStore)
+        
         algo_combo = Gtk.ComboBox.new_with_model(algoStore)
         algo_combo.connect("changed", self.on_algo_combo_changed)
         vbox.pack_start(algo_combo,False,False,0)
@@ -44,34 +48,37 @@ class AddFrame(Gtk.Window):
         #Entries for parameters
         #TODO: Parameter spezifisch für jeden möglichen Algo?!
         
-        param1 = Gtk.Entry()
-        param1.set_text("param1")
-        vbox.pack_start(param1,False,False,0)
+        # param1 = Gtk.Entry()
+        # param1.set_text("param1")
+        # vbox.pack_start(param1,False,False,0)
 
-        param2 = Gtk.Entry()
-        param2.set_text("param2")
-        vbox.pack_start(param2,False,False,0)
+        # param2 = Gtk.Entry()
+        # param2.set_text("param2")
+        # vbox.pack_start(param2,False,False,0)
         
-        param3 = Gtk.Entry()
-        param3.set_text("param3")
-        vbox.pack_start(param3,False,False,0)
+        # param3 = Gtk.Entry()
+        # param3.set_text("param3")
+        # vbox.pack_start(param3,False,False,0)
         
-        param4 = Gtk.Entry()
-        param4.set_text("param4")
-        vbox.pack_start(param4,False,False,0)
+        # param4 = Gtk.Entry()
+        # param4.set_text("param4")
+        # vbox.pack_start(param4,False,False,0)
         
         hbox.pack_start(vbox,False,False,0)
         hbox.pack_end(__algoBox,False,False,0)
         self.add(hbox)
-        
+
     def on_editButton_clicked(self,widget):
         #TODO: fill algo+params in table in mainframe
-        #return [...,param1.get_text(),param2.get_text(),param3.get_text(),param4.get_text()]
+
+        #set_alg(__alg+param
+        #set_addButton_active()
         print("hinzugefügt")
         #self.destroy()
 
     def on_quitButton_clicked(self,widget):
         #closes frame without saving anything
+        
         self.destroy()
         
     def on_algo_combo_changed(self,widget):
@@ -85,14 +92,9 @@ class AddFrame(Gtk.Window):
     def fillAlgoStore(self,widget):
         #asks algorithms from core and fills the combobox
         send_msg(util.CommandMessage(content = 'get algorithms'))
-        algoList = None
-        received = 0
-    
-       # while received == 0:
-           # algoList = get_msg()
-           # if algoList != None:
-               # received = 1
- 
+        __algoList = get_msg()
+        print('algoList = ',__algoList)
+        
        # for x in algoList:
           #  algoStore.append(x)#[0])
 
@@ -101,3 +103,7 @@ class AddFrame(Gtk.Window):
             param[i] = Gtk.Entry()
             param[i].set_text(algo[i])
             __algoBox.pack_start(param(i),False,False,0)
+
+    def set_algo_from_main():
+        # voreinstellung von algo nachdem editbutton in main gedrückt
+        print('editButton erkannt, Voreinstellung vorgenommen.')

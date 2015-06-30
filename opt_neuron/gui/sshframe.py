@@ -50,7 +50,6 @@ class SshFrame(Gtk.Window):
     def on_loginButton_clicked(self,widget):
         send_msg(util.CommandMessage(content = 'password:  {msg}'.format(msg = __pwdEntry.get_text())))
         send_msg(util.CommandMessage(content = 'set config SSH host  {msg}'.format(msg = __usrEntry.get_text())))
-        send_msg(util.CommandMessage(content = 'echo blubb'))
         print('ssh schickt weg')
         self.destroy()
 
