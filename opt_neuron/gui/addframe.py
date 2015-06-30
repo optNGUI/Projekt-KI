@@ -2,7 +2,6 @@
 
 import logging
 from .main import send_msg, get_msg
-from .mainframe import set_alg, set_addButton_active
 from .. import util
 from gi.repository import Gtk
 
@@ -44,7 +43,7 @@ class AddFrame(Gtk.Window):
         vbox.pack_end(buttonBox,False,False,0)
         
         __algoStore = Gtk.ListStore(str)
-        self.fillAlgoStore(__algoStore)
+        self.fillAlgoStore()
         
         __algoCombo = Gtk.ComboBox.new_with_model(__algoStore)
         __algoCombo.connect("changed", self.on_algo_combo_changed)
@@ -95,23 +94,24 @@ class AddFrame(Gtk.Window):
             self.build_param_entries(model[algo_iter])
         print("selected algorithm: %s" %algo)
         
-    def fillAlgoStore(self,widget):
+    def fillAlgoStore(self):
         #asks algorithms from core and fills the combobox
         global __algoCombo
         global __algoStore
         global __algoList
+
         send_msg(util.CommandMessage(content = "get algorithms"))
         __algoList = get_msg()
        
         appendix = __algoList.appendix
-        num_algos = len(appendix)/3
+        num_algos = len(appendix)
 
         cmd_id = __algoList.cmd_id
 
         print(["appendix = ",appendix])
         print(cmd_id)
         
-        for x in range(num_algos) 
+        for x in range(num_algos): 
             __algoStore.append(x)
             __algoCombo.append_text(x)
             
@@ -125,5 +125,4 @@ class AddFrame(Gtk.Window):
     def set_algo_from_main():
         # voreinstellung von algo nachdem editbutton in main gedrückt
         print('editButton erkannt, Voreinstellung vorgenommen.')
-    def set_addButton_active():
         
