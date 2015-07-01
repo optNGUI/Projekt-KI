@@ -73,10 +73,12 @@ class StatusMessage(Message):
 
 
 class RetValMessage(Message):
-    def __init__(self, cmd_msg, appendix=None, priority=0):
+    def __init__(self, cmd_msg, appendix=None, content=None, priority=0):
         self.__cmd_id = cmd_msg.id
         self.__appendix = appendix
-        super(RetValMessage, self).__init__(content=str(appendix), priority=priority)
+        if content==None:
+            content = str(appendix)
+        super(RetValMessage, self).__init__(content=content, priority=priority)
         
     @property
     def appendix(self):

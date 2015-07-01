@@ -48,6 +48,7 @@ def start_net(host,net,analysis,*args):
     val = call(host,password,command)
     
     if isinstance(val,subprocess.CalledProcessError):
+        start_net.cache_clear()
         return val
     
     command = analysis+" "+fnum
@@ -55,6 +56,7 @@ def start_net(host,net,analysis,*args):
     val = call(host,password,command)
 
     if isinstance(val,subprocess.CalledProcessError):
+        start_net.cache_clear()
         return val
         
     val = val[:val.rfind('\n')]

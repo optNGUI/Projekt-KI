@@ -71,20 +71,39 @@ def parse_msg(msg):
         
         content = shlex.split(msg.content)
         
-        if content[0] == 'ssh':
-            host = config.get("SSH", "host")
-            command = config.get("SSH", "net")+''.join([str(i)+" " for i in content[1:]])+"&& "+config.get("SSH", "analysis")
-            net.call(host,command)
-    
-        if content[0] == 'get':
-            if content[1] == 'hello_world':
-                retval = util.StatusMessage(content = 'Hello World')
-            elif content[1] == 'algorithms':
+        if content[0] == 'help':
+            if(len(content)<2):
+                retval = util.RetValMessage(msg,
+                    '\n\nget algorithms \t\t\t\t- returns a list of implemented optimizing algorithms\n\n'+\
+                    'get algorithms <name> \t\t\t- returns a list of possible arguments for the algorithm with the given name\n\n'+\
+                    'get config \t\t\t\t- returns a ConfigParser object representing the currently loaded config file\n\n'+\
+                    'get config <section> \t\t\t- returns a list of available options in the given section\n\n'+\
+                    'get config <section> <option> \t\t- returns the value of the given option\n\n'+\
+                    'set config <section> <option> <value> \t- sets the given option in the given section to the given value\n\n'+\
+                    'set password \t\t\t\t- opens a password prompt (for setting the SSH password to the server running the neural net)\n\n'+\
+                    'save config \t\t\t\t- saves the config\n\n'+\
+                    'start <algorithm> <params...> \t\t- starts a net optimization using the algorithm with the given name and the given params\n\n'
+                )
+        
+        elif content[0] == 'get':
+            if content[1] == 'algorithms':
                 tmp = algorithms.list_of_algorithms()
                 __algorithm_names = [i[0] for i in tmp]
                 __algorithm_funcs = [i[1] for i in tmp]
                 __algorithm_argspec = [i[2] for i in tmp]
-                retval = util.RetValMessage(msg, appendix=[__algorithm_names,__algorithm_funcs,__algorithm_argspec])
+                retval = util.RetValMessage(msg, appendix=[__algorithm_names,__algorithm_funcs,__algorithm_argspec], content=str(__algorithm_names))
+                if(len(content) > 2 and (content[2] in __algorithm_names)):
+                    print("found!")
+                    for i in range(len(__algorithm_names)):
+                        if(content[2] == __algorithm_names[i]):
+                            line = content[2]+" "
+                            indoffset = len(__algorithm_argspec[i].args[1:])-len(__algorithm_argspec[i].defaults);
+                            for ind,arg in enumerate(__algorithm_argspec[i].args[1:]):
+                                line += arg
+                                if indoffset <= ind:
+                                    line += "="+str(__algorithm_argspec[i].defaults[ind-indoffset])
+                                line += " "
+                            retval = util.RetValMessage(msg, appendix=line)
             elif content[1] == 'config':
                 if len(content) < 3:
                     retval = util.RetValMessage(msg, appendix = config)
@@ -137,15 +156,9 @@ def parse_msg(msg):
                 
         elif content[0] == 'echo':
             retval = util.RetValMessage(msg, appendix = content[1])
-            
-        elif content[0] == 'run':
-            retval = net.start_net(
-                    config.get("SSH","host"),
-                    config.get("SSH","net"),
-                    config.get("SSH","analysis"),
-                    tuple(content[1:]))
         
         else:
+            print("unknown command "+content[0])
             retval = util.MESSAGE_FAILURE(msg)
             
         #send return message

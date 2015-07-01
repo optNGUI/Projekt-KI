@@ -114,13 +114,13 @@ def run(*sysargs):
             while True:
                 msg = out_queue.get()
                 if isinstance(msg,util.RetValMessage):
-                    print('\nreturn: '+msg.content+'\n>', end="")
+                    print('\x1b[1G\n\x1b[1;31m'+msg.content+'\x1b[39;49m\n>', end="")
                     if(t is None or not t.is_alive()):
                         t = threading.Thread(target = shell.cmdloop)#wait for new command after a return message was received
                         t.daemon = True
                         t.start()
                 else:
-                    print('\n'+msg.content+'\n>', end="")
+                    print('\x1b[1G\x1b[0;34m\n'+msg.content+'\x1b[39;49m\n>', end="")
                 out_queue.task_done()
         t = threading.Thread(target=listener)
         t.daemon = True # This listener won't block the whole process
@@ -134,10 +134,13 @@ def run(*sysargs):
     
         class SimpleShell(cmd.Cmd):
             intro = ''
-            prompt = '>'
+            prompt = '\x1b[1G>'
             
             def default(self, arg):
                 in_queue.put(util.CommandMessage(content=arg))
+                
+            def do_help(self, line):
+                in_queue.put(util.CommandMessage(content='help'))
             
             def do_exit(self, line):
                 in_queue.put(util.MESSAGE_EXIT)
@@ -152,7 +155,8 @@ def run(*sysargs):
         shell = SimpleShell()
         print('\nWelcome to the default Command Line Interface. '+ \
             'You may enter a command now, e.g. "echo MESSAGE"\n' +\
-            'To exit the program, type "exit" or hit Ctrl-D\n')
+            'To exit the program, type "exit" or on Unix hit Ctrl-D\n' +\
+            'For a list of possible commands type "help"\n')
         shell.cmdloop()
     
     

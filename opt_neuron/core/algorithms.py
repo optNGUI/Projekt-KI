@@ -87,6 +87,11 @@ class ThreadedAlgorithm():
     
     
     def fitness(self, *args):
+        #sum = 0
+        #for x in args:
+        #    sum += x
+        #ret = -abs(30-sum)        
+        
         ret = net.start_net(self.host, self.net, self.analysis, *args)
         if ret is None:
             raise(Exception("error running net. maybe wrong SSH password?"))
@@ -94,7 +99,7 @@ class ThreadedAlgorithm():
 
 
 @__add_alg
-def genetic_alg(self, p_count, i_length, generations = 100, i_min = 0, i_max = 100):
+def simple_genetic(self, i_length, p_count = 100, generations = 100, i_min = 0, i_max = 100):
     
     # code stolen from http://lethain.com/genetic-algorithms-cool-name-damn-simple/
     
@@ -126,11 +131,7 @@ def genetic_alg(self, p_count, i_length, generations = 100, i_min = 0, i_max = 1
         individual: the individual to evaluate
         """
         return t.fitness(*individual)
-        #sum = 0
-        #for x in individual:
-        #    sum += x
-        #return abs(30-sum)
-
+        
     def grade(pop):
         'Find average fitness for a population.'
         summed = 0
@@ -140,7 +141,7 @@ def genetic_alg(self, p_count, i_length, generations = 100, i_min = 0, i_max = 1
 
     def evolve(pop, retain=0.2, random_select=0.05, mutate=0.01):
         graded = [ (fitness(x), x) for x in pop]
-        graded = [ x[1] for x in sorted(graded)]
+        graded = [ x[1] for x in sorted(graded, reverse=True)]
         retain_length = int(len(graded)*retain)
         parents = graded[:retain_length]
         # randomly add other individuals to
@@ -182,14 +183,32 @@ def genetic_alg(self, p_count, i_length, generations = 100, i_min = 0, i_max = 1
 
     #for datum in fitness_history:
     #    print(datum)
-    best = None;
-    bestfit = 0;
+    best = p[0]
+    bestfit = fitness(best)
     for individuum in p:
+        print (individuum)
+        print (fitness(individuum))
+
         if(fitness(individuum) > bestfit):
             best = individuum
             bestfit = fitness(individuum)
     return [best,bestfit]
+
+@__add_alg
+def random_search(self, i_length, step_size=5, steps=100, i_min=0, i_max=100):
     
+    from random import randint, random
+    t = self
+  
+    best = [randint(int(i_min),int(i_max)) for i in range(int(i_length))]
+    bestfit = t.fitness(*best)
+    for i in range(int(steps)):
+        new = [min(i_max,max(i_min,(i+(2*random()-1)*int(step_size)))) for i in best]
+        if(bestfit < t.fitness(*new)):
+            best = new
+            bestfit = t.fitness(*new)
+    return [best,bestfit]
+     
 
 def list_of_algorithms():
     return [(i.__name__, i, inspect.getargspec(i)) for i in algs]
