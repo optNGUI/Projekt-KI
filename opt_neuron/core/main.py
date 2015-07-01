@@ -55,6 +55,9 @@ def main_loop(in_queue):
         
 def parse_msg(msg):
     global __terminate
+    global __algorithm_names
+    global __algorithm_funcs
+    global __algorithm_argspec
     
     if msg == util.MESSAGE_EXIT:
         logger.info("Terminating Core...")
@@ -121,11 +124,12 @@ def parse_msg(msg):
         elif content[0] == 'start':
             if content[1] in __algorithm_names:
                 func = algorithms.ThreadedAlgorithm(
+                    msg,
                     config.get("SSH","host"),
                     config.get("SSH","net"),
                     config.get("SSH","analysis"),
                     __algorithm_funcs[__algorithm_names.index(content[1])])
-                func(*content[2:])
+                retval = util.RetValMessage(msg, appendix = func(*content[2:]))
             else:
                 print(msg)
                 print(content[1])

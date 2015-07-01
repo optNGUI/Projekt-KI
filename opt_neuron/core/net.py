@@ -32,20 +32,30 @@ def start_net(host,net,analysis,*args):
     
     fnum = str(uuid.uuid4())
     
+    print("starting net "+fnum)
+    
+    print(*args)
     
     # run net and wait for the process to terminate
     commandlist = [net,]
     if args:
         for arg in args: 
-            commandlist.extend(arg)
+            commandlist.append(str(arg))
+             
     command = " ".join(commandlist)+" "+fnum
     
     logger.warning("executing "+command)
     val = call(host,password,command)
-
+    
+    if isinstance(val,subprocess.CalledProcessError):
+        return val
+    
     command = analysis+" "+fnum
     
     val = call(host,password,command)
+
+    if isinstance(val,subprocess.CalledProcessError):
+        return val
         
     val = val[:val.rfind('\n')]
     val = val[val.rfind('\n'):]

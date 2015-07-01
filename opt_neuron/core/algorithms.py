@@ -5,6 +5,10 @@ import types, inspect, logging, sys
 from enum import IntEnum
 from .. import util
 from . import net
+from random import Random
+from inspyred import ec
+from inspyred.ec import terminators
+from time import time
 
 logger = logging.getLogger(__name__)
 algs = []
@@ -38,9 +42,10 @@ class ThreadedAlgorithm():
             print(e)            
             return None
         self.__status = Status.RETURNED
-        send_msg(util.StatusMessage(content='terminated ' + self.func.__name__))
+        #send_msg(util.StatusMessage(content='terminated ' + self.func.__name__))
+        send_msg(util.RetValMessage(self.__msg, appendix = self.__return_value))
     
-    def __init__(self, host, net, analysis, func):
+    def __init__(self, msg, host, net, analysis, func):
         
         # Bind the func object as instance method
         self.func = types.MethodType(func, self)
@@ -51,6 +56,7 @@ class ThreadedAlgorithm():
  
         self.__status = Status.NOT_STARTED
         self.__return_value = None
+        self.__msg = msg
         # You may extend this feature to support requesting 
         # some values, e.g. the current fitness
     
@@ -64,6 +70,10 @@ class ThreadedAlgorithm():
     @property
     def status(self):
         return self.__status
+    
+    @property
+    def msg(self):
+        return self.__msg
         
     @property
     def return_value(self):
@@ -77,70 +87,109 @@ class ThreadedAlgorithm():
     
     
     def fitness(self, *args):
-        ret = net.start_net(self.host, self.net, self.analysis, args)
+        ret = net.start_net(self.host, self.net, self.analysis, *args)
         if ret is None:
             raise(Exception("error running net. maybe wrong SSH password?"))
         return ret
 
 
 @__add_alg
-def genetic_alg(self):
+def genetic_alg(self, p_count, i_length, generations = 100, i_min = 0, i_max = 100):
+    
+    # code stolen from http://lethain.com/genetic-algorithms-cool-name-damn-simple/
     
     t = self
+   
+    from random import randint, random
+    from operator import add
 
-    def fit_net(self, individuum):
-        arg0= str(individuum[0:4])
-        arg1= str(individuum[4:8])
-        arg2= str(individuum[8:12])
-        arg3= str(individuum[12:16])
-        return t.fitness(arg0,arg1,arg2,arg3)
+    def individual(length, min, max):
+        'Create a member of the population.'
+        return [ randint(min,max) for x in range(length) ]
 
+    def population(count, length, min, max):
+        """
+        Create a number of individuals (i.e. a population).
 
-    import genetic_testbench as gt
+        count: the number of individuals in the population
+        length: the number of values per individual
+        min: the minimum possible value in an individual's list of values
+        max: the maximum possible value in an individual's list of values
 
-    g = gt.genetic.Genetic_Algorithm(first = gt.genetic.get_first('zero', '2'),
-                                terminate = gt.genetic.get_terminate('max_generation', '10'),
-                                select = gt.genetic.get_select('roulette', '1'),
-                                mutate = gt.genetic.get_mutate('uniform', '0.001'),
-                                crossover = gt.genetic.get_crossover('spread', '1'),
-                                replace = gt.genetic.get_replace('append'),
-                                fitness = fit_net)
+        """
+        return [ individual(length, min, max) for x in range(count) ]
+
+    def fitness(individual):
+        """
+        Determine the fitness of an individual. Higher is better.
+
+        individual: the individual to evaluate
+        """
+        return t.fitness(*individual)
+        #sum = 0
+        #for x in individual:
+        #    sum += x
+        #return abs(30-sum)
+
+    def grade(pop):
+        'Find average fitness for a population.'
+        summed = 0
+        for x in (fitness(x) for x in pop):
+            summed += x
+        return summed / (len(pop) * 1.0)
+
+    def evolve(pop, retain=0.2, random_select=0.05, mutate=0.01):
+        graded = [ (fitness(x), x) for x in pop]
+        graded = [ x[1] for x in sorted(graded)]
+        retain_length = int(len(graded)*retain)
+        parents = graded[:retain_length]
+        # randomly add other individuals to
+        # promote genetic diversity
+        for individual in graded[retain_length:]:
+            if random_select > random():
+                parents.append(individual)
+        # mutate some individuals
+        for individual in parents:
+            if mutate > random():
+                pos_to_mutate = randint(0, len(individual)-1)
+                # this mutation is not ideal, because it
+                # restricts the range of possible values,
+                # but the function is unaware of the min/max
+                # values used to create the individuals,
+                individual[pos_to_mutate] = randint(
+                    min(individual), max(individual))
+        # crossover parents to create children
+        parents_length = len(parents)
+        desired_length = len(pop) - parents_length
+        children = []
+        while len(children) < desired_length:
+            male = randint(0, parents_length-1)
+            female = randint(0, parents_length-1)
+            if male != female:
+                male = parents[male]
+                female = parents[female]
+                half = int(len(male) / 2)
+                child = male[:half] + female[half:]
+                children.append(child)
+        parents.extend(children)
+        return parents
     
-    g.set_outputstream(sys.stdout)
+    p = population(int(p_count), int(i_length), int(i_min), int(i_max))
+    fitness_history = [grade(p),]
+    for i in range(int(generations)):
+        p = evolve(p)
+        fitness_history.append(grade(p))
 
-    class Foo():
-        pass
-
-    graph = Foo()
-    graph.size = 16
-
-    ret = g(graph)
-    return (fit_net(None, ret), ret[0:4], ret[4:8], ret[8:12], ret[12:16])
-
-@__add_alg
-def dummy_algorithm(self, arg=5, blub = 7, *args, **kwargs):
-    import time
-    send_msg(util.StatusMessage(content='Going to sleep for five seconds...'))
-    time.sleep(5)
-    send_msg(util.StatusMessage(content='Waking up...'))
-
-@__add_alg
-def lassDasMalDenMoritzMachen(self):
-    ## Deprecated Function calls!
-    pass
-    #import genetic_testbench.genetic as ga
-    #send_msg(util.StatusMessage(content=str(ga)))
-    #alg = ga.Genetic_Algorithm(first =     ga.get_init_from_greedy(), 
-        #terminate = ga.terminate_at_optimum, 
-        #select =    ga.select, 
-        #crossover = ga.get_spread_crossover(n=1), 
-        #mutate =    ga.get_mutate_uniform(p=1/10), 
-        #replace =   ga.replace_append, 
-        #fitness =   ga.fitness)
-    #import genetic_testbench.graphs as graphs
-    #graph = graphs.construct_star_graph(c=4, d=5)
-    #send_msg(util.StatusMessage(content=str(alg(graph))+' <- Der Moritz macht das gut.'))
-
+    #for datum in fitness_history:
+    #    print(datum)
+    best = None;
+    bestfit = 0;
+    for individuum in p:
+        if(fitness(individuum) > bestfit):
+            best = individuum
+            bestfit = fitness(individuum)
+    return [best,bestfit]
+    
 
 def list_of_algorithms():
     return [(i.__name__, i, inspect.getargspec(i)) for i in algs]

@@ -1,4 +1,3 @@
-# coding: utf8
 
 import logging
 from .main import send_msg
@@ -57,4 +56,3 @@ class SshFrame(Gtk.Window):
     def on_quitButton_clicked(self,widget):
         #set_sshButton_active()
         self.destroy()
-    

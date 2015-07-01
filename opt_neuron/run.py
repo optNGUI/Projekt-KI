@@ -110,13 +110,17 @@ def run(*sysargs):
         
        # Start simple listener
         def listener():
+            t = None
             while True:
                 msg = out_queue.get()
                 if isinstance(msg,util.RetValMessage):
-                    print('\nreturn: '+msg.content)
-                    shell.cmdloop()#wait for new command after a return message was received
+                    print('\nreturn: '+msg.content+'\n>', end="")
+                    if(t is None or not t.is_alive()):
+                        t = threading.Thread(target = shell.cmdloop)#wait for new command after a return message was received
+                        t.daemon = True
+                        t.start()
                 else:
-                    print('\n'+msg.content)
+                    print('\n'+msg.content+'\n>', end="")
                 out_queue.task_done()
         t = threading.Thread(target=listener)
         t.daemon = True # This listener won't block the whole process
@@ -131,7 +135,7 @@ def run(*sysargs):
         class SimpleShell(cmd.Cmd):
             intro = ''
             prompt = '>'
-        
+            
             def default(self, arg):
                 in_queue.put(util.CommandMessage(content=arg))
             
