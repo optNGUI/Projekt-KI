@@ -114,13 +114,13 @@ def run(*sysargs):
             while True:
                 msg = out_queue.get()
                 if isinstance(msg,util.RetValMessage):
-                    print('\x1b[1G\n\x1b[1;31m'+msg.content+'\x1b[39;49m\n>', end="")
+                    print('\x1b[1G\n\x1b[1;34m'+msg.content+'\x1b[39;49m\n>', end="")
                     if(t is None or not t.is_alive()):
                         t = threading.Thread(target = shell.cmdloop)#wait for new command after a return message was received
                         t.daemon = True
                         t.start()
                 else:
-                    print('\x1b[1G\x1b[0;34m\n'+msg.content+'\x1b[39;49m\n>', end="")
+                    print('\x1b[1G\x1b[0;33m\n'+msg.content+'\x1b[39;49m\n>', end="")
                 out_queue.task_done()
         t = threading.Thread(target=listener)
         t.daemon = True # This listener won't block the whole process

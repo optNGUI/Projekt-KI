@@ -96,10 +96,15 @@ MESSAGE_EXIT = CommandMessage('CORE-EXIT', priority=-9001)
 
 def MESSAGE_FAILURE(msg, status=None):
     if status:
-        statusmsg = StatusMessage("FAILURE: "+status)
-        return (RetValMessage(msg, appendix = False),statusmsg)
+        return RetValMessage(msg, appendix = False, content="\x1b[1;31m"+status+"\x1b[39;49m")
     else:
-        return RetValMessage(msg, appendix = False)
+        return RetValMessage(msg, appendix = False, content="\x1b[1;31mERROR\x1b[39;49m")
+
+def MESSAGE_SUCCESS(msg, status=None):
+    if status:
+        return RetValMessage(msg, appendix = True, content="\x1b[1;32m"+status+"\x1b[39;49m")
+    else:
+        return RetValMessage(msg, appendix = True, content="")
 
 
 class MessageQueue(PriorityQueue):

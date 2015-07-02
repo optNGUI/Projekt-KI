@@ -67,7 +67,7 @@ def parse_msg(msg):
     elif isinstance(msg, util.CommandMessage):
         
         #default return message is true meaning "yep, I handled that message."
-        retval = util.RetValMessage(msg, appendix = True)
+        retval = util.MESSAGE_SUCCESS(msg)
         
         content = shlex.split(msg.content)
         
@@ -85,7 +85,7 @@ def parse_msg(msg):
                     'start <algorithm> <params...> \t\t- starts a net optimization using the algorithm with the given name and the given params\n\n'
                 )
         
-        elif content[0] == 'get':
+        elif content[0] == 'get' and len(content) > 1:
             if content[1] == 'algorithms':
                 tmp = algorithms.list_of_algorithms()
                 __algorithm_names = [i[0] for i in tmp]
@@ -116,30 +116,35 @@ def parse_msg(msg):
                         retval = util.RetValMessage(msg, appendix = config.get(content[2],content[3]))
                     except (configparser.NoSectionError, configparser.NoOptionError):
                         retval = util.RetValMessage(msg, appendix = [])
+            else:
+                retval = util.MESSAGE_FAILURE(msg,"cannot get "+content[1])
                 
-        elif content[0] == 'set':
+        elif content[0] == 'set' and len(content) > 1:
             if content[1] == 'config':
                 if len(content) < 5:
-                    retval = util.MESSAGE_FAILURE(msg)
+                    retval = util.MESSAGE_FAILURE(msg,"not enough arguments")
                 else:
                     try: 
                         config.add_section(content[2])
                     except configparser.DuplicateSectionError:
                         pass
                     config.set(content[2],content[3],content[4])
-                    retval = util.RetValMessage(msg, appendix = True)
-            if content[1] == 'password':
+                    retval = util.MESSAGE_SUCCESS(msg,"new value: "+content[4])
+            elif content[1] == 'password':
                 if len(content) < 3:
                     net.password = getpass.getpass("password: ")
                 else:
                     net.password = content[2]
+                retval = util.MESSAGE_SUCCESS(msg,"password set")
+            else:
+                retval = util.MESSAGE_FAILURE(msg,"cannot set "+content[1])
 
              
-        elif content[0] == 'save':
+        elif content[0] == 'save' and len(content) > 1:
             if content[1] == 'config':
                 config.write(open(config.get('INTERNAL','configPath'),'w'))
          
-        elif content[0] == 'start':
+        elif content[0] == 'start' and len(content) > 1:
             if content[1] in __algorithm_names:
                 func = algorithms.ThreadedAlgorithm(
                     msg,
@@ -147,18 +152,15 @@ def parse_msg(msg):
                     config.get("SSH","net"),
                     config.get("SSH","analysis"),
                     __algorithm_funcs[__algorithm_names.index(content[1])])
-                retval = util.RetValMessage(msg, appendix = func(*content[2:]))
+                retval = util.RetValMessage(msg, appendix = func(*content[2:]), content="optimization started in new thread...")
             else:
-                print(msg)
-                print(content[1])
                 retval = util.MESSAGE_FAILURE(msg, 'could not identify algorithm '+content[1])
                 
         elif content[0] == 'echo':
             retval = util.RetValMessage(msg, appendix = content[1])
         
         else:
-            print("unknown command "+content[0])
-            retval = util.MESSAGE_FAILURE(msg)
+            retval = util.MESSAGE_FAILURE(msg,"unknown command "+content[0]+" for this number of arguments")
             
         #send return message
         send_msg(retval)
