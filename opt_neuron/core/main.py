@@ -76,7 +76,7 @@ def parse_msg(msg):
                 retval = util.RetValMessage(msg,
                     '\n\nget algorithms \t\t\t\t- returns a list of implemented optimizing algorithms\n\n'+\
                     'get algorithms <name> \t\t\t- returns a list of possible arguments for the algorithm with the given name\n\n'+\
-                    'get config \t\t\t\t- returns a ConfigParser object representing the currently loaded config file\n\n'+\
+                    'get config \t\t\t\t- returns a list of existing sections in the loaded config file\n\n'+\
                     'get config <section> \t\t\t- returns a list of available options in the given section\n\n'+\
                     'get config <section> <option> \t\t- returns the value of the given option\n\n'+\
                     'set config <section> <option> <value> \t- sets the given option in the given section to the given value\n\n'+\
@@ -105,7 +105,7 @@ def parse_msg(msg):
                             retval = util.RetValMessage(msg, appendix=[__algorithm_names[i],__algorithm_funcs[i],__algorithm_argspec[i]], content=line)
             elif content[1] == 'config':
                 if len(content) < 3:
-                    retval = util.RetValMessage(msg, appendix = config)
+                    retval = util.RetValMessage(msg, appendix = config, content = str(config.sections()))
                 elif len(content) < 4:
                     try:
                         retval = util.RetValMessage(msg, appendix = config.options(content[2]))

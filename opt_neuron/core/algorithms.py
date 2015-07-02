@@ -178,6 +178,8 @@ def simple_genetic(self, i_length, p_count = 100, generations = 100, i_min = 0, 
     p = population(int(p_count), int(i_length), int(i_min), int(i_max))
     fitness_history = [grade(p),]
     for i in range(int(generations)):
+        logger.debug("simple_genetic generation "+i)
+        print("simple_genetic generation "+i)
         p = evolve(p)
         fitness_history.append(grade(p))
 
@@ -186,9 +188,6 @@ def simple_genetic(self, i_length, p_count = 100, generations = 100, i_min = 0, 
     best = p[0]
     bestfit = fitness(best)
     for individuum in p:
-        print (individuum)
-        print (fitness(individuum))
-
         if(fitness(individuum) > bestfit):
             best = individuum
             bestfit = fitness(individuum)
@@ -203,6 +202,8 @@ def random_search(self, i_length, step_size=5, steps=100, i_min=0, i_max=100):
     best = [randint(int(i_min),int(i_max)) for i in range(int(i_length))]
     bestfit = t.fitness(*best)
     for i in range(int(steps)):
+        logger.debug("random_search step "+i)
+        print("random_search step "+i)
         new = [min(int(i_max),max(int(i_min),(i+(2*random()-1)*int(step_size)))) for i in best]
         if(bestfit < t.fitness(*new)):
             best = new

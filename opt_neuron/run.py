@@ -157,7 +157,6 @@ def run(*sysargs):
             'You may enter a command now, e.g. "echo MESSAGE"\n' +\
             'To exit the program, type "exit" or on Unix hit Ctrl-D\n' +\
             'For a list of possible commands type "help"\n')
-        shell.cmdloop()
     
     
     

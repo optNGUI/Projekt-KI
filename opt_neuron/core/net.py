@@ -19,6 +19,7 @@ def call(host, passwd, command):
             universal_newlines= True)
         return ssh
     except subprocess.CalledProcessError as e:
+        logger.error(str(e))
         return e
     
     
@@ -32,9 +33,9 @@ def start_net(host,net,analysis,*args):
     
     fnum = str(uuid.uuid4())
     
-    print("starting net "+fnum)
+    logger.info("starting net "+fnum)
     
-    print(*args)
+    logger.debug(str(args))
     
     # run net and wait for the process to terminate
     commandlist = [net,]
@@ -44,7 +45,6 @@ def start_net(host,net,analysis,*args):
              
     command = " ".join(commandlist)+" "+fnum
     
-    logger.warning("executing "+command)
     val = call(host,password,command)
     
     if isinstance(val,subprocess.CalledProcessError):
