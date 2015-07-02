@@ -93,7 +93,6 @@ def parse_msg(msg):
                 __algorithm_argspec = [i[2] for i in tmp]
                 retval = util.RetValMessage(msg, appendix=[__algorithm_names,__algorithm_funcs,__algorithm_argspec], content=str(__algorithm_names))
                 if(len(content) > 2 and (content[2] in __algorithm_names)):
-                    print("found!")
                     for i in range(len(__algorithm_names)):
                         if(content[2] == __algorithm_names[i]):
                             line = content[2]+" "
@@ -103,7 +102,7 @@ def parse_msg(msg):
                                 if indoffset <= ind:
                                     line += "="+str(__algorithm_argspec[i].defaults[ind-indoffset])
                                 line += " "
-                            retval = util.RetValMessage(msg, appendix=line)
+                            retval = util.RetValMessage(msg, appendix=[__algorithm_names[i],__algorithm_funcs[i],__algorithm_argspec[i]], content=line)
             elif content[1] == 'config':
                 if len(content) < 3:
                     retval = util.RetValMessage(msg, appendix = config)

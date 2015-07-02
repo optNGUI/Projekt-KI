@@ -95,7 +95,7 @@ class ThreadedAlgorithm():
         ret = net.start_net(self.host, self.net, self.analysis, *args)
         if ret is None:
             raise(Exception("error running net. maybe wrong SSH password?"))
-        return ret
+        return float(ret)
 
 
 @__add_alg
@@ -203,7 +203,7 @@ def random_search(self, i_length, step_size=5, steps=100, i_min=0, i_max=100):
     best = [randint(int(i_min),int(i_max)) for i in range(int(i_length))]
     bestfit = t.fitness(*best)
     for i in range(int(steps)):
-        new = [min(i_max,max(i_min,(i+(2*random()-1)*int(step_size)))) for i in best]
+        new = [min(int(i_max),max(int(i_min),(i+(2*random()-1)*int(step_size)))) for i in best]
         if(bestfit < t.fitness(*new)):
             best = new
             bestfit = t.fitness(*new)
