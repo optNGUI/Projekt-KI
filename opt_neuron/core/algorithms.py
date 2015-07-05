@@ -39,7 +39,7 @@ class ThreadedAlgorithm():
         try:
             self.__return_value = self.func(*args, **kwargs)
         except Exception as e:
-            print(e)            
+            send_msg(util.MESSAGE_FAILURE(self.__msg, "optimization died: "+str(e)))            
             return None
         self.__status = Status.RETURNED
         #send_msg(util.StatusMessage(content='terminated ' + self.func.__name__))
