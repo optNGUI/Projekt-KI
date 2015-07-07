@@ -54,12 +54,27 @@ class MainFrame(Gtk.Window):
 
         self.vbox.pack_start(self.scrollspace, True, True, 3)
 
+    # +++ EDIT BUTTONS +++
+
+        self.optionhbox = Gtk.Box(spacing = 6)
+        self.vbox.pack_start(self.optionhbox, False, True, 0)
+
+        self.editbutton = Gtk.Button(label = "edit", name = "EditButton")
+        self.editbutton.connect("clicked", self.on_edit)
+        # self.editbutton.set_sensitive(False)
+        self.optionhbox.pack_end(self.editbutton, False, True, 3)
+
+        self.removebutton = Gtk.Button(label = "remove", name = "RemoveButton")
+        self.editbutton.connect("clicked", self.on_remove)
+        # self.editbutton.set_sensitive(False)
+
+
     # +++ BOTTOM BAR THINGY +++
         self.bottomhbox = Gtk.Box(spacing = 6)
         self.vbox.pack_start(self.bottomhbox, False, True, 0)
 
-#        self.label_one = Gtk.Label("wtf..?")
-#        self.tophbox.pack_start(self.label_one, False, True, 3)
+    #    self.label_one = Gtk.Label("wtf..?")
+    #    self.tophbox.pack_start(self.label_one, False, True, 3)
 
         self.runstop = Gtk.Button(label = "Run", name = "RunStop")
         self.runstop.connect("clicked", self.on_runstop)
@@ -127,6 +142,11 @@ class MainFrame(Gtk.Window):
         self.column.set_min_width(20)
         self.tree.append_column(self.column)
 
+        # connect right mouse button thing
+        self.treeselect = self.tree.get_selection()
+        #self.treeselect.connect("changed", self.on_rightclick)
+        self.tree.connect("cursor-changed", self.on_rightclick)
+
         self.scrollspace.add(self.tree)
 
         style_provider = Gtk.CssProvider()
@@ -182,13 +202,17 @@ class MainFrame(Gtk.Window):
 
     def on_add(self, arg1):
         print("Addwin opens...")
+        self.liststore.append((30, "testinput", "status", "params"))
         #send_msg(util.MESSAGE_EXIT)
         self.addbutton.set_sensitive(False)
 
-        af = addframe.AddFrame()
+        af = addframe.AddFrame(self)
         #self.t = Thread( target=self.sendit, args=(util.CommandMessage(content="echo SHIT"),) )
         #self.t.start()
         af.show_all()
+
+    def on_edit(self, arg1):
+        return
 
     # add alg to list
     def set_alg(self, alg):
@@ -238,4 +262,26 @@ class MainFrame(Gtk.Window):
         #Gtk.main_quit()
         
         return True
+
+    def on_remove(self, arg1):
+        return
+
+    def on_rightclick(self, tv, event):
+        print("clickediclick that shit!")
+        if event.button == 3:
+            print("rightclick reveived!")
+            selection = self.tree.get_selection()
+            (model, iter) = selection.get_selected()
+            print(model[iter][0])
+
+
+
+    def show_menu(self, *args):
+        i1 = Gtk.MenuItem("Item 1")
+        menu.append(i1)
+        i2 = Gtk.MenuItem("Item 2")
+        menu.append(i2)
+        menu.show_all()
+        menu.popup(None, None, None, None, 0, Gtk.get_current_event_time())
+        print("Done")
 
