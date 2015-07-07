@@ -218,7 +218,7 @@ class MainFrame(Gtk.Window):
     def set_alg(self, alg):
         print("set alg")
 
-    def set_addButton_active(self, arg1):
+    def set_addButton_active(self):
         self.addbutton.set_sensitive(True)
 
 

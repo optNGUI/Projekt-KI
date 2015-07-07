@@ -71,11 +71,11 @@ def test(in_queue, out_queue):
     mf.connect("delete-event", Gtk.main_quit)
     mf.show_all()
 
-    af = addframe.AddFrame()
+    #af = addframe.AddFrame()
     #af.connect("delete-event", Gtk.main_quit)      Das zerstört nur die komplette GUI, wenn das x genutzt wird!
-    af.show_all()
+    #af.show_all()
     
-    sf = sshframe.SshFrame()
+    #sf = sshframe.SshFrame()
     #sf.connect("delete-event", Gtk.main_quit)      Das zerstört nur die komplette GUI, wenn das x genutzt wird!
-    sf.show_all()
+    #sf.show_all()
 

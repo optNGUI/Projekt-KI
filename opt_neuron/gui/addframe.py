@@ -12,11 +12,12 @@ __algos = None
 __argSpecs = None
 __algoList = None
 __algo = None
+__parent = None
 
 class AddFrame(Gtk.Window):
-    def __init__(self):
+    def __init__(self,parent):
         Gtk.Window.__init__(self, title = "Algorithmusauswahl")
-                    
+        print("..."+str(self))
         global __hbox
         global __paramBox
         global __algoCombo
@@ -24,7 +25,8 @@ class AddFrame(Gtk.Window):
         global __argSpecs
         global __algoList
         global __algo
-
+        global __parent
+        
         self.set_default_size(200,200)
         self.set_border_width(10)
         
@@ -36,7 +38,8 @@ class AddFrame(Gtk.Window):
 
         __algos = []
         __argSpecs = []
-        __algo = ""
+        __algo = ""      
+        __parent = parent
 
         #edit button
         editButton = Gtk.Button(label="Übernehmen")
@@ -64,19 +67,20 @@ class AddFrame(Gtk.Window):
     def on_editButton_clicked(self,widget):
         global __algo
         global __paramBox
+        global __parent
 
         args = __argSpecs[(__algos.index(__algo))].args
         specName = [(i) for i in args] 
         spec = [(j.get_text()) for j in __paramBox]
-        print("spec: "+str(spec))
-        self.set_alg([__algo, spec])
-
-        self.set_addButton_active()
+        
+        __parent.set_alg([__algo, spec])
+        __parent.set_addButton_active()
         self.destroy()
 
     def on_quitButton_clicked(self,widget):
         #closes frame without saving anything
-        self.set_addButton_active()
+        global __parent
+        __parent.set_addButton_active()
         self.destroy()
         
     def on_algo_combo_changed(self,widget):
