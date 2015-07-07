@@ -145,7 +145,7 @@ class MainFrame(Gtk.Window):
         # connect right mouse button thing
         self.treeselect = self.tree.get_selection()
         #self.treeselect.connect("changed", self.on_rightclick)
-        self.tree.connect("cursor-changed", self.on_rightclick)
+        self.tree.connect("button_press_event", self.on_rightclick)
 
         self.scrollspace.add(self.tree)
 
@@ -267,12 +267,10 @@ class MainFrame(Gtk.Window):
         return
 
     def on_rightclick(self, tv, event):
-        print("clickediclick that shit!")
-        if event.button == 3:
-            print("rightclick reveived!")
-            selection = self.tree.get_selection()
-            (model, iter) = selection.get_selected()
-            print(model[iter][0])
+        if event.button == 3 and event.type == Gdk.EventType.BUTTON_PRESS:
+            (tp, tvc, c_y, c_x) = tv.get_path_at_pos(event.x, event.y)
+            print("Treepath: " + tp.to_string())
+
 
 
 
