@@ -6,9 +6,10 @@ from gi.repository import Gtk
 
 __pwdEntry = None
 __usrEntry = None
+__parent = None
 
 class SshFrame(Gtk.Window):
-    def __init__(self):
+    def __init__(self, parent):
         Gtk.Window.__init__(self,title = "ssh-Gate")      
 
         self.set_default_size(200,90)
@@ -17,10 +18,13 @@ class SshFrame(Gtk.Window):
         
         global __pwdEntry
         global __usrEntry
+        global __parent
         
         grid = Gtk.Grid()
         self.add(grid)
-                
+        
+        __parent = parent
+ 
         usrLabel = Gtk.Label("Host")
                 
         __usrEntry = Gtk.Entry()
@@ -47,12 +51,14 @@ class SshFrame(Gtk.Window):
         grid.attach_next_to(quitButton,loginButton, Gtk.PositionType.RIGHT,1,1)
 
     def on_loginButton_clicked(self,widget):
+        global __parent
         send_msg(util.CommandMessage(content = 'password:  {msg}'.format(msg = __pwdEntry.get_text())))
         send_msg(util.CommandMessage(content = 'set config SSH host  {msg}'.format(msg = __usrEntry.get_text())))
         print('ssh schickt weg')
-        #set_sshButton_active()
+        __parent.set_sshButton_active()
         self.destroy()
 
     def on_quitButton_clicked(self,widget):
-        #set_sshButton_active()
+        global __parent
+        parent.set_sshButton_active()
         self.destroy()

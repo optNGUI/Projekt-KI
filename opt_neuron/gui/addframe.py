@@ -54,7 +54,7 @@ class AddFrame(Gtk.Window):
         buttonBox.pack_end(quitButton, False,False,0)
         vbox.pack_end(buttonBox,False,False,0)
 
-        __algoCombo = Gtk.ComboBoxText()  #.new_with_model(__algoStore)
+        __algoCombo = Gtk.ComboBoxText()
         __algoCombo.connect("changed", self.on_algo_combo_changed)
         vbox.pack_start(__algoCombo,False,False,0)      
         
@@ -65,6 +65,9 @@ class AddFrame(Gtk.Window):
         self.add(__hbox)
 
     def on_editButton_clicked(self,widget):
+        # Function that calls the function "set_alg" from mainframe with arguments in form
+        # of [ algorithm name, argument name 1,...,argument name n, argument 1, argument n],
+        # where argument is the value, which the user defined for the corresponding algorithm name.
         global __algo
         global __paramBox
         global __parent
