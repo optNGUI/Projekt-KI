@@ -1,5 +1,10 @@
 # coding: utf8
 
+#TODO:  gray out edit button, when nothing is choosed,
+#	set default values in param,
+#	set first row to be there from beginning
+#	on x clicked, do parent.set_addButton_active()
+#	same at sshFrame
 import logging
 from .main import send_msg, get_msg
 from .. import util
