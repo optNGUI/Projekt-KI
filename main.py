@@ -1,8 +1,7 @@
-#!/usr/bin/env/
+#!/usr/bin/env python3
 # coding: utf8
 
 ### Calls the opt_neuron package. ###
-
 
 import opt_neuron.run
 import sys

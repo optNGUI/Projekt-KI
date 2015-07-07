@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class MainFrame(Gtk.Window):
     def __init__(self, in_queue, out_queue):
         self.__running = True
-        Gtk.Window.__init__(self, title="GtkWin")
+        Gtk.Window.__init__(self, title="OPT Neuron Algorithmen Kommandant")
         self.in_queue = in_queue
         self.out_queue = out_queue
         self.connect("delete-event", self.close_call)
@@ -94,27 +94,7 @@ class MainFrame(Gtk.Window):
         self.liststore.append((3, "smart algo3", "stand_by", "params"))
         self.liststore.append((4, "smart algo4", "stand_by", "params"))
         self.liststore.append((5, "smart algo5", "stand_by", "params"))
-        self.liststore.append((6, "smart algo6", "stand_by", "params"))
-        self.liststore.append((7, "smart algo7", "stand_by", "params"))
-        self.liststore.append((8, "smart algo8", "stand_by", "params"))
-        self.liststore.append((9, "smart algo9", "stand_by", "params"))
-        self.liststore.append((10, "smart algo10", "stand_by", "params"))
-        self.liststore.append((11, "smart algo11", "stand_by", "params"))
-        self.liststore.append((12, "smart algo12", "stand_by", "params"))
-        self.liststore.append((13, "smart algo13", "stand_by", "params"))
-        self.liststore.append((14, "smart algo14", "stand_by", "params"))
-        self.liststore.append((15, "smart algo15", "stand_by", "params"))
-        self.liststore.append((16, "smart algo16", "stand_by", "params"))
-        self.liststore.append((17, "smart algo17", "stand_by", "params"))
-        self.liststore.append((18, "smart algo18", "stand_by", "params"))
-        self.liststore.append((19, "smart algo19", "stand_by", "params"))
-        self.liststore.append((20, "smart algo20", "stand_by", "params"))
-        self.liststore.append((21, "smart algo21", "stand_by", "params"))
-        self.liststore.append((22, "smart algo22", "stand_by", "params"))
-        self.liststore.append((23, "smart algo23", "stand_by", "params"))
-        self.liststore.append((24, "smart algo24", "stand_by", "params"))
-
-
+  
     # +++ view +++
         self.tree = Gtk.TreeView(self.liststore)
 
@@ -216,6 +196,7 @@ class MainFrame(Gtk.Window):
 
     # add alg to list
     def set_alg(self, alg):
+        print(alg)
         print("set alg")
 
     def set_addButton_active(self):
