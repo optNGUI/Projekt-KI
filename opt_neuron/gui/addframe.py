@@ -30,7 +30,7 @@ class AddFrame(Gtk.Window):
         __algoBox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 6)
 
         #edit button
-        editButton = Gtk.Button(label="Hinzufügen")
+        editButton = Gtk.Button(label="Übernehmen")
         editButton.connect("clicked", self.on_editButton_clicked)  
         
         #quit button
@@ -41,14 +41,14 @@ class AddFrame(Gtk.Window):
         buttonBox.pack_end(editButton, False,False,0)
         buttonBox.pack_end(quitButton, False,False,0)
         vbox.pack_end(buttonBox,False,False,0)
-        
-        __algoStore = Gtk.ListStore(str)
-        self.fillAlgoStore()
-        
-        __algoCombo = Gtk.ComboBox.new_with_model(__algoStore)
+
+        __algoStore = Gtk.ListStore(str, object)  #,str)
+
+        __algoCombo = Gtk.ComboBoxText()  #.new_with_model(__algoStore)
         __algoCombo.connect("changed", self.on_algo_combo_changed)
-        vbox.pack_start(__algoCombo,False,False,0)
+        vbox.pack_start(__algoCombo,False,False,0)      
         
+        self.fillAlgoStore()
         #Entries for parameters
         #TODO: Parameter spezifisch für jeden möglichen Algo?!
         
@@ -76,23 +76,33 @@ class AddFrame(Gtk.Window):
         #TODO: fill algo+params in table in mainframe
 
         #set_alg(__alg+param)
-        #set_addButton_active()
+        set_addButton_active()
         print("hinzugefügt")
         #self.destroy()
 
     def on_quitButton_clicked(self,widget):
         #closes frame without saving anything
-        #set_addButton_active()
+        set_addButton_active()
         self.destroy()
         
     def on_algo_combo_changed(self,widget):
         algo_iter = widget.get_active_iter()
+ 
         if algo_iter != None:
             model = widget.get_model()
             algo = model[algo_iter][0]
             self.build_param_entries(model[algo_iter])
-        print("selected algorithm: %s" %algo)
         
+            
+    def build_param_entries(self,algo):
+        global __algoBox
+        global __algoStore
+
+        for i in range(1,len(__algoStore.get_iter(algo))):
+            param[i] = Gtk.Entry()
+            param[i].set_text(algo[i])
+            __algoBox.pack_start(param(i),False,False,0)
+
     def fillAlgoStore(self):
         #asks algorithms from core and fills the combobox
         global __algoCombo
@@ -110,17 +120,10 @@ class AddFrame(Gtk.Window):
         argSpecs = appendix[2]
 
         #print("appendix = ",appendix)
-        
+
         for x in range(num_algos-1): 
-            #__algoStore.append([names[x],function[x],argSpecs[x]])
+            __algoStore.append([names[x],argSpecs[x]])  #,function[x]])
             __algoCombo.append_text(names[x])
-            
-    def build_param_entries(self,algo):
-        global __algoBox
-        for i in range(1,len(algo)):
-            param[i] = Gtk.Entry()
-            param[i].set_text(algo[i])
-            __algoBox.pack_start(param(i),False,False,0)
 
     def set_algo_from_main():
         # voreinstellung von algo nachdem editbutton in main gedrückt
