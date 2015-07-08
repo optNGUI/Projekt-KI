@@ -38,14 +38,12 @@ def __on_destroy():
     print("asd")
 
 def receive():
-    print("thread started")
     global __msg
     __msg_read = 0
     while not __msg_read:
-        print("waiting...")
         __msg = __in_queue.get()
         if __msg is not None:
-            print("message received!")
+            #print(__msg)
             __msg_read = 1
     __msg_read = 0
             #alert = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, msg)
@@ -75,7 +73,7 @@ def test(in_queue, out_queue):
     #af.connect("delete-event", Gtk.main_quit)      Das zerstört nur die komplette GUI, wenn das x genutzt wird!
     #af.show_all()
     
-    #sf = sshframe.SshFrame()
+    sf = sshframe.SshFrame(mf)
     #sf.connect("delete-event", Gtk.main_quit)      Das zerstört nur die komplette GUI, wenn das x genutzt wird!
-    #sf.show_all()
+    sf.show_all()
 
