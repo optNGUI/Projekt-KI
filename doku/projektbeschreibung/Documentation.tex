@@ -1,0 +1,64 @@
+\documentclass[
+  a4paper,               % A4-Papier
+  twoside,               % zweiseitig
+  DIV=12,                % Zwölfteilung der Seite
+  BCOR=8mm,              % 8mm Korrektur für Bindung
+  headinclude=true,      % Header hinzufügen
+  footinclude=false,     % Footer nicht hinzufügen
+  numbers=noenddot,      % keine Punkte nach Kapitelnummern
+  headheight=40pt,       % Höhe des Header-Blocks
+  11pt]{scrartcl}        % Schriftgröße
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{luainputenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsfonts, amsmath, amsthm}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{xcolor}
+\xdefinecolor{unifarbe}{RGB}{0,75,90}
+
+\usepackage{sectsty}
+\chapterfont{\color{unifarbe}}  % sets colour of chapters
+\sectionfont{\color{unifarbe}}  % sets colour of sections
+\subsectionfont{\color{unifarbe}}  % sets colour of subsections
+\begin{document}
+
+\begin{titlepage}
+
+\flushleft\includegraphics[width=0.5\textwidth]{./Logo_Uni_Luebeck_1200dpi}Korrektes Logo einsetzen!!!\\[1cm]
+\color{unifarbe}
+\begin{center}
+\textbf{\Huge Bachelor Projekt} \\[0.5cm]
+\textbf{\Huge Optimierung biologisch-realistischer Neuronenmodelle}\\[0.5cm]
+
+Institut für Robotik und kognitive Systeme\\[2.5cm]
+\textbf{\Large Dokumentation}\\[1.5cm]
+
+Szymon Bereziak\\
+Moritz Dannehl\\
+Chris Girth\\
+Can Kalelioglu\\
+Julian Wolff\\
+\end{center}
+
+\vfill
+\today
+
+\end{titlepage}
+\tableofcontents\newpage
+\section{Einführung}
+Hier steht irgendwann mal irgendwas.
+\section{Features}
+
+\section{Architektur}
+\subsection{Kern}
+\input{kern}
+\subsection{GUI}
+\input{gui}
+\section{Benutzerhandbuch}
+\subsection{Erste Untersektion}
+\end{document}
