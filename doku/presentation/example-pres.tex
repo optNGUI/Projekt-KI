@@ -7,60 +7,102 @@
 %
 % This file is just to get started - You need the corresponding Logo
 %
-\documentclass[german,10pt,xcolor=colortbl,compress
+\documentclass[ngerman,10pt,xcolor=colortbl,compress
 %,draft
 ]{beamer}
-\usepackage{xunicode}
-\usepackage[T1]{fontenc}
 \usepackage{calc}
 \usepackage[ngerman]{babel} % Neue Rechtschreibung
 \usepackage{amsmath,amsthm,amssymb,euscript} % AMS-LaTeX  
 \usepackage{enumerate,graphicx}
+\usepackage{fontspec}
 
 % Load Them
 \usetheme[slogan=false, navigation=true,reducedframetotal, myriad=false]{UzL}
 %
 \setbeamertemplate{navigation symbols}{}
-\title{Beispielpräsentation}
-\subtitle{Eines Vortrages im neuen Design mit \LaTeX}
-\date[]{5. Februar 2011\\[1ex] Workshop on Corporate Design Stuff}
-\author[R. Bergmann]{Ronny Bergmann}
+\title{Bachelorprojekt }
+\subtitle{Optimierung biologisch-realistischer Neuronenmodelle}
+\date[]{\today\\[1ex]Abschlusspräsentation}
+\author[Bereziak \and Dannehl \and Girth \and Kalelioglu \and Wolff]{S. Bereziak \and M. Dannehl \and C. Girth \and C. Kalelioglu \and J. Wolff}
 % Clear Logo 1 to make the head smaller
-\institute[Universität zu Lübeck]{Institut für Mathematik\\Universität zu Lübeck}
+\institute[UzL]{Institut für Robotik und kognitive Systeme\\Universität zu Lübeck}
 %\clearlogo{1}
-\setlogo{1}{.25\paperwidth}{logos/Logo_Uni_Luebeck_300dpi.png}%
+\setlogo{1}{.25\paperwidth}{logos/unilogo300dpi.png}%
 
 \begin{document}
-	\maketitle	
-	\section{Einleitung}
-	\begin{frame}{Inhalt dieses Beispiels}
+	\maketitle
+	\begin{frame}{Gliederung}
 		\tableofcontents
+	\end{frame}	
+	\section{Einführung}
+	\begin{frame}{Motivation}
+	\begin{itemize}
+	\item Parameter von neuronalen Netzen müssen stets optimiert werden
+	\item Optimierungen von Hand sind sehr aufwendig bzw. unmöglich
+	\end{itemize}
+	\mbox{}\\
+	$\rightarrow$ Optimierung mittels Methoden der künstlichen Intelligenz
 	\end{frame}
-	\subsection{A}
-	\begin{frame}{Einleitung - Motivation}
-	ABC
-	\begin{lemma}[Ein Beispiellemma]
-		Ist das hier und es gilt.
-	\end{lemma}
-	\begin{example}
-		Ein Beispiel, wie dieses hier
-	\end{example}
-	\alert{ACHTUNG!}
-		Etwas Hervorgehobenes. Die Farben sind bisher alle dem Handbuch zum Corporate Design entnommen.
-	\end{frame}
-	\subsection{B}
-	\begin{frame}{Ein Beweis}{Mit Untertitel}
-			\begin{proof}
-				Weil.
-			\end{proof}
-	\end{frame}
-	\begin{frame}[plain]{}{}%Ohne Titel und Untertitel damits ganz leer und weiß ist
-		Ich bin so ein leerer Frame
+	\begin{frame}{Zielsetzung}
+	Framework, bestehend aus
+	\begin{itemize}
+		\item Strukturen zur Kommunikation mit dem neurnalen Netz
+		\item Flexibel implementierte Optimierungsalgorithmen
+		\item Grafische Oberfläche
+	\end{itemize}
+	\mbox{}\\
+	Weitere Projektvorgaben
+	\begin{itemize}
+		\item Implementierung in Python
+		\item Versionskontrolle über github
+	\end{itemize}
 	\end{frame}
 	
-	\begin{frame}{TODO}
+	\section{Implementierung}
+	
+	\begin{frame}{Implementierung}{Überblick}
+	Hübsches Bild von Can
+	\end{frame}
+	\begin{frame}{Implementierung}{Kern}
+	Der Kern besteht aus folgenden Komponenten
+	\begin{itemize}
+		\item main -- Verarbeitet Befehle von GUI oder CLI
+		\item net -- Führt über SSH Netz und Analysescript aus
+		\item algorithms -- Stellt Optimierungsalgorithmen bereit 
+	\end{itemize}
+	\mbox{}\\
+	Kommunikation mit CLI bzw. GUI erfolgt über Message-Queues
+	\end{frame}
+	
+	\begin{frame}{Implementierung}{Implementierte Algorithmen}
+	In der aktuellen Version implementierte Algorithmen
+	\begin{itemize}
+		\item simple\_genetic -- einfacher genetischer Algorithmus
+		\item random\_search -- randomisierte Suche
+	\end{itemize}
+	\end{frame}
+	
+	\begin{frame}{Implementierung}{CLI}
+	Bild $\rightarrow$ Live-Demo?
+	\end{frame}
+
+	\begin{frame}{Implementierung}{GUI}
+	Was weiß ich....Chriiiiiiiiis?!!!!!
+	\end{frame}
+	
+	\begin{frame}{Implementierung}{Abhängigkeiten}
+		Zur Ausführung benötigte Pakete
 		\begin{itemize}
-			\item Literatur?
+			\item python3
+			\item sshpass
+			\item GTK
+			\item GDK
 		\end{itemize}
 	\end{frame}
+	
+	\section{Resultat}
+	\begin{frame}{Resultat}{Live-Demo}
+	Bild $\rightarrow$ Live-Demo
+	\end{frame}
+	
 \end{document}
