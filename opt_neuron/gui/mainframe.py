@@ -6,6 +6,7 @@ from gi.repository import Gtk, Gdk
 import logging
 from .main import send_msg, get_msg
 from threading import Thread
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +36,7 @@ class MainFrame(Gtk.Window):
         self.tophbox = Gtk.Box(spacing = 6)
         self.vbox.pack_start(self.tophbox, False, True, 0)
 
-        self.label_one = Gtk.Label("wtf..?")
+        self.label_one = Gtk.Label("Session:")
         self.tophbox.pack_start(self.label_one, False, True, 3)
 
         self.search = Gtk.Button(label = "load config")
@@ -56,16 +57,16 @@ class MainFrame(Gtk.Window):
 
     # +++ EDIT BUTTONS +++
 
-        self.optionhbox = Gtk.Box(spacing = 6)
-        self.vbox.pack_start(self.optionhbox, False, True, 0)
+    #    self.optionhbox = Gtk.Box(spacing = 6)
+    #    self.vbox.pack_start(self.optionhbox, False, True, 0)
 
-        self.editbutton = Gtk.Button(label = "edit", name = "EditButton")
-        self.editbutton.connect("clicked", self.on_edit)
+    #    self.editbutton = Gtk.Button(label = "edit", name = "EditButton")
+    #    self.editbutton.connect("clicked", self.on_edit)
         # self.editbutton.set_sensitive(False)
-        self.optionhbox.pack_end(self.editbutton, False, True, 3)
+    #    self.optionhbox.pack_end(self.editbutton, False, True, 3)
 
-        self.removebutton = Gtk.Button(label = "remove", name = "RemoveButton")
-        self.editbutton.connect("clicked", self.on_remove)
+    #    self.removebutton = Gtk.Button(label = "remove", name = "RemoveButton")
+    #    self.editbutton.connect("clicked", self.on_remove)
         # self.editbutton.set_sensitive(False)
 
 
@@ -89,11 +90,11 @@ class MainFrame(Gtk.Window):
     # +++ list store +++
         # (id, Alg_name, status, params)
         self.liststore = Gtk.ListStore(int, str, str, str)
-        self.liststore.append((1, "smart algo1", "stand_by", "params"))
-        self.liststore.append((2, "smart algo2", "stand_by", "params"))
-        self.liststore.append((3, "smart algo3", "stand_by", "params"))
-        self.liststore.append((4, "smart algo4", "stand_by", "params"))
-        self.liststore.append((5, "smart algo5", "stand_by", "params"))
+        #self.liststore.append((1, "smart algo1", "stand_by", "params"))
+        #self.liststore.append((2, "smart algo2", "stand_by", "params"))
+        #self.liststore.append((3, "smart algo3", "stand_by", "params"))
+        #self.liststore.append((4, "smart algo4", "stand_by", "params"))
+        #self.liststore.append((5, "smart algo5", "stand_by", "params"))
   
     # +++ view +++
         self.tree = Gtk.TreeView(self.liststore)
@@ -111,13 +112,13 @@ class MainFrame(Gtk.Window):
         self.tree.append_column(self.column)
 
         self.renderer = Gtk.CellRendererText()
-        self.column = Gtk.TreeViewColumn("Status", self.renderer, text=1)
+        self.column = Gtk.TreeViewColumn("Status", self.renderer, text=2)
         self.column.set_resizable(True)
         self.column.set_min_width(20)
         self.tree.append_column(self.column)
         
         self.renderer = Gtk.CellRendererText()
-        self.column = Gtk.TreeViewColumn("Parameters", self.renderer, text=1)
+        self.column = Gtk.TreeViewColumn("Parameters", self.renderer, text=3)
         self.column.set_resizable(True)
         self.column.set_min_width(20)
         self.tree.append_column(self.column)
@@ -182,7 +183,7 @@ class MainFrame(Gtk.Window):
 
     def on_add(self, arg1):
         print("Addwin opens...")
-        self.liststore.append((30, "testinput", "status", "params"))
+        #self.liststore.append((30, "testinput", "status", "params"))
         #send_msg(util.MESSAGE_EXIT)
         self.addbutton.set_sensitive(False)
 
@@ -196,7 +197,21 @@ class MainFrame(Gtk.Window):
 
     # add alg to list
     def set_alg(self, alg):
-        print(alg)
+        id = len(self.liststore) + 1
+
+        # check if id is OK
+        for i in range(id-1, len(self.liststore)):
+            print(self.liststore.get_value(i, 0))
+
+        algname = alg[0]
+        params = alg[1]
+
+        params_str = ""
+        for i in params:
+            params_str = params_str + i + "; "
+
+        self.liststore.append((id, algname, "stand-by", params_str))
+
         print("set alg")
 
     def set_addButton_active(self):
