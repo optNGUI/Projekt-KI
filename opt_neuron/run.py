@@ -1,4 +1,4 @@
-### This script will take the parameter and initialize the core.
+﻿### This script will take the parameter and initialize the core.
 
 
 from .core import main as core_main
@@ -87,7 +87,8 @@ def run(*sysargs):
     
     # Step 3: Depending on args/config do one of the following:
         # a. Load the GUI/CLI and wait for input
-        
+    
+    gui_failed = False
     if args.gui:
         #gui = importlib.import_module('opt_neuron.'+args.gui, package='opt_neuron')
         #guimain = importlib.import_module('opt_neuron.'+args.gui+'.main', package='opt_neuron')
@@ -98,13 +99,12 @@ def run(*sysargs):
             
             #gui_main.main(out_queue, in_queue)
         except Exception as e:
-            print("###\n!!! GUI failed !!!" )
-            traceback.print_exc()
-            print('\n')
-        
+            gui_failed = True
+            out_queue.put(util.MESSAGE_FAILURE(None,"GUI failed! "+traceback.format_exc()))
+            
         
         # b. No GUI/CLI: Execute the commands in the config and set output to stdout
-    else:
+    if (args.gui is None) or (gui_failed == True):
         #__outqueue_to_stdout(out_queue)
 #        pass
         
@@ -122,9 +122,7 @@ def run(*sysargs):
                 else:
                     print('\x1b[2K\x1b[1G\x1b[0;33m\n'+msg.content+'\x1b[39;49m\n>', end="")
                 out_queue.task_done()
-        t = threading.Thread(target=listener)
-        t.daemon = True # This listener won't block the whole process
-        t.start()
+        
         import cmd
 
         print("Executing commands from config...")
@@ -136,8 +134,12 @@ def run(*sysargs):
             intro = ''
             prompt = '\x1b[1G>'
             
+            def emptyline(self):
+                return False
+            
             def default(self, arg):
                 in_queue.put(util.CommandMessage(content=arg))
+                return True
                 
             def do_help(self, line):
                 in_queue.put(util.CommandMessage(content='help'))
@@ -149,8 +151,8 @@ def run(*sysargs):
             def do_EOF(self, line):
                 in_queue.put(util.MESSAGE_EXIT)
         
-            def postcmd(self, stop, line):
-                return True
+        #    def postcmd(self, stop, line):
+        #       return True
     
         shell = SimpleShell()
         print('\nWelcome to the default Command Line Interface. '+ \
@@ -158,7 +160,9 @@ def run(*sysargs):
             'To exit the program, type "exit" or on Unix hit Ctrl-D\n' +\
             'For a list of possible commands type "help"\n')
     
-    
+        t = threading.Thread(target=listener)
+        t.daemon = True # This listener won't block the whole process
+        t.start()
     
     
     #for line in sys.stdin:

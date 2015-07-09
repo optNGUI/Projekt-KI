@@ -1,4 +1,4 @@
-from abc import ABCMeta
+﻿from abc import ABCMeta
 from abc import abstractmethod
 from enum import Enum
 from queue import PriorityQueue
@@ -74,7 +74,10 @@ class StatusMessage(Message):
 
 class RetValMessage(Message):
     def __init__(self, cmd_msg, appendix=None, content=None, priority=0):
-        self.__cmd_id = cmd_msg.id
+        if cmd_msg is not None:
+            self.__cmd_id = cmd_msg.id
+        else:
+            self.__cmd_id = -1
         self.__appendix = appendix
         if content==None:
             content = str(appendix)
