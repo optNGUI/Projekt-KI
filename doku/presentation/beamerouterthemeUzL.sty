@@ -1,4 +1,4 @@
-%
+﻿%
 % The UzL Outer Theme 
 %
 % using a rim (as declared in the corporate design
@@ -84,6 +84,7 @@ Missing Logo: File logo/unilogo300dpi.png not found!}{}%
 %
 \defbeamertemplate*{footline}{UzL}
 {%
+
 	\ifUzL@showfootline%
 		\leavevmode%
 		\hskip.022\paperwidth%
@@ -103,22 +104,22 @@ Missing Logo: File logo/unilogo300dpi.png not found!}{}%
 				\usebeamerfont{date in head/foot}\insertshortdate{}%
 				\hspace*{2em}%
 				\setbox0=\hbox{\UzL@insertMFN\unskip}\ifdim\wd0=0pt
-					\ifUzL@reduceTotalFrameNumber%fancy&still useless reduction ;)
-						\pgfmathtruncatemacro{\numerator}{%
-						\insertframenumber/gcd(\insertframenumber,\inserttotalframenumber)}%
-						\pgfmathtruncatemacro{\denominator}{%
-						\inserttotalframenumber/gcd(\insertframenumber,\inserttotalframenumber)}%
-						\ifnum\denominator=1%
-							\numerator%
-						\else%
-							\numerator/\denominator%
-						\fi%
-					\else%
+					%\ifUzL@reduceTotalFrameNumber%fancy&still useless reduction ;)
+					%	\pgfmathtruncatemacro{\numerator}{%
+					%	\insertframenumber/mygcd(\insertframenumber,\inserttotalframenumber)}%
+					%	\pgfmathtruncatemacro{\denominator}{%
+					%	\inserttotalframenumber/mygcd(\insertframenumber,\inserttotalframenumber)}%
+					%	\ifnum\denominator=1%
+					%		\numerator%
+					%	\else%
+					%		\numerator/\denominator%
+					%	\fi%
+					%\else%
 						\insertframenumber{}%
 						\ifUzL@displayTotalFrameNumber%
 							/ \inserttotalframenumber%
 						\fi%
-					\fi%
+					%\fi%
 				\else%
 					\UzL@insertMFN%
 					\global\def\UzL@insertMFN{}%
