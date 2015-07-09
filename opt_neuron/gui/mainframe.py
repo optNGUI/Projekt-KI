@@ -12,6 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 class MainFrame(Gtk.Window):
+    menu = Gtk.Menu()
+    active_select = None
+
     def __init__(self, in_queue, out_queue):
         self.__running = True
         Gtk.Window.__init__(self, title="OPT Neuron Algorithmen Kommandant")
@@ -32,7 +35,20 @@ class MainFrame(Gtk.Window):
         self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing = 6)
         self.add(self.vbox)
 
-    # +++ TOP BAR THINGY +++
+        # +++ context menu +++
+
+        self.rem = Gtk.MenuItem("remove")
+        self.rem.connect("activate", self.on_remove)
+        self.rem.set_sensitive(False)
+        self.menu.append(self.rem)
+        self.abort = Gtk.MenuItem("abort")
+        self.abort.connect("activate", self.on_abort)
+        self.abort.set_sensitive(False)
+        self.menu.append(self.abort)
+        self.menu.show_all()
+
+
+        # +++ TOP BAR THINGY +++
         self.tophbox = Gtk.Box(spacing = 6)
         self.vbox.pack_start(self.tophbox, False, True, 0)
 
@@ -98,6 +114,7 @@ class MainFrame(Gtk.Window):
   
     # +++ view +++
         self.tree = Gtk.TreeView(self.liststore)
+        self.tree.set_grid_lines(Gtk.TreeViewGridLines.HORIZONTAL)
 
         self.renderer = Gtk.CellRendererText()
         self.column = Gtk.TreeViewColumn("ID", self.renderer, text=0)
@@ -125,9 +142,9 @@ class MainFrame(Gtk.Window):
 
         # connect right mouse button thing
         self.treeselect = self.tree.get_selection()
-        #self.treeselect.connect("changed", self.on_rightclick)
         self.tree.connect("button_press_event", self.on_rightclick)
 
+        # +++ put tree view into scrollable pane
         self.scrollspace.add(self.tree)
 
         style_provider = Gtk.CssProvider()
@@ -204,12 +221,19 @@ class MainFrame(Gtk.Window):
             print(self.liststore.get_value(i, 0))
 
         algname = alg[0]
-        params = alg[1]
+        param_names = alg[1]
+        param_values = alg[2]
+
+        print(algname)
+        print(alg)
 
         params_str = ""
-        for i in params:
-            params_str = params_str + i + "; "
+        for i in range(0, len(param_values)):
+            params_str = params_str + param_names[i+2] + "=" + param_values[i] + "; "
 
+        params_str = params_str[:-2]
+
+        
         self.liststore.append((id, algname, "stand-by", params_str))
 
         print("set alg")
@@ -260,12 +284,35 @@ class MainFrame(Gtk.Window):
         return True
 
     def on_remove(self, arg1):
+        print("REMOVE SIGNAL GET")
         return
+
+    def on_abort(self, arg1):
+        print("ABORT SIGNAL GET")
+        return
+
 
     def on_rightclick(self, tv, event):
         if event.button == 3 and event.type == Gdk.EventType.BUTTON_PRESS:
             (tp, tvc, c_y, c_x) = tv.get_path_at_pos(event.x, event.y)
-            print("Treepath: " + tp.to_string())
+
+            self.abort.set_sensitive(False)
+            self.rem.set_sensitive(False)
+
+            # +++ ACTIVE SELECTION SET +++
+            self.active_select = tp
+            print("Treepath: " + str(self.active_select.to_string()))
+            
+            #print(self.liststore.get_value(self.active_select, 0))
+            iter = self.liststore.get_iter(tp)
+            if self.liststore.get_value(iter, 2) == "computing...":
+                self.abort.set_sensitive(True)
+            else:
+                self.rem.set_sensitive(True)
+
+            #print(self.liststore.get_value(iter, 2))
+
+            self.menu.popup(None, None, None, None, 0, Gtk.get_current_event_time())
 
 
 
