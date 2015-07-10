@@ -94,7 +94,7 @@ class MainFrame(Gtk.Window):
     #    self.tophbox.pack_start(self.label_one, False, True, 3)
 
         self.runstop = Gtk.Button(label = "Run", name = "RunStop")
-        self.runstop.connect("clicked", self.on_runstop)
+        self.runstop.connect("clicked", self.on_run)
         #self.runstop.set_sensitive(False)
         self.bottomhbox.pack_start(self.runstop, False, True, 3)
 
@@ -194,9 +194,32 @@ class MainFrame(Gtk.Window):
         send_msg(message)
         #send_msg(message)
 
-    def on_runstop(self, arg1):
+    def on_run(self, arg1):
+        if len(self.liststore) == 0:
+            return
+
         self.runstop.set_label("STOP")
-        print("runstop")
+        self.runstop.disconnect_by_func(self.on_run)
+        self.runstop.connect("clicked", self.on_stop)
+        print("Run initiated...")
+        
+        for alg in self.liststore:
+            print(alg[2])
+            if alg[2] == "stand-by":
+                print("preparing to run ID " + str(alg[0]) + "...")
+                break
+
+    def on_stop(self, arg1):
+        self.runstop.set_label("Run")
+        self.runstop.disconnect_by_func(self.on_stop)
+        self.runstop.connect("clicked", self.on_run)
+
+        print("Run aborted!")
+
+        for alg in self.liststore:
+            print(alg[2])
+            if alg[2] == "computing...":
+                print("computing in progress!")
 
     def on_add(self, arg1):
         print("Addwin opens...")
