@@ -200,13 +200,9 @@ class MainFrame(Gtk.Window):
 
     def on_add(self, arg1):
         print("Addwin opens...")
-        #self.liststore.append((30, "testinput", "status", "params"))
-        #send_msg(util.MESSAGE_EXIT)
         self.addbutton.set_sensitive(False)
 
         af = addframe.AddFrame(self)
-        #self.t = Thread( target=self.sendit, args=(util.CommandMessage(content="echo SHIT"),) )
-        #self.t.start()
         af.show_all()
 
     def on_edit(self, arg1):
@@ -260,26 +256,6 @@ class MainFrame(Gtk.Window):
                 showerror("Open Source File", "Failed to read file\n'%s'" % fname)
             return
 
-    def add_task_f(self):
-        self.add_task.config(state=DISABLED)
-        self.addwin = Toplevel()
-        self.addwin.wm_protocol("WM_DELETE_WINDOW", lambda:self.addwin_cancel())
-        self.addwin.okay = Button(self.addwin, text="OK", command=self.addwin_ok, width=2, height=2)
-        self.addwin.okay.grid(row=1, column=1)
-        self.addwin.cancel = Button(self.addwin, text="Cancel", command=self.addwin_cancel, width=2, height=2)
-        self.addwin.cancel.grid(row=1, column=2)
-
-
-    def addwin_ok(self):
-        # daten in scheduler hinzufugen
-        self.add_task.config(state=NORMAL)
-        self.addwin.destroy()
-
-    def addwin_cancel(self):
-        if messagebox.askokcancel("Quit", "Close without change?"):
-            self.add_task.config(state=NORMAL)
-            self.addwin.destroy()
-
     def close_call(self, arg1, arg2):
         # TODO check ob noch was laeuft, etc...
         #self.out_queue.put(util.StatusMessage(content = "in OH MEIN GOTT WAS IST GESCHEHEN!?"))
@@ -325,16 +301,4 @@ class MainFrame(Gtk.Window):
             #print(self.liststore.get_value(iter, 2))
 
             self.menu.popup(None, None, None, None, 0, Gtk.get_current_event_time())
-
-
-
-
-    def show_menu(self, *args):
-        i1 = Gtk.MenuItem("Item 1")
-        menu.append(i1)
-        i2 = Gtk.MenuItem("Item 2")
-        menu.append(i2)
-        menu.show_all()
-        menu.popup(None, None, None, None, 0, Gtk.get_current_event_time())
-        print("Done")
 
