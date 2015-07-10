@@ -217,8 +217,16 @@ class MainFrame(Gtk.Window):
         id = len(self.liststore) + 1
 
         # check if id is OK
-        for i in range(id-1, len(self.liststore)):
-            print(self.liststore.get_value(i, 0))
+        check = True
+        while check:
+            for x in self.liststore:
+                if x[0] == id:
+                    id = id+1
+                    break
+                else:
+                    check = False
+            check = False
+        # granted, the above check isn't exactly pythonic, but I don' care...
 
         algname = alg[0]
         param_names = alg[1]
@@ -284,10 +292,14 @@ class MainFrame(Gtk.Window):
         return True
 
     def on_remove(self, arg1):
+        # selection set at this point
         print("REMOVE SIGNAL GET")
+        iter = self.liststore.get_iter(self.active_select)
+        self.liststore.remove(iter)
         return
 
     def on_abort(self, arg1):
+        # selection set at this point
         print("ABORT SIGNAL GET")
         return
 
