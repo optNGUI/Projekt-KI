@@ -112,7 +112,7 @@ def parse_msg(msg):
                         try:
                             retval = util.RetValMessage(msg, appendix = config.options(content[2]))
                         except configparser.NoSectionError:
-                            retval = util.RetValMessage(msg, appendix = [], content = "no options here..."))
+                            retval = util.RetValMessage(msg, appendix = [], content = "no options here...")
                     else:
                         try:
                             retval = util.RetValMessage(msg, appendix = config.get(content[2],content[3]))
@@ -154,7 +154,7 @@ def parse_msg(msg):
                         config.get("SSH","net"),
                         config.get("SSH","analysis"),
                         __algorithm_funcs[__algorithm_names.index(content[1])])
-                    retval = util.RetValMessage(msg, appendix = func(*content[2:]), content="optimization started in new thread...")
+                    retval = util.RetValMessage(msg, appendix = func(int(content[2]),*content[3:]), content="optimization started in new thread...")
                 else:
                     retval = util.MESSAGE_FAILURE(msg, 'could not identify algorithm '+content[1])
                     

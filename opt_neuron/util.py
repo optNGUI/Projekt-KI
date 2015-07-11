@@ -80,7 +80,7 @@ class RetValMessage(Message):
         else:
             self.__cmd_id = -1
         self.__appendix = appendix
-        if content==None:
+        if content is None:
             content = str(appendix)
         super(RetValMessage, self).__init__(content=content, priority=priority)
         

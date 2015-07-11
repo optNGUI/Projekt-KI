@@ -87,14 +87,14 @@ class ThreadedAlgorithm():
     
     
     def fitness(self, *args):
-        #sum = 0
-        #for x in args:
-        #    sum += x
-        #ret = -abs(30-sum)        
+        sum = 0
+        for x in args:
+            sum += x
+        ret = -abs(30-sum)        
         
-        ret = net.start_net(self.host, self.net, self.analysis, *args)
-        if ret is None:
-            raise(Exception("error running net. maybe wrong SSH password?"))
+        #ret = net.start_net(self.host, self.net, self.analysis, *args)
+        #if ret is None:
+        #    raise(Exception("error running net. maybe wrong SSH password?"))
         return float(ret)
 
 
@@ -178,8 +178,8 @@ def simple_genetic(self, i_length, p_count = 100, generations = 100, i_min = 0, 
     p = population(int(p_count), int(i_length), int(i_min), int(i_max))
     fitness_history = [grade(p),]
     for i in range(int(generations)):
-        logger.debug("simple_genetic generation "+i)
-        print("simple_genetic generation "+i)
+        logger.debug("simple_genetic generation "+str(i))
+        print("simple_genetic generation "+str(i))
         p = evolve(p)
         fitness_history.append(grade(p))
 
