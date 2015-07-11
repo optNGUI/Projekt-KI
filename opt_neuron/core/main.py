@@ -112,12 +112,12 @@ def parse_msg(msg):
                         try:
                             retval = util.RetValMessage(msg, appendix = config.options(content[2]))
                         except configparser.NoSectionError:
-                            retval = util.RetValMessage(msg, appendix = [])
+                            retval = util.RetValMessage(msg, appendix = [], content = "no options here..."))
                     else:
                         try:
                             retval = util.RetValMessage(msg, appendix = config.get(content[2],content[3]))
                         except (configparser.NoSectionError, configparser.NoOptionError):
-                            retval = util.RetValMessage(msg, appendix = [])
+                            retval = util.RetValMessage(msg, appendix = [], content = "no value here...")
                 else:
                     retval = util.MESSAGE_FAILURE(msg,"cannot get "+content[1])
                     

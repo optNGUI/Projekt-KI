@@ -1,7 +1,8 @@
-﻿from abc import ABCMeta
+from abc import ABCMeta
 from abc import abstractmethod
 from enum import Enum
 from queue import PriorityQueue
+from sys import platform as _platform
 
 import logging
 logger = logging.getLogger(__name__)
@@ -99,13 +100,23 @@ MESSAGE_EXIT = CommandMessage('CORE-EXIT', priority=-9001)
 
 def MESSAGE_FAILURE(msg, status=None):
     if status:
-        return RetValMessage(msg, appendix = False, content="\x1b[1;31m"+status+"\x1b[39;49m")
+        if _platform == "linux" or _platform == "linux2":
+            return RetValMessage(msg, appendix = False, content="\x1b[1;31m"+status+"\x1b[39;49m")
+        else:
+            return RetValMessage(msg, appendix = False, content="ERROR: "+status)
     else:
-        return RetValMessage(msg, appendix = False, content="\x1b[1;31mERROR\x1b[39;49m")
+        if _platform == "linux" or _platform == "linux2":
+            return RetValMessage(msg, appendix = False, content="\x1b[1;31mERROR\x1b[39;49m")
+        else:
+            return RetValMessage(msg, appendix = False, content="ERROR")
+            
 
 def MESSAGE_SUCCESS(msg, status=None):
     if status:
-        return RetValMessage(msg, appendix = True, content="\x1b[1;32m"+status+"\x1b[39;49m")
+        if _platform == "linux" or _platform == "linux2":
+            return RetValMessage(msg, appendix = True, content="\x1b[1;32m"+status+"\x1b[39;49m")
+        else:
+            return RetValMessage(msg, appendix = True, content="SUCCESS: "+status)
     else:
         return RetValMessage(msg, appendix = True, content="")
 

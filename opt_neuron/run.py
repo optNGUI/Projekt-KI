@@ -1,4 +1,4 @@
-﻿### This script will take the parameter and initialize the core.
+### This script will take the parameter and initialize the core.
 
 
 from .core import main as core_main
@@ -7,6 +7,7 @@ from . import __version__
 from . import util
 import argparse, configparser, importlib, logging, threading, queue, traceback
 import sys, getpass
+from sys import platform as _platform
 
 shell = None
 
@@ -114,13 +115,19 @@ def run(*sysargs):
             while True:
                 msg = out_queue.get()
                 if isinstance(msg,util.RetValMessage):
-                    print('\x1b[2K\x1b[1G\n\x1b[1;34m'+msg.content+'\x1b[39;49m\n>', end="")
+                    if _platform == "linux" or _platform == "linux2":
+                        print('\n\x1b[2K\x1b[1G\x1b[1;34m'+msg.content+'\x1b[39;49m\n>', end="")
+                    else:
+                        print('\n'+msg.content+'\n>', end="")
                     if(t is None or not t.is_alive()):
                         t = threading.Thread(target = shell.cmdloop)#wait for new command after a return message was received
                         t.daemon = True
                         t.start()
                 else:
-                    print('\x1b[2K\x1b[1G\x1b[0;33m\n'+msg.content+'\x1b[39;49m\n>', end="")
+                    if _platform == "linux" or _platform == "linux2":
+                        print('\n\x1b[2K\x1b[1G\x1b[0;33m'+msg.content+'\x1b[39;49m\n>', end="")
+                    else:
+                        print('\n'+msg.content+'\n>', end="")
                 out_queue.task_done()
         
         import cmd
@@ -132,7 +139,11 @@ def run(*sysargs):
     
         class SimpleShell(cmd.Cmd):
             intro = ''
-            prompt = '\x1b[1G>'
+            
+            if _platform == "linux" or _platform == "linux2":
+                prompt = '\x1b[1G>'
+            else:
+                prompt = ''
             
             def emptyline(self):
                 return False
