@@ -7,6 +7,7 @@ import logging
 from .main import send_msg, get_msg
 from threading import Thread
 import numpy as np
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -207,6 +208,18 @@ class MainFrame(Gtk.Window):
             print(alg[2])
             if alg[2] == "stand-by":
                 print("preparing to run ID " + str(alg[0]) + "...")
+                runstr = alg[3].replace(" ","")
+                runstr = runstr.replace(";"," ")
+                p = re.compile('\w+=')
+                runstr = p.sub('', runstr)
+                print(runstr)
+
+                send_msg(util.CommandMessage(content = "start " + alg[1] + " " + runstr))
+                msg = get_msg()
+
+                print(msg)
+                thread = msg.appendix
+                print(thread.is_alive())
                 break
 
     def on_stop(self, arg1):
