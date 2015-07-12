@@ -8,6 +8,7 @@ from .main import send_msg, get_msg
 from threading import Thread
 import numpy as np
 import re
+from time import sleep
 
 logger = logging.getLogger(__name__)
 
@@ -173,7 +174,13 @@ class MainFrame(Gtk.Window):
         Gtk.main_quit()
         print("asd")
 
-    # def receive(self):
+    def receive(self):
+        # of a message comes along in here, it means a thread is ready.
+        # im multithreading control is implemented, this needs to choose
+        # the next thread in a list.
+        msg = get_msg()
+        print(msg)
+        
         # print("thread started")
         # while self.__running:
             # print("waiting...")
@@ -194,6 +201,15 @@ class MainFrame(Gtk.Window):
         print(message)
         send_msg(message)
         #send_msg(message)
+
+
+    # this thread waits for incomming messages after a computation is started
+    receive_t = None
+
+    # this remembers the current running computation. If multithreading
+    # is eventually implemented, this needs to hold a list of mapped
+    # computational threads with list IDs.
+    running = None
 
     def on_run(self, arg1):
         if len(self.liststore) == 0:
@@ -216,10 +232,16 @@ class MainFrame(Gtk.Window):
 
                 send_msg(util.CommandMessage(content = "start " + alg[1] + " " + runstr))
                 msg = get_msg()
-
+                print("ASDASDASDAD")
                 print(msg)
                 thread = msg.appendix
-                print(thread.is_alive())
+                sleep(0.05)
+                if(thread.is_alive()):
+                    alg[2] = "running..."
+                    print(get_msg())
+                    self.receive_t = Thread(target = self.receive)
+                    self.receive_t.start()
+                    running = alg[0]
                 break
 
     def on_stop(self, arg1):
