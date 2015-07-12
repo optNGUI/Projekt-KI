@@ -178,9 +178,21 @@ class MainFrame(Gtk.Window):
         # of a message comes along in here, it means a thread is ready.
         # im multithreading control is implemented, this needs to choose
         # the next thread in a list.
-        msg = get_msg()
-        print(msg)
-        
+        if not self.running_t.is_alive():
+            return
+
+        while True:
+            msg = get_msg()
+            print(msg.appendix)
+            print("thread still running: ")
+
+            if not self.running_t.is_alive():
+                print("thread finished")
+                self.running[2] = "done"
+                break
+
+            # thread still alive!
+            # will possibly receive more messages
         # print("thread started")
         # while self.__running:
             # print("waiting...")
@@ -210,6 +222,7 @@ class MainFrame(Gtk.Window):
     # is eventually implemented, this needs to hold a list of mapped
     # computational threads with list IDs.
     running = None
+    running_t = None
 
     def on_run(self, arg1):
         if len(self.liststore) == 0:
@@ -235,13 +248,16 @@ class MainFrame(Gtk.Window):
                 print("ASDASDASDAD")
                 print(msg)
                 thread = msg.appendix
-                sleep(0.05)
+                
+                #sleep(0.05)
+                
                 if(thread.is_alive()):
-                    alg[2] = "running..."
-                    print(get_msg())
+                    alg[2] = "computing..."
+                    #print(get_msg())
+                    self.running_t = thread
+                    self.running = alg
                     self.receive_t = Thread(target = self.receive)
                     self.receive_t.start()
-                    running = alg[0]
                 break
 
     def on_stop(self, arg1):
@@ -335,6 +351,7 @@ class MainFrame(Gtk.Window):
     def on_abort(self, arg1):
         # selection set at this point
         print("ABORT SIGNAL GET")
+
         return
 
 

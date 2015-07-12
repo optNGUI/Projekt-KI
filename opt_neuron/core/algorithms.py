@@ -91,7 +91,7 @@ class ThreadedAlgorithm():
         for x in args:
             sum += x
         ret = -abs(30-sum)        
-        sleep(0.05)
+        sleep(0.025)
         #ret = net.start_net(self.host, self.net, self.analysis, *args)
         #if ret is None:
         #    raise(Exception("error running net. maybe wrong SSH password?"))
