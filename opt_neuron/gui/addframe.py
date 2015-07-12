@@ -90,7 +90,7 @@ class AddFrame(Gtk.Window):
         specName = [(i) for i in args] 
         spec = [(j.get_text()) for j in __paramBox]
         
-        __parent.set_alg([__algo,specName,spec])
+        __parent.set_alg([__algo, specName, spec])
         __parent.set_addButton_active()
         self.destroy()
 

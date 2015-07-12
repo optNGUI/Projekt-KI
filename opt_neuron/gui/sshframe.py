@@ -6,6 +6,8 @@ from gi.repository import Gtk
 
 __pwdEntry = None
 __usrEntry = None
+__netEntry = None
+__analysisEntry = None
 __parent = None
 
 class SshFrame(Gtk.Window):
@@ -19,6 +21,8 @@ class SshFrame(Gtk.Window):
         
         global __pwdEntry
         global __usrEntry
+        global __netEntry
+        global __analysisEntry
         global __parent
         
         grid = Gtk.Grid()
@@ -40,13 +44,13 @@ class SshFrame(Gtk.Window):
 
         netLabel = Gtk.Label("net")
         
-        netEntry = Gtk.Entry()
-        netEntry.set_text("cd ~/acnet2 && genesis acnet2.g")
+        __netEntry = Gtk.Entry()
+        __netEntry.set_text("cd ~/acnet2 && genesis acnet2.g")
         
         analysisLabel = Gtk.Label("analysis")
         
-        analysisEntry = Gtk.Entry()
-        analysisEntry.set_text("cd ~/acnet2 && python ./analysis.py")
+        __analysisEntry = Gtk.Entry()
+        __analysisEntry.set_text("cd ~/acnet2 && python ./analysis.py")
         
         loginButton = Gtk.Button(label = "Login")
         loginButton.connect("clicked", self.on_loginButton_clicked)
@@ -57,24 +61,31 @@ class SshFrame(Gtk.Window):
         grid.attach(usrLabel,1,1,1,1)
         grid.attach_next_to(__usrEntry,usrLabel, Gtk.PositionType.BOTTOM,1,1)
         grid.attach_next_to(netLabel,__usrEntry, Gtk.PositionType.BOTTOM,1,1)
-        grid.attach_next_to(netEntry,netLabel, Gtk.PositionType.BOTTOM,1,1)
+        grid.attach_next_to(__netEntry,netLabel, Gtk.PositionType.BOTTOM,1,1)
         grid.attach_next_to(analysisLabel,usrLabel, Gtk.PositionType.RIGHT,1,1)
-        grid.attach_next_to(analysisEntry,analysisLabel, Gtk.PositionType.BOTTOM,1,1)
+        grid.attach_next_to(__analysisEntry,analysisLabel, Gtk.PositionType.BOTTOM,1,1)
         grid.attach_next_to(pwdLabel,netLabel, Gtk.PositionType.RIGHT,1,1)
-        grid.attach_next_to(__pwdEntry,netEntry, Gtk.PositionType.RIGHT,1,1)
-        grid.attach_next_to(loginButton,netEntry, Gtk.PositionType.BOTTOM,1,1)
+        grid.attach_next_to(__pwdEntry,__netEntry, Gtk.PositionType.RIGHT,1,1)
+        grid.attach_next_to(loginButton,__netEntry, Gtk.PositionType.BOTTOM,1,1)
         grid.attach_next_to(quitButton,loginButton, Gtk.PositionType.RIGHT,1,1)
 
     def on_loginButton_clicked(self,widget):
-        global __parent
-        send_msg(util.CommandMessage(content = 'password:  {msg}'.format(msg = __pwdEntry.get_text())))
+        
+        send_msg(util.CommandMessage(content = 'set password {msg}'.format(msg = __pwdEntry.get_text())))
+        p_reaction = get_msg()
         send_msg(util.CommandMessage(content = 'set config SSH host  {msg}'.format(msg = __usrEntry.get_text())))
         get_msg()
+        send_msg(util.CommandMessage(content = 'set config SSH net  {msg}'.format(msg = __netEntry.get_text())))
         get_msg()
+        send_msg(util.CommandMessage(content = 'set config SSH analysis  {msg}'.format(msg = __analysisEntry.get_text())))
+        get_msg()
+        send_msg(util.CommandMessage(content = 'save config'))
+        get_msg()
+        
         #__parent.set_runButton_active()
         self.destroy()
 
     def on_quitButton_clicked(self,widget):
-        global __parent
+        
         #__parent.set_runButton_active()
         self.destroy()
