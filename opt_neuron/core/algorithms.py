@@ -1,7 +1,7 @@
 ### Contains base class for algorithms ###
 from threading import Thread
 from .main import send_msg
-import types, inspect, logging, sys
+import types, inspect, logging, sys, traceback
 from enum import IntEnum
 from .. import util
 from . import net
@@ -39,7 +39,7 @@ class ThreadedAlgorithm():
         try:
             self.__return_value = self.func(*args, **kwargs)
         except Exception as e:
-            send_msg(util.MESSAGE_FAILURE(self.__msg, "optimization died: "+str(e)))            
+            send_msg(util.MESSAGE_FAILURE(self.__msg, "optimization died: "+str(e)+traceback.format_exc()))            
             return None
         self.__status = Status.RETURNED
         #send_msg(util.StatusMessage(content='terminated ' + self.func.__name__))
@@ -90,7 +90,10 @@ class ThreadedAlgorithm():
         sum = 0
         for x in args:
             sum += x
-        ret = -abs(30-sum)        
+        if sum == 30:
+            ret = 1
+        else:
+            ret = 1/abs(30-sum)        
         sleep(0.025)
         #ret = net.start_net(self.host, self.net, self.analysis, *args)
         #if ret is None:
@@ -192,6 +195,113 @@ def simple_genetic(self, i_length, p_count = 100, generations = 100, i_min = 0, 
             best = individuum
             bestfit = fitness(individuum)
     return [best,bestfit]
+
+
+@__add_alg
+def genetic_vernuenftig(self, i_length, generations, pop_size):
+    generations = int(generations)
+    pop_size = int(pop_size)
+    i_length = int(i_length)
+    import binstr, random
+    t = self
+    logger.info("Started vernünftigen genetischen Algorithmus")
+    
+    
+    def ind_to_params(ind):
+        params = [None for i in range(i_length)]
+        for i in range(i_length):
+            params[i] = ind[8*i:8*(i+1)]
+        return params
+    
+    def params_to_ind(params):
+        ind = ''
+        for i in params:
+            ind+=binstr.b_bin_to_gray(binstr.int_to_b(i))
+        return ind
+    
+    def individuum():
+        return params_to_ind([random.randint(0,256) for i in range(i_length)])
+    
+    population = [individuum() for i in range(pop_size)]
+    
+    def mutate(ind):
+        if len(ind) < 2:
+            raise TypeError("Individuum too short")
+        for i in range(len(ind)):
+            if random.random() < 1/len(ind):
+                if ind[i] == '0':
+                    replace = '1'
+                else:
+                    replace = '0'
+                ind = ind[:i] + replace + ind[i+1:]
+    
+    def crossover(ind1, ind2):
+        point1, point2 = 0, 255
+        while point1 == 0:
+            point1 = random.randint(0,255)
+        while point2 == 255:
+            point2 = random.randint(0,255)
+        if point1 > point2: # make sure point1 <= point2
+            point1, point2 = point2, point1
+        
+
+        child0 = ind1[:point1] + ind2[point1:point2] + ind1[point2:]
+        child1 = ind2[:point1] + ind1[point1:point2] + ind2[point2:]
+        return (child0,child1)
+    
+    def select():
+        cnt = 2
+        sum_fit = sum([fitness(ind) for ind in population])
+        pop = population[:]
+        random.shuffle(pop)
+        pairs = []
+        for i in range(cnt):
+            n = random.uniform(0, sum_fit)
+            m = random.uniform(0, sum_fit)
+            tmp_sum = 0
+            first, second = None, None
+            for ind in pop:
+                tmp_sum += fitness(ind)
+                if tmp_sum >= n:
+                    first = ind
+                    break
+            tmp_sum = 0
+            for ind in pop:
+                tmp_sum += fitness(ind)
+                if tmp_sum >= m:
+                    second = ind
+                    break
+            if first is None or second is None:
+                print("FAILED")
+                raise RuntimeError("Ooops")
+            pairs.append((first, second))
+        return pairs
+    
+    def fitness(ind):
+        params = ind_to_params(ind)
+        params = [int(x) for x in params]
+        return t.fitness(*params)
+    
+    for i in range(generations):
+        logger.debug("Generation {i}".format(i=i))
+        parents = select()
+        children = []
+        for p in parents:
+            ind1, ind2 = p
+            children.extend(crossover(ind1, ind2))
+        n = len(population)
+        for child in children:
+            if child not in population:
+                population.append(child)
+        while len(population) > n:  # O(|children|)
+            population.remove(min(population, key=fitness))
+    best = max(population, key=fitness)
+    
+    bestfit = fitness(best)
+    best = ind_to_params(best)
+    best = [binstr.b_to_int(i) for i in best]
+    return (best,bestfit)
+    
 
 @__add_alg
 def random_search(self, i_length, step_size=5, steps=100, i_min=0, i_max=100):
