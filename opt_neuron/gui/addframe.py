@@ -153,11 +153,12 @@ class AddFrame(Gtk.Window):
         names = appendix[0]
         function = appendix[1]
         argSpecs = appendix[2]
-
-        for x in range(num_algos-1): 
+        
+        for x in range(num_algos): 
             __algos.append(names[x])
             __argSpecs.append(argSpecs[x])
             __algoCombo.append_text(names[x])
+
 
     def set_algo_from_main(algo, values):
     # Function that is calles from mainframe when user wants to reedit an algorithm he already chose.
