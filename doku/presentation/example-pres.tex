@@ -16,10 +16,7 @@
 \usepackage{enumerate,graphicx}
 \usepackage[utf8]{inputenc}
 \usepackage{fontspec}
-%\usepackage{savetrees}
-%\usepackage{tikz}
-%\usepackage{tikz-uml}
-\usepackage{mathpazo}
+\usepackage{pdfpages}
 
 % Load Them
 \usetheme[slogan=false, navigation=true,reducedframetotal, myriad=false]{UzL}
@@ -102,46 +99,7 @@
 	\end{frame}
 	
 	\begin{frame}
-	some stuff
-%	\begin{figure}[h!]
-%	\begin{tikzpicture}
-%	\begin{umlsystem}{GUI}
-%	\umlusecase[x=-4]{load config}
-%	\umlusecase[x=-2,y=-1]{add algorithm}
-%	\umlusecase[x=5]{choose algo}
-%	\umlusecase[x=3, y=-2]{set params}
-%	\umlusecase[x=0,y=-3]{view runtime} 
-%	\umlusecase[x=6,y=-6]{remove}
-%	\umlusecase[x=6,y=-4]{edit algo}
-%	\umlusecase[x=-4,y=-3]{run optimization}
-%	\umlusecase[x=-4,y=-6]{set ssh keys}
-%	\umlusecase[x=-1,y=-6]{stop}
-%	\umlusecase[x=2,y=-6]{abort}
-%	\umlusecase[x=-5,y=-7]{export data}
-%	
-%	
-%	\end{umlsystem}
-%	
-%	\umlactor[x=-8]{Initiator}
-%	
-%	\umlassoc{Initiator}{usecase-1}
-%	\umlassoc{Initiator}{usecase-2}
-%	\umlassoc{Initiator}{usecase-5}
-%	\umlassoc{Initiator}{usecase-8}
-%	\umlassoc{Initiator}{usecase-12}
-%	%\umlassoc{usecase-1}{usecase-7}
-%	
-%	\umlinclude{usecase-2}{usecase-3}
-%	\umlinclude{usecase-2}{usecase-4}
-%	\umlextend{usecase-5}{usecase-6}
-%	\umlextend{usecase-5}{usecase-7}
-%	\umlinclude{usecase-7}{usecase-3}
-%	\umlinclude{usecase-7}{usecase-4}
-%	\umlinclude{usecase-8}{usecase-9}
-%	\umlextend{usecase-8}{usecase-10}
-%	\umlextend{usecase-8}{usecase-11}
-%	\end{tikzpicture}
-%	\end{figure}
+	\includepdf[pages=-]{GUI-use-case.pdf}
 	\end{frame}
 	
 	\begin{frame}{Implementierung}{Abhängigkeiten}
