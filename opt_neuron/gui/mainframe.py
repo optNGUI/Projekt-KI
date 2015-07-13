@@ -4,7 +4,7 @@ from . import sshframe
 from .. import util
 from gi.repository import Gtk, Gdk
 import logging
-from .main import send_msg, get_msg
+from .main import send_msg, get_msg, get_intercom_msg
 from threading import Thread
 #import numpy as np
 import re
@@ -17,11 +17,9 @@ class MainFrame(Gtk.Window):
     menu = Gtk.Menu()
     active_select = None
 
-    def __init__(self, in_queue, out_queue):
+    def __init__(self):
         self.__running = True
         Gtk.Window.__init__(self, title="OPT Neuron Algorithmen Kommandant")
-        self.in_queue = in_queue
-        self.out_queue = out_queue
         self.connect("delete-event", self.close_call)
 
 
@@ -174,22 +172,58 @@ class MainFrame(Gtk.Window):
         Gtk.main_quit()
         print("asd")
 
+
+
     def receive(self):
         # of a message comes along in here, it means a thread is ready.
-        # im multithreading control is implemented, this needs to choose
+        # if multithreading control is implemented, this needs to choose
         # the next thread in a list.
-        if not self.running_t.is_alive():
-            return
+        #if not self.running_t.is_alive():
+        #    return
 
         while True:
-            msg = get_msg()
+            print("receiving...")
+            msg = get_intercom_msg()
             print(msg.appendix)
             print("thread still running: ")
+            
+            for i in self.running:
+                if i[1] == msg.cmd_id:
+                    print("msg owner arrived")
+                    try:
+                        if msg.appendix.is_alive():
+                            i[2] = msg.appendix
+                            for alg in self.liststore:
+                                if alg[0] == i[0]:
+                                    alg[2] = "computing..."
+                    except:
+                        print("not a thread in appendix!")
+                        print("====")
+                        print(msg.content)
+                        print("====")
+                        for alg in self.liststore:
+                            if alg[0] == i[0]:
+                                alg[2] = msg.content
+                        
+                        self.running.remove(i)
 
-            if not self.running_t.is_alive():
-                print("thread finished")
-                self.running[2] = "done"
-                break
+                        for alg in self.liststore:
+                            if alg[2] == "stand-by":
+                                self.initiate()
+                            else:
+                                self.cleanup()
+                        return
+
+
+                
+
+            # get message return here.
+
+            #for x in self.running:
+                #if not .is_alive():
+                #    print("thread finished")
+                #    self.running[2] = "done"
+                #    return
 
             # thread still alive!
             # will possibly receive more messages
@@ -221,8 +255,17 @@ class MainFrame(Gtk.Window):
     # this remembers the current running computation. If multithreading
     # is eventually implemented, this needs to hold a list of mapped
     # computational threads with list IDs.
-    running = None
-    running_t = None
+    
+    # index: alg in list,
+   
+    # running[i][0]: list id
+    # running[i][1]: message id
+    # running[i][2]: thread
+    running = []
+
+    #running = None
+    #running_t = None
+    #running_
 
     def on_run(self, arg1):
         if len(self.liststore) == 0:
@@ -231,34 +274,48 @@ class MainFrame(Gtk.Window):
         self.runstop.set_label("STOP")
         self.runstop.disconnect_by_func(self.on_run)
         self.runstop.connect("clicked", self.on_stop)
+        self.initiate()
         print("Run initiated...")
         
+
+    def intercom_message():
+        return
+
+    def initiate(self):
         for alg in self.liststore:
-            print(alg[2])
             if alg[2] == "stand-by":
                 print("preparing to run ID " + str(alg[0]) + "...")
                 runstr = alg[3].replace(" ","")
                 runstr = runstr.replace(";"," ")
                 p = re.compile('\w+=')
                 runstr = p.sub('', runstr)
-                print(runstr)
 
-                send_msg(util.CommandMessage(content = "start " + alg[1] + " " + runstr))
-                msg = get_msg()
-                print("ASDASDASDAD")
-                print(msg)
-                thread = msg.appendix
+                c_message = util.CommandMessage(content = "start " + alg[1] + " " + runstr)
+                self.running.append([alg[0], c_message.id, None])
+                #                                     ^------- will be filled once thread is inbound
+                print(self.running[:])
+                send_msg(c_message, thread_intercom_id = c_message.id)
+                self.receive_t = Thread(target = self.receive)
+                self.receive_t.start()
+                #msg = get_msg()
+                #print("ASDASDASDAD")
+                #print(msg)
+                #thread = msg.appendix
                 
                 #sleep(0.05)
                 
-                if(thread.is_alive()):
-                    alg[2] = "computing..."
+                #if(thread.is_alive()):
+                #    alg[2] = "computing..."
                     #print(get_msg())
-                    self.running_t = thread
-                    self.running = alg
-                    self.receive_t = Thread(target = self.receive)
-                    self.receive_t.start()
+                #    self.running[alg[0]] = thread
+                #    self.running = alg
+                #    self.receive_t = Thread(target = self.receive)
+                #    self.receive_t.start()
                 break
+
+
+    def cleanup():
+        return
 
     def on_stop(self, arg1):
         self.runstop.set_label("Run")
@@ -281,6 +338,8 @@ class MainFrame(Gtk.Window):
 
     def on_edit(self, arg1):
         return
+
+
 
     # add alg to list
     def set_alg(self, alg):

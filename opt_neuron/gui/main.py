@@ -10,25 +10,35 @@ __out_queue = None
 __in_queue = None
 __msg = None
 
+__thread_intercom_q = None
+__thread_intercom_msgid = []
+
 def main(in_queue, out_queue):
     global __out_queue 
     global __in_queue 
     global __msg
-    global __running
+    global __thread_intercom_q
+    global __thread_intercom_msgid
     
     __out_queue = out_queue
     __in_queue = in_queue
 
-    testWin = test(__in_queue, __out_queue)
+    __thread_intercom_q = util.MessageQueue()
+
+    main_window = engage_display()
     Gtk.main()
     
     receiver_t = Thread( target=receive )
     receiver_t.start()
 
-def send_msg(*msg):
+def send_msg(*msg, thread_intercom_id = -1):
+    if thread_intercom_id > -1:
+        __thread_intercom_msgid.append(thread_intercom_id)
+        print("threadind ID added")
+
     for i in msg:
         logger.debug("Sent message: {msg}".format(msg=str(msg)))
-        print(__out_queue.put(i))
+        __out_queue.put(i)
     
 def __on_destroy():
     print("closing Gui!")
@@ -43,6 +53,11 @@ def receive():
     while not __msg_read:
         __msg = __in_queue.get()
         if __msg is not None:
+            try:
+                idx = __thread_intercom_msgid.index(__msg.cmd_id)
+                __thread_intercom_q.put(__msg) # message is for thread things
+            except:
+                pass # nothing
             #print(__msg)
             __msg_read = 1
     __msg_read = 0
@@ -57,15 +72,35 @@ def receive():
 def get_msg():
     global __msg
     receive()
+    print("__msg:")
+    print(__msg)
+    print("__msg.appendix:")
+    print(__msg.appendix)
+    print("__msg.content:")
+    print(__msg.content)
+    print("__msg.cmd_id:")
+    print(__msg.cmd_id)
     return __msg
-    
+
+
+def get_intercom_msg():
+    lock = False
+    print("waiting....")
+    receive()
+    while not lock:
+        i_msg = __thread_intercom_q.get()
+        if i_msg is not None:
+            lock = True
+
+    return i_msg
+
+
 from . import addframe
 from . import mainframe
 from . import sshframe
 
-
-def test(in_queue, out_queue):
-    mf = mainframe.MainFrame(in_queue, out_queue) #MainFrame(root)
+def engage_display():
+    mf = mainframe.MainFrame() #MainFrame(root)
     mf.connect("delete-event", Gtk.main_quit)
     mf.show_all()
 
