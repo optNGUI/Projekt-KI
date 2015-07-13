@@ -198,7 +198,7 @@ def simple_genetic(self, i_length, p_count = 100, generations = 100, i_min = 0, 
 
 
 @__add_alg
-def genetic_vernuenftig(self, i_length, generations, pop_size):
+def genetic_vernuenftig(self, i_length, generations=50, pop_size=10):
     generations = int(generations)
     pop_size = int(pop_size)
     i_length = int(i_length)
