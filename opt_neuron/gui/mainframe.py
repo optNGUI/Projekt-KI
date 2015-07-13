@@ -168,7 +168,7 @@ class MainFrame(Gtk.Window):
     def __on_destroy(self):
         print("closing Gui!")
         self.__running = False
-        Thread( target=self.sendit, args=(util.MESSAGE_EXIT,) ).start()
+        send_msg(util.MESSAGE_EXIT)
         Gtk.main_quit()
         print("asd")
 
@@ -369,7 +369,8 @@ class MainFrame(Gtk.Window):
 
         params_str = ""
         for i in range(0, len(param_values)):
-            params_str = params_str + param_names[i+2] + "=" + param_values[i] + "; "
+            print("<<<<<<<<<<")
+            params_str = params_str + param_names[i+1] + "=" + param_values[i] + "; "
 
         params_str = params_str[:-2]
 
@@ -397,6 +398,7 @@ class MainFrame(Gtk.Window):
         #self.out_queue.put(util.StatusMessage(content = "in OH MEIN GOTT WAS IST GESCHEHEN!?"))
         #self.out_queue.put(util.MESSAGE_EXIT)
         print("end")
+        self.cleanup()
         self.destroy()
         self.__on_destroy()
         #Gtk.main_quit()

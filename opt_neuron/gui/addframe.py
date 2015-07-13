@@ -54,7 +54,7 @@ class AddFrame(Gtk.Window):
         #edit button
         editButton = Gtk.Button(label="adopt")
         editButton.connect("clicked", self.on_editButton_clicked)  
-        
+
         #quit button
         quitButton = Gtk.Button(label="quit")
         quitButton.connect("clicked", self.on_quitButton_clicked)
@@ -85,11 +85,30 @@ class AddFrame(Gtk.Window):
         global __algo
         global __paramBox
         global __parent
+        
+        for i in __paramBox:
+            try:
+                inputNum = int(str(i.get_text()))
 
+                if i == 1:
+                    if inputNum not in range(1,1000000):
+                        print(1)
+                        alert = Alert(self)
+                        response = alert.run()
+                        return
+                elif inputNum not in range(0,1000000):
+                    print(2)
+                    alert = Alert(self)
+                    response = alert.run()
+                    return
+            except ValueError: 
+                print(3)
+                alert = Alert(self)
+                response = alert.run()
+                return
         args = __argSpecs[(__algos.index(__algo))].args
         specName = [(i) for i in args] 
         spec = [(j.get_text()) for j in __paramBox]
-        
         __parent.set_alg([__algo, specName, spec])
         __parent.set_addButton_active()
         self.destroy()
@@ -185,3 +204,15 @@ class AddFrame(Gtk.Window):
         global __parent
         __parent.set_addButton_active()
         self.destroy()
+        
+class Alert(Gtk.Dialog):
+    def __init__(self,parent):
+        Gtk.Dialog.__init__(self,"ValueError",parent,0)
+            
+        self.set_default_size(150,50)
+        
+        label = Gtk.Label("The parameter 'i_length' has to be greater than 0 and the other parameter have to be in range of 1 to 1000000." )
+
+        box = self.get_content_area()
+        box.add(label)
+        self.show_all()
