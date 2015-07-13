@@ -157,6 +157,8 @@ def parse_msg(msg):
                         __algorithm_funcs[__algorithm_names.index(content[1])])
                     if len(content) > 2:
                         retval = util.RetValMessage(msg, appendix = func(*content[2:]), content="optimization started in new thread...\ncall 'stop "+str(msg.id)+"' to terminate the computation.")
+                    else:
+                        retval = util.MESSAGE_FAILURE(msg, "not enough arguments. call 'get algorithms "+content[1]+"' for further information.")
                 else:
                     retval = util.MESSAGE_FAILURE(msg, 'could not identify algorithm '+content[1])
                     
