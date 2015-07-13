@@ -21,7 +21,10 @@ def __add_alg(func):
 
 def kill(id):
     global algkill
+    if algkill[id] is not None:
+        return False
     algkill[id] = True
+    return True
 
 class Status(IntEnum):
     NOT_STARTED = -1
@@ -46,12 +49,13 @@ class ThreadedAlgorithm():
         self.__status = Status.RUNNING
         try:
             self.__return_value = self.func(*args, **kwargs)
+            algkill[self.__msg.id] = True
         except Exception as e:
             send_msg(util.MESSAGE_FAILURE(self.__msg, "optimization died: "+str(e)+traceback.format_exc()))            
             return None
         self.__status = Status.RETURNED
         #send_msg(util.StatusMessage(content='terminated ' + self.func.__name__))
-        send_msg(util.RetValMessage(self.__msg, appendix = self.__return_value))
+        send_msg(util.RetValMessage(self.__msg, appendix = self.__return_value, content = "optimization "+str(self.__msg.id)+" returned: "+str(self.__return_value)))
     
     def __init__(self, msg, host, net, analysis, func):
         
@@ -191,7 +195,7 @@ def simple_genetic(self, i_length, p_count = 100, generations = 100, i_min = 0, 
     fitness_history = [grade(p),]
     for i in range(int(generations)):
         logger.debug("simple_genetic generation "+str(i))
-        print("simple_genetic generation "+str(i))
+        #print("simple_genetic generation "+str(i))
         p = evolve(p)
         fitness_history.append(grade(p))
         if(algkill[t.msg.id] is not None):
@@ -305,7 +309,7 @@ def genetic2(self, i_length, generations=50, pop_size=10):
         for child in children:
             if child not in population:
                 population.append(child)
-        print(str(len(population)))
+        #print(str(len(population)))
         while len(population) > n:  # O(|children|)
             population.remove(min(population, key=fitness))
         for i, ind in enumerate(population):
@@ -334,7 +338,7 @@ def random_search(self, i_length, step_size=5, steps=100, i_min=0, i_max=100):
     bestfit = t.fitness(*best)
     for i in range(int(steps)):
         logger.debug("random_search step "+str(i))
-        print("random_search step "+str(i))
+        #print("random_search step "+str(i))
         new = [min(int(i_max),max(int(i_min),(i+(2*random()-1)*int(step_size)))) for i in best]
         if(bestfit < t.fitness(*new)):
             best = new

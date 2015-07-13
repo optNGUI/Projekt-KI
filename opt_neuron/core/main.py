@@ -164,8 +164,14 @@ def parse_msg(msg):
                 retval = util.RetValMessage(msg, appendix = content[1])
             
             elif content[0] == 'stop' and len(content) > 1:
-                algorithms.kill(int(content[1]))
-            
+                try:
+                    if algorithms.kill(int(content[1])):
+                        retval = util.MESSAGE_SUCCESS(msg,"optimization "+str(content[1])+" is going to terminate...")
+                    else:
+                        retval = util.MESSAGE_SUCCESS(msg,"optimization "+str(content[1])+" already terminated...")
+                except KeyError:
+                    retval = util.MESSAGE_FAILURE(msg,"optimization "+str(content[1])+" has not been started yet")
+                
             else:
                 retval = util.MESSAGE_FAILURE(msg,"unknown command "+content[0]+" for this number of arguments")
             
