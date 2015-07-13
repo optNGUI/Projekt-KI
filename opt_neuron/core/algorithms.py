@@ -90,11 +90,11 @@ class ThreadedAlgorithm():
         sum = 0
         for x in args:
             sum += x
-        if sum == 30:
+        if sum == 100:
             ret = 1
         else:
-            ret = 1/abs(30-sum)        
-        sleep(0.025)
+            ret = 1/abs(100-sum)        
+        #sleep(0.025)
         #ret = net.start_net(self.host, self.net, self.analysis, *args)
         #if ret is None:
         #    raise(Exception("error running net. maybe wrong SSH password?"))
@@ -275,6 +275,7 @@ def genetic_vernuenftig(self, i_length, generations, pop_size):
                 print("FAILED")
                 raise RuntimeError("Ooops")
             pairs.append((first, second))
+        print(str(pairs))
         return pairs
     
     def fitness(ind):
@@ -293,8 +294,15 @@ def genetic_vernuenftig(self, i_length, generations, pop_size):
         for child in children:
             if child not in population:
                 population.append(child)
+        print(str(len(population)))
         while len(population) > n:  # O(|children|)
             population.remove(min(population, key=fitness))
+        for i, ind in enumerate(population):
+            new_ind = (ind+'.')[:-1]
+            mutate(new_ind)
+            if fitness(new_ind) >= fitness(ind) and new_ind not in population:
+                population[i] = new_ind
+        
     best = max(population, key=fitness)
     
     bestfit = fitness(best)
