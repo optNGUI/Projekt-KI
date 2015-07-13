@@ -146,7 +146,6 @@ class AddFrame(Gtk.Window):
 
         send_msg(util.CommandMessage(content = "get algorithms"))
         __algoList = get_msg()
-       
         appendix = __algoList.appendix
         num_algos = len(appendix)
         
