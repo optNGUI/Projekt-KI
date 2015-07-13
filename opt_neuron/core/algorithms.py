@@ -1,4 +1,4 @@
-### Contains base class for algorithms ###
+﻿### Contains base class for algorithms ###
 from threading import Thread
 from .main import send_msg
 import types, inspect, logging, sys, traceback
@@ -198,7 +198,7 @@ def simple_genetic(self, i_length, p_count = 100, generations = 100, i_min = 0, 
 
 
 @__add_alg
-def genetic_vernuenftig(self, i_length, generations=50, pop_size=10):
+def genetic2(self, i_length, generations=50, pop_size=10):
     generations = int(generations)
     pop_size = int(pop_size)
     i_length = int(i_length)

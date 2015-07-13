@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 from . import addframe
 from . import sshframe
 from .. import util
@@ -6,7 +6,7 @@ from gi.repository import Gtk, Gdk
 import logging
 from .main import send_msg, get_msg
 from threading import Thread
-import numpy as np
+#import numpy as np
 import re
 from time import sleep
 
