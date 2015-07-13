@@ -85,7 +85,7 @@ class SshFrame(Gtk.Window):
         #__parent.set_runButton_active()
         self.destroy()
 
-    def on_quitButton_clicked(self,widget):
+    def on_quitButton_clicked(self,widget,targedwidget):
         
         #__parent.set_runButton_active()
         self.destroy()
