@@ -98,7 +98,10 @@ def parse_msg(msg):
                         for i in range(len(__algorithm_names)):
                             if(content[2] == __algorithm_names[i]):
                                 line = content[2]+" "
-                                indoffset = len(__algorithm_argspec[i].args[1:])-len(__algorithm_argspec[i].defaults);
+                                if(__algorithm_argspec[i].defaults is not None):
+                                    indoffset = len(__algorithm_argspec[i].args[1:])-len(__algorithm_argspec[i].defaults);
+                                else:
+                                    indoffset = len(__algorithm_argspec[i].args[1:])
                                 for ind,arg in enumerate(__algorithm_argspec[i].args[1:]):
                                     line += arg
                                     if indoffset <= ind:
@@ -154,7 +157,8 @@ def parse_msg(msg):
                         config.get("SSH","net"),
                         config.get("SSH","analysis"),
                         __algorithm_funcs[__algorithm_names.index(content[1])])
-                    retval = util.RetValMessage(msg, appendix = func(int(content[2]),*content[3:]), content="optimization started in new thread...")
+                    if len(content) > 2:
+                        retval = util.RetValMessage(msg, appendix = func(*content[2:]), content="optimization started in new thread...")
                 else:
                     retval = util.MESSAGE_FAILURE(msg, 'could not identify algorithm '+content[1])
                     
