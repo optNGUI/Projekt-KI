@@ -14,9 +14,14 @@
 \usepackage[ngerman]{babel} % Neue Rechtschreibung
 \usepackage{amsmath,amsthm,amssymb,euscript} % AMS-LaTeX  
 \usepackage{enumerate,graphicx}
-\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+%\usepackage[utf8]{inputenc}
 \usepackage{fontspec}
 \usepackage{pdfpages}
+\usepackage{listings}
+\usepackage{cmap}
+
+
 
 % Load Them
 \usetheme[slogan=false, navigation=true,reducedframetotal, myriad=false]{UzL}
@@ -32,6 +37,30 @@
 \setlogo{1}{.25\paperwidth}{logos/unilogo300dpi.png}%
 
 \begin{document}
+
+\defverbatim[colored]\makeset{%
+	\begin{lstlisting}[ basicstyle=\tiny,  ]
+	-----------------------------------------
+	----------Welcome to opt_neuron----------
+	-----------------------------------------
+	For informations about the authors use the flag --version
+	
+	Executing commands from config...
+	
+	Welcome to the default Command Line Interface. You may enter a command now, e.g. "echo MESSAGE"
+	To exit the program, type "exit" or on Unix hit Ctrl-D
+	For a list of possible commands type "help"
+	
+	
+	
+	>get algorithms simple_genetic
+	
+	simple_genetic i_length p_count=100 generations=100 i_min=0 i_max=100 
+	>
+	\end{lstlisting}
+}
+
+
 	\maketitle
 	\begin{frame}{Gliederung}
 		\tableofcontents
@@ -86,7 +115,7 @@
 	\end{frame}
 	
 	\begin{frame}{Implementierung}{CLI}
-	Bild $\rightarrow$ Live-Demo?
+	\makeset
 	\end{frame}
 
 	\begin{frame}{Implementierung}{GUI}
@@ -99,7 +128,7 @@
 	\end{frame}
 	
 	\begin{frame}
-	\includepdf[pages=-]{GUI-use-case.pdf}
+	\includegraphics[scale=0.5]{GUI-use-case.png} 
 	\end{frame}
 	
 	\begin{frame}{Implementierung}{Abhängigkeiten}

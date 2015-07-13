@@ -1,4 +1,4 @@
-### This script will take the parameter and initialize the core.
+﻿### This script will take the parameter and initialize the core.
 
 
 from .core import main as core_main
@@ -161,6 +161,7 @@ def run(*sysargs):
         
             def do_EOF(self, line):
                 in_queue.put(util.MESSAGE_EXIT)
+                return True
         
         #    def postcmd(self, stop, line):
         #       return True
