@@ -24,7 +24,7 @@ def call(host, passwd, command):
     
     
 # TODO: Annotation: Cache similar calls
-@lru_cache()
+@lru_cache(maxsize=10000)
 def start_net(host,net,analysis,*args):
     """Starts the net with the given parameters and
     returns the fitness value calculated by the
