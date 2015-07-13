@@ -1,4 +1,4 @@
-﻿### Contains base class for algorithms ###
+### Contains base class for algorithms ###
 from threading import Thread
 from .main import send_msg
 import types, inspect, logging, sys, traceback
@@ -12,11 +12,16 @@ from time import time, sleep
 
 logger = logging.getLogger(__name__)
 algs = []
+algkill = {} #tell an algorithm to terminate
 
 def __add_alg(func):
     global algs
     algs.append(func)
     return func
+
+def kill(id):
+    global algkill
+    algkill[id] = True
 
 class Status(IntEnum):
     NOT_STARTED = -1
@@ -25,6 +30,7 @@ class Status(IntEnum):
 
 
 class ThreadedAlgorithm():
+        
     """
     This class represents a threaded algorithm.
     The constructor takes a func object which should hold the algorithm's code.
@@ -35,6 +41,8 @@ class ThreadedAlgorithm():
     # TODO : HEAVY Refactoring!
     
     def __callWrapper(self, *args, **kwargs):
+        global algkill
+        algkill[self.__msg.id] = None
         self.__status = Status.RUNNING
         try:
             self.__return_value = self.func(*args, **kwargs)
@@ -57,6 +65,7 @@ class ThreadedAlgorithm():
         self.__status = Status.NOT_STARTED
         self.__return_value = None
         self.__msg = msg
+    
         # You may extend this feature to support requesting 
         # some values, e.g. the current fitness
     
@@ -185,6 +194,8 @@ def simple_genetic(self, i_length, p_count = 100, generations = 100, i_min = 0, 
         print("simple_genetic generation "+str(i))
         p = evolve(p)
         fitness_history.append(grade(p))
+        if(algkill[t.msg.id] is not None):
+            break
 
     #for datum in fitness_history:
     #    print(datum)
@@ -302,6 +313,8 @@ def genetic2(self, i_length, generations=50, pop_size=10):
             mutate(new_ind)
             if fitness(new_ind) >= fitness(ind) and new_ind not in population:
                 population[i] = new_ind
+        if(algkill[t.msg.id] is not None):
+            break
         
     best = max(population, key=fitness)
     
@@ -326,6 +339,9 @@ def random_search(self, i_length, step_size=5, steps=100, i_min=0, i_max=100):
         if(bestfit < t.fitness(*new)):
             best = new
             bestfit = t.fitness(*new)
+        if(algkill[t.msg.id] is not None):
+            break
+        
     return [best,bestfit]
      
 
