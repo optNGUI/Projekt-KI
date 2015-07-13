@@ -17,7 +17,7 @@ class SshFrame(Gtk.Window):
         self.set_default_size(200,140)
         self.set_border_width(10)
         self.set_resizable(0)
-        self.connect("delete-event",self.on_quitButton_clicked)
+        self.connect("delete-event",self.on_xButton_clicked)
         
         global __pwdEntry
         global __usrEntry
@@ -85,7 +85,10 @@ class SshFrame(Gtk.Window):
         #__parent.set_runButton_active()
         self.destroy()
 
-    def on_quitButton_clicked(self,widget,targedwidget):
+    def on_quitButton_clicked(self,widget):
+        #__parent.set_runButton_active()
+        self.destroy()
         
+    def on_xButton_clicked(self,widget,targetwidget):
         #__parent.set_runButton_active()
         self.destroy()

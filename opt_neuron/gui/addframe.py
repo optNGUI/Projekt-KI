@@ -17,6 +17,7 @@ __algoList = None
 __algo = None
 __parent = None
 __labelBox = None
+__i_length = None
 
 class AddFrame(Gtk.Window):
     def __init__(self,parent):
@@ -31,6 +32,7 @@ class AddFrame(Gtk.Window):
         global __algoList
         global __algo
         global __parent
+        global __i_length
         
         self.set_default_size(100,100)
         self.set_border_width(10)
@@ -85,27 +87,21 @@ class AddFrame(Gtk.Window):
         global __algo
         global __paramBox
         global __parent
+        global __i_length
         
         for i in __paramBox:
             try:
                 inputNum = int(str(i.get_text()))
-
-                if i == 1:
+                if i == __i_length:
                     if inputNum not in range(1,1000000):
-                        print(1)
                         alert = Alert(self)
                         response = alert.run()
                         return
-                elif inputNum not in range(0,1000000):
-                    print(2)
-                    alert = Alert(self)
-                    response = alert.run()
-                    return
             except ValueError: 
-                print(3)
-                alert = Alert(self)
+                alert = StrAlert(self)
                 response = alert.run()
                 return
+                
         args = __argSpecs[(__algos.index(__algo))].args
         specName = [(i) for i in args] 
         spec = [(j.get_text()) for j in __paramBox]
@@ -128,6 +124,7 @@ class AddFrame(Gtk.Window):
         global __argSpecs
         global __hbox
         global __algo
+        global __i_length
         # clear label and param boxes
         __hbox.remove(__paramBox)  
         __hbox.remove(__labelBox)
@@ -145,6 +142,7 @@ class AddFrame(Gtk.Window):
             param = Gtk.Entry()
             if i == 1:
                 param.set_text("num of param to optimize")
+                __i_length = param
             elif  __argSpecs[__algos.index(__algo)].defaults == None:
                 param.set_text(str(0))
             else:
@@ -211,7 +209,19 @@ class Alert(Gtk.Dialog):
             
         self.set_default_size(150,50)
         
-        label = Gtk.Label("The parameter 'i_length' has to be greater than 0 and the other parameter have to be in range of 1 to 1000000." )
+        label = Gtk.Label("The parameter 'i_length' has to be in range of 1 to 1000000." )
+
+        box = self.get_content_area()
+        box.add(label)
+        self.show_all()
+     
+class StrAlert(Gtk.Dialog):
+    def __init__(self,parent):
+        Gtk.Dialog.__init__(self,"ValueError",parent,0)
+            
+        self.set_default_size(150,50)
+        
+        label = Gtk.Label("The parameters have to be numbers.")
 
         box = self.get_content_area()
         box.add(label)
