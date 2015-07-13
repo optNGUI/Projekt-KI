@@ -28,7 +28,7 @@ def main(in_queue, out_queue):
 def send_msg(*msg):
     for i in msg:
         logger.debug("Sent message: {msg}".format(msg=str(msg)))
-        __out_queue.put(i)    
+        print(__out_queue.put(i))
     
 def __on_destroy():
     print("closing Gui!")
@@ -53,7 +53,7 @@ def receive():
             #alert.destroy()
         
 
-# returns __msg, which is containing the msg after using receive()     
+# returns __msg, which is containing the msg after using receive()
 def get_msg():
     global __msg
     receive()
@@ -64,7 +64,7 @@ from . import mainframe
 from . import sshframe
 
 
-def test(in_queue, out_queue):   
+def test(in_queue, out_queue):
     mf = mainframe.MainFrame(in_queue, out_queue) #MainFrame(root)
     mf.connect("delete-event", Gtk.main_quit)
     mf.show_all()
