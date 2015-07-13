@@ -34,7 +34,6 @@ def main(in_queue, out_queue):
 def send_msg(*msg, thread_intercom_id = -1):
     if thread_intercom_id > -1:
         __thread_intercom_msgid.append(thread_intercom_id)
-        print("threadind ID added")
 
     for i in msg:
         logger.debug("Sent message: {msg}".format(msg=str(msg)))
@@ -108,7 +107,7 @@ def engage_display():
     #af.connect("delete-event", Gtk.main_quit)      Das zerstört nur die komplette GUI, wenn das x genutzt wird!
     #af.show_all()
     
-    #sf = sshframe.SshFrame(mf)
-    #sf.connect("delete-event", Gtk.main_quit)      Das zerstört nur die komplette GUI, wenn das x genutzt wird!
-    #sf.show_all()
+    sf = sshframe.SshFrame(mf)
+    sf.connect("delete-event", Gtk.main_quit)      #Das zerstört nur die komplette GUI, wenn das x genutzt wird!
+    sf.show_all()
 

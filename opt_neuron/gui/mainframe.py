@@ -197,7 +197,6 @@ class MainFrame(Gtk.Window):
                                 if alg[0] == i[0]:
                                     alg[2] = "computing..."
                     except:
-                        print("not a thread in appendix!")
                         print("====")
                         print(msg.content)
                         print("====")
@@ -208,10 +207,13 @@ class MainFrame(Gtk.Window):
                         self.running.remove(i)
 
                         for alg in self.liststore:
+                            print(alg[2])
                             if alg[2] == "stand-by":
                                 self.initiate()
-                            else:
-                                self.cleanup()
+                                return
+                            
+                        self.cleanup()
+                                
                         return
 
 
@@ -311,10 +313,11 @@ class MainFrame(Gtk.Window):
                 #    self.running = alg
                 #    self.receive_t = Thread(target = self.receive)
                 #    self.receive_t.start()
-                break
+                return
 
 
-    def cleanup():
+    def cleanup(self):
+        print("CLEANUP!!!")
         return
 
     def on_stop(self, arg1):
