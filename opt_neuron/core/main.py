@@ -14,8 +14,6 @@ __algorithm_names = None
 __algorithm_funcs = None
 __algorithm_argspec = None
 
-
-
 __out_queue = None
 __terminate = False # Indicates whether the core shall exit
 
@@ -158,12 +156,15 @@ def parse_msg(msg):
                         config.get("SSH","analysis"),
                         __algorithm_funcs[__algorithm_names.index(content[1])])
                     if len(content) > 2:
-                        retval = util.RetValMessage(msg, appendix = func(*content[2:]), content="optimization started in new thread...")
+                        retval = util.RetValMessage(msg, appendix = func(*content[2:]), content="optimization started in new thread...\ncall 'stop "+str(msg.id)+"' to terminate the computation.")
                 else:
                     retval = util.MESSAGE_FAILURE(msg, 'could not identify algorithm '+content[1])
                     
             elif content[0] == 'echo':
                 retval = util.RetValMessage(msg, appendix = content[1])
+            
+            elif content[0] == 'stop' and len(content) > 1:
+                algorithms.kill(int(content[1]))
             
             else:
                 retval = util.MESSAGE_FAILURE(msg,"unknown command "+content[0]+" for this number of arguments")
