@@ -122,9 +122,16 @@ class AddFrame(Gtk.Window):
             __algo = model[algo_iter][0]
             args = __argSpecs[(__algos.index(__algo))].args
         # build labels and entries and pack them to their boxes
-        for i in range(2,len(args)):
+        for i in range(1,len(args)):
             param = Gtk.Entry()
-            param.set_text(str(__argSpecs[(__algos.index(__algo))].defaults[i-2]))
+            if i == 1:
+                param.set_text("num of param to optimize")
+            elif  __argSpecs[__algos.index(__algo)].defaults == None:
+                param.set_text(str(0))
+            else:
+                print(str(i))
+                param.set_text(str(__argSpecs[__algos.index(__algo)].defaults[i-2]))
+            
             label = Gtk.Label(args[i])
             
             __labelBox.pack_start(label,True,True,0)
