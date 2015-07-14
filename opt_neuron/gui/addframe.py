@@ -146,7 +146,7 @@ class AddFrame(Gtk.Window):
             elif  __argSpecs[__algos.index(__algo)].defaults == None:
                 param.set_text(str(0))
             else:
-                print(str(i))
+                #print(str(i))
                 param.set_text(str(__argSpecs[__algos.index(__algo)].defaults[i-2]))
             
             label = Gtk.Label(args[i])
@@ -171,7 +171,6 @@ class AddFrame(Gtk.Window):
         mesg = util.CommandMessage(content = "get algorithms")
 
         send_msg(mesg, utility_id = mesg.id)
-        print("message sent") 
         __algoList = get_utility_msg()
         appendix = __algoList.appendix
         num_algos = len(appendix)

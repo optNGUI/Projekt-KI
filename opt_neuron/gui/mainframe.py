@@ -266,13 +266,13 @@ class MainFrame(Gtk.Window):
         self.runstop.disconnect_by_func(self.on_stop)
         self.runstop.connect("clicked", self.on_run)
 
-        print("Run aborted!")
+        #print("Run aborted!")
 
         for alg in self.liststore:
             if alg[2] == "computing...":
                 for i in self.running:
                     if i[0] == alg[0]:
-                        print("ABORT " + str(i[0]) + " " + str(i[1]) + ",")
+                        #print("ABORT " + str(i[0]) + " " + str(i[1]) + ",")
                         send_msg(util.CommandMessage(content = "stop " + str(i[1])))
                         alg[2] = "aborted"
                         self.running.remove(i)
@@ -337,17 +337,15 @@ class MainFrame(Gtk.Window):
         res = fc_d.run()
 
         if res == Gtk.ResponseType.OK:
-            print("file: %s" % fc_d.get_filename())
+            with open(fc_d.get_filename(), 'r', newline='') as cf:
+                csv_r = csv.reader(cf, delimiter=';', quotechar='"')
+                
+                self.liststore.clear()
 
-        with open(fc_d.get_filename(), 'r', newline='') as cf:
-            csv_r = csv.reader(cf, delimiter=';', quotechar='"')
-            
-            self.liststore.clear()
+                for r in csv_r:
+                    self.liststore.append((int(r[0]), r[1], r[2], r[3]))
 
-            for r in csv_r:
-                self.liststore.append((int(r[0]), r[1], r[2], r[3]))
-
-            cf.close()
+                cf.close()
 
 
         fc_d.destroy()
@@ -363,15 +361,13 @@ class MainFrame(Gtk.Window):
         res = fc_d.run()
 
         if res == Gtk.ResponseType.OK:
-            print("file: %s" % fc_d.get_filename())
+            with open(fc_d.get_filename(), 'w', newline='') as cf:
+                csv_w = csv.writer(cf, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
-        with open(fc_d.get_filename(), 'w', newline='') as cf:
-            csv_w = csv.writer(cf, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                for i in self.liststore:
+                    csv_w.writerow(i[:])
 
-            for i in self.liststore:
-                csv_w.writerow(i[:])
-
-            cf.close()
+                cf.close()
 
 
         fc_d.destroy()
