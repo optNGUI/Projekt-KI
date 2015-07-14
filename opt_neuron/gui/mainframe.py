@@ -228,13 +228,11 @@ class MainFrame(Gtk.Window):
 
         self.initiate()
         print("Run initiated...")
-        
-
 
     def initiate(self):
         for alg in self.liststore:
             if alg[2] == "stand-by":
-                print("preparing to run ID " + str(alg[0]) + "...")
+                #print("preparing to run ID " + str(alg[0]) + "...")
                 runstr = alg[3].replace(" ","")
                 runstr = runstr.replace(","," ")
                 p = re.compile('\w+=')
@@ -243,7 +241,6 @@ class MainFrame(Gtk.Window):
                 c_message = util.CommandMessage(content = "start " + alg[1] + " " + runstr)
                 self.running.append([alg[0], c_message.id, None])
                 #                                           ^------- will be filled once thread is inbound
-                #print(self.running[:])
                 send_msg(c_message, thread_intercom_id = c_message.id)
                 self.receive_t = Thread(target = self.receive)
                 self.receive_t.start()
@@ -281,8 +278,9 @@ class MainFrame(Gtk.Window):
                         self.running.remove(i)
 
         if self.receive_t.is_alive():
-            print("yes, still alive")
             abort_notify(i[1])
+
+        self.cleanup()
 
     def on_add(self, arg1):
         self.addbutton.set_sensitive(False)
@@ -408,7 +406,6 @@ class MainFrame(Gtk.Window):
                 self.running.remove(i)
 
                 if self.receive_t.is_alive():
-                    print("yes, still alive")
                     abort_notify(i[1])
                 # check if we're in perpetual mode:
                 if self.runstop.get_label() == "STOP":

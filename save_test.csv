@@ -1,3 +1,3 @@
-1;simple_genetic;optimization 24 returned: [[14, 17, 19, 5, 38, 1, 8], 0.5];i_length=7, p_count=100, generations=100, i_min=0, i_max=100
-2;simple_genetic;optimization 28 returned: [[45, 6, 0, 13, 37], 1.0];i_length=5, p_count=100, generations=100, i_min=0, i_max=100
-3;simple_genetic;optimization 32 returned: [[4, 13, 19, 26, 1, 18, 8, 9], 0.5];i_length=8, p_count=100, generations=100, i_min=0, i_max=100
+1;simple_genetic;optimization 24 returned: [[4, 60, 20, 5, 12], 1.0];i_length=5, p_count=100, generations=100, i_min=0, i_max=100
+2;simple_genetic;optimization 28 returned: [[9, 23, 45, 8, 12, 2], 1.0];i_length=6, p_count=100, generations=100, i_min=0, i_max=100
+3;simple_genetic;optimization 32 returned: [[45, 36, 20, 1], 0.5];i_length=4, p_count=100, generations=100, i_min=0, i_max=100

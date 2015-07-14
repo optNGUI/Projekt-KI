@@ -72,15 +72,15 @@ class SshFrame(Gtk.Window):
     def on_loginButton_clicked(self,widget):
         
         send_msg(util.CommandMessage(content = 'set password {msg}'.format(msg = __pwdEntry.get_text())))
-        p_reaction = get_msg()
+        #p_reaction = get_msg()
         send_msg(util.CommandMessage(content = 'set config SSH host  {msg}'.format(msg = __usrEntry.get_text())))
-        get_msg()
+        #get_msg()
         send_msg(util.CommandMessage(content = 'set config SSH net  {msg}'.format(msg = __netEntry.get_text())))
-        get_msg()
+        #get_msg()
         send_msg(util.CommandMessage(content = 'set config SSH analysis  {msg}'.format(msg = __analysisEntry.get_text())))
-        get_msg()
+        #get_msg()
         send_msg(util.CommandMessage(content = 'save config'))
-        get_msg()
+        #get_msg()
         
         #__parent.set_runButton_active()
         self.destroy()

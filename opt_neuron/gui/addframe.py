@@ -4,7 +4,7 @@
 #	on x clicked, do parent.set_addButton_active()
 #	same at sshFrame
 import logging
-from .main import send_msg, get_msg
+from .main import send_msg, get_msg, get_utility_msg
 from .. import util
 from gi.repository import Gtk
 
@@ -168,8 +168,11 @@ class AddFrame(Gtk.Window):
         global __argSpecs
         global __algoList
 
-        send_msg(util.CommandMessage(content = "get algorithms"))
-        __algoList = get_msg()
+        mesg = util.CommandMessage(content = "get algorithms")
+
+        send_msg(mesg, utility_id = mesg.id)
+        print("message sent") 
+        __algoList = get_utility_msg()
         appendix = __algoList.appendix
         num_algos = len(appendix)
         
