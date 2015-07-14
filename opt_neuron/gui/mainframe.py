@@ -341,6 +341,17 @@ class MainFrame(Gtk.Window):
         if res == Gtk.ResponseType.OK:
             print("file: %s" % fc_d.get_filename())
 
+        with open(fc_d.get_filename(), 'r', newline='') as cf:
+            csv_r = csv.reader(cf, delimiter=';', quotechar='"')
+            
+            self.liststore.clear()
+
+            for r in csv_r:
+                self.liststore.append((int(r[0]), r[1], r[2], r[3]))
+
+            cf.close()
+
+
         fc_d.destroy()
 
     def on_export(self, arg1):
