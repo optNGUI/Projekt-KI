@@ -225,4 +225,4 @@ class StrAlert(Gtk.Dialog):
 
         box = self.get_content_area()
         box.add(label)
-        self.show_all()
+        self.show_all
