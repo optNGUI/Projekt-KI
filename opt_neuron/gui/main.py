@@ -65,7 +65,6 @@ def receive():
     global __thread_intercom_msgid
 
     while True:
-        print(__in_queue)
         __msg_read = 0
         while not __msg_read:
             __msg = __in_queue.get()
