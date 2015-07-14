@@ -25,7 +25,7 @@ class MainFrame(Gtk.Window):
 
 
         self.set_border_width(10)
-        self.set_default_size(500, 450)
+        self.set_default_size(1000, 600)
 
         self.hb = Gtk.HeaderBar()
         self.hb.set_show_close_button(True)
