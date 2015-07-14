@@ -75,6 +75,9 @@ def get_msg():
     #print(__msg.cmd_id)
     return __msg
 
+def abort_notify(thread_id):
+    mesg = util.RetValMessage(None, appendix = thread_id, content = "abort")
+    __thread_intercom_q.put(mesg)
 
 def get_intercom_msg():
     lock = False
@@ -84,7 +87,6 @@ def get_intercom_msg():
         if i_msg is not None:
             lock = True
 
-    print("MESSAGE: " + __msg.content)
     return i_msg
 
 def flush_queues():

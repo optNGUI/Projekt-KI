@@ -4,11 +4,12 @@ from . import sshframe
 from .. import util
 from gi.repository import Gtk, Gdk
 import logging
-from .main import send_msg, get_msg, get_intercom_msg, flush_queues
+from .main import send_msg, get_msg, get_intercom_msg, flush_queues, abort_notify
 from threading import Thread
 #import numpy as np
 import re
 from time import sleep
+import csv
 
 logger = logging.getLogger(__name__)
 
@@ -52,12 +53,9 @@ class MainFrame(Gtk.Window):
         self.tophbox = Gtk.Box(spacing = 6)
         self.vbox.pack_start(self.tophbox, False, True, 0)
 
-        self.label_one = Gtk.Label("Session:")
-        self.tophbox.pack_start(self.label_one, False, True, 3)
-
-        self.search = Gtk.Button(label = "load config")
-        self.search.connect("clicked", self.load_file)
-        self.tophbox.pack_start(self.search, False, True, 3)
+        self.load_b = Gtk.Button(label = "load session")
+        self.load_b.connect("clicked", self.load_session)
+        self.tophbox.pack_start(self.load_b, False, True, 3)
 
         self.addbutton = Gtk.Button(label = "add algorithm")
         self.addbutton.connect("clicked", self.on_add)
@@ -99,7 +97,7 @@ class MainFrame(Gtk.Window):
         self.bottomhbox.pack_start(self.runstop, False, True, 3)
 
         self.export = Gtk.Button(label = "Export Data")
-        #self.export.connect("clicked", self.on_add)
+        self.export.connect("clicked", self.on_export)
         self.bottomhbox.pack_end(self.export, False, True, 3)
 
 
@@ -171,32 +169,31 @@ class MainFrame(Gtk.Window):
         # of a message comes along in here, it means a thread is ready.
         # if multithreading control is implemented, this needs to choose
         # the next thread in a list.
-        #if not self.running_t.is_alive():
-        #    return
-
+        
         while True:
-            print("receiving...")
             msg = get_intercom_msg()
-            print(msg.appendix)
             
+            if str(msg.content) == "abort":
+                return
+
             for i in self.running:
                 if i[1] == msg.cmd_id:
-                    print("msg owner arrived")
                     try:
                         if msg.appendix.is_alive():
                             i[2] = msg.appendix
                             for alg in self.liststore:
                                 if alg[0] == i[0]:
                                     alg[2] = "computing..."
+                        else:
+                            return
                     except:
                         for alg in self.liststore:
-                            if alg[0] == i[0]:
+                            if alg[0] == i[0] and msg.content != "abort":
                                 alg[2] = msg.content
                         
                         self.running.remove(i)
 
                         for alg in self.liststore:
-                            print(alg[2])
                             if alg[2] == "stand-by":
                                 self.initiate()
                                 return
@@ -204,13 +201,6 @@ class MainFrame(Gtk.Window):
                         self.cleanup()
                         return
             #return
-
-    def sendit(self, message):
-        print(self)
-        print(message)
-        send_msg(message)
-        #send_msg(message)
-
 
     # this thread waits for incomming messages after a computation is started
     receive_t = None
@@ -233,6 +223,9 @@ class MainFrame(Gtk.Window):
         self.runstop.set_label("STOP")
         self.runstop.disconnect_by_func(self.on_run)
         self.runstop.connect("clicked", self.on_stop)
+
+        self.load_b.set_sensitive(False)
+
         self.initiate()
         print("Run initiated...")
         
@@ -243,24 +236,28 @@ class MainFrame(Gtk.Window):
             if alg[2] == "stand-by":
                 print("preparing to run ID " + str(alg[0]) + "...")
                 runstr = alg[3].replace(" ","")
-                runstr = runstr.replace(";"," ")
+                runstr = runstr.replace(","," ")
                 p = re.compile('\w+=')
                 runstr = p.sub('', runstr)
 
                 c_message = util.CommandMessage(content = "start " + alg[1] + " " + runstr)
                 self.running.append([alg[0], c_message.id, None])
-                #                                     ^------- will be filled once thread is inbound
+                #                                           ^------- will be filled once thread is inbound
                 #print(self.running[:])
                 send_msg(c_message, thread_intercom_id = c_message.id)
                 self.receive_t = Thread(target = self.receive)
                 self.receive_t.start()
                 return
 
+        self.cleanup()
+        return
 
     def cleanup(self):
         self.runstop.set_label("Run")
         self.runstop.disconnect_by_func(self.on_stop)
         self.runstop.connect("clicked", self.on_run)
+
+        self.load_b.set_sensitive(True)
 
         self.running = []
 
@@ -278,11 +275,14 @@ class MainFrame(Gtk.Window):
             if alg[2] == "computing...":
                 for i in self.running:
                     if i[0] == alg[0]:
-                        print("ABORT " + str(i[0]) + " " + str(i[1]) + ";")
+                        print("ABORT " + str(i[0]) + " " + str(i[1]) + ",")
                         send_msg(util.CommandMessage(content = "stop " + str(i[1])))
                         alg[2] = "aborted"
                         self.running.remove(i)
-                # check if we're in perpetual mode:
+
+        if self.receive_t.is_alive():
+            print("yes, still alive")
+            abort_notify(i[1])
 
     def on_add(self, arg1):
         self.addbutton.set_sensitive(False)
@@ -317,7 +317,7 @@ class MainFrame(Gtk.Window):
 
         params_str = ""
         for i in range(0, len(param_values)):
-            params_str = params_str + param_names[i+1] + "=" + param_values[i] + "; "
+            params_str = params_str + param_names[i+1] + "=" + param_values[i] + ", "
 
         params_str = params_str[:-2]
 
@@ -328,15 +328,46 @@ class MainFrame(Gtk.Window):
         self.addbutton.set_sensitive(True)
 
 
-    def load_file(self):
-        fname = askopenfilename()
+    def load_session(self, arg1):
+        #name = askopenfilename()
+        fc_d = Gtk.FileChooserDialog(title="Load Session",
+                                     action=Gtk.FileChooserAction.OPEN,
+                                     buttons=(Gtk.STOCK_CANCEL,
+                                              Gtk.ResponseType.CANCEL,
+                                              Gtk.STOCK_OPEN,
+                                              Gtk.ResponseType.OK))
+        res = fc_d.run()
 
-        if fname:
-            try:
-                print("""self.settings["template"].set(fname)""")
-            except:
-                showerror("Open Source File", "Failed to read file\n'%s'" % fname)
-            return
+        if res == Gtk.ResponseType.OK:
+            print("file: %s" % fc_d.get_filename())
+
+        fc_d.destroy()
+
+    def on_export(self, arg1):
+        #name = askopenfilename()
+        fc_d = Gtk.FileChooserDialog(title="Export Session",
+                                     action=Gtk.FileChooserAction.SAVE,
+                                     buttons=(Gtk.STOCK_CANCEL,
+                                              Gtk.ResponseType.CANCEL,
+                                              Gtk.STOCK_SAVE,
+                                              Gtk.ResponseType.OK))
+        res = fc_d.run()
+
+        if res == Gtk.ResponseType.OK:
+            print("file: %s" % fc_d.get_filename())
+
+        with open(fc_d.get_filename(), 'w', newline='') as cf:
+            csv_w = csv.writer(cf, delimiter=';', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+            for i in self.liststore:
+                csv_w.writerow(i[:])
+
+            cf.close()
+
+
+        fc_d.destroy()
+
+        return
 
     def close_call(self, arg1, arg2):
         #self.cleanup()
@@ -364,9 +395,14 @@ class MainFrame(Gtk.Window):
                 self.liststore.set_value(iter, 2, "aborted")
 
                 self.running.remove(i)
+
+                if self.receive_t.is_alive():
+                    print("yes, still alive")
+                    abort_notify(i[1])
                 # check if we're in perpetual mode:
                 if self.runstop.get_label() == "STOP":
                     self.initiate()
+
         return
 
     def on_rightclick(self, tv, event):
