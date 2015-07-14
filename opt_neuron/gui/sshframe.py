@@ -38,7 +38,7 @@ class SshFrame(Gtk.Window):
         pwdLabel = Gtk.Label("Passwort")
                 
         __pwdEntry = Gtk.Entry()
-        __pwdEntry.set_text("rdx556")
+        __pwdEntry.set_text("")
         __pwdEntry.set_visibility(0)
         __pwdEntry.set_invisible_char("*")
 
