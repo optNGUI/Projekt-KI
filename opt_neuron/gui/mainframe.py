@@ -38,14 +38,29 @@ class MainFrame(Gtk.Window):
 
         # +++ context menu +++
 
-        self.rem = Gtk.MenuItem("remove")
-        self.rem.connect("activate", self.on_remove)
-        self.rem.set_sensitive(False)
-        self.menu.append(self.rem)
         self.abort = Gtk.MenuItem("abort")
         self.abort.connect("activate", self.on_abort)
         self.abort.set_sensitive(False)
         self.menu.append(self.abort)
+
+        self.reset = Gtk.MenuItem("reset")
+        #self.reset.connect("activate", self.on_reset)
+        self.reset.set_sensitive(False)
+        self.menu.append(self.reset)
+
+        self.menu.append(Gtk.SeparatorMenuItem())
+
+        self.edit = Gtk.MenuItem("edit")
+        #self.edit.connect("activate", self.on_edit)
+        self.edit.set_sensitive(False)
+        self.menu.append(self.edit)
+
+        self.rem = Gtk.MenuItem("remove")
+        self.rem.connect("activate", self.on_remove)
+        self.rem.set_sensitive(False)
+        self.menu.append(self.rem)
+
+
         self.menu.show_all()
 
 
