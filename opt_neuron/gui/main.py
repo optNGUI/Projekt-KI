@@ -34,6 +34,7 @@ def main(in_queue, out_queue):
 def send_msg(*msg, thread_intercom_id = -1):
     if thread_intercom_id > -1:
         __thread_intercom_msgid.append(thread_intercom_id)
+        print("setting " + str(thread_intercom_id))
 
     for i in msg:
         logger.debug("Sent message: {msg}".format(msg=str(msg)))
@@ -42,9 +43,9 @@ def send_msg(*msg, thread_intercom_id = -1):
 def __on_destroy():
     print("closing Gui!")
     __running = False
-    Thread( target=self.sendit, args=(util.MESSAGE_EXIT,) ).start()
+    #Thread( target=self.sendit, args=(util.MESSAGE_EXIT,) ).start()
+    send_msg(util.MESSAGE_EXIT)
     Gtk.main_quit()
-    print("asd")
 
 def receive():
     global __msg
@@ -57,42 +58,40 @@ def receive():
                 __thread_intercom_q.put(__msg) # message is for thread things
             except:
                 pass # nothing
-            #print(__msg)
             __msg_read = 1
     __msg_read = 0
-            #alert = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, msg)
-            #alert.connect("delete-event", alert.destroy)
-            #alert.run()
-            #print("msg box closed")
-            #alert.destroy()
-        
 
 # returns __msg, which is containing the msg after using receive()
 def get_msg():
     global __msg
     receive()
-    print("__msg:")
-    print(__msg)
-    print("__msg.appendix:")
-    print(__msg.appendix)
-    print("__msg.content:")
-    print(__msg.content)
-    print("__msg.cmd_id:")
-    print(__msg.cmd_id)
+    #print("__msg:")
+    #print(__msg)
+    #print("__msg.appendix:")
+    #print(__msg.appendix)
+    #print("__msg.content:")
+    #print(__msg.content)
+    #print("__msg.cmd_id:")
+    #print(__msg.cmd_id)
     return __msg
 
 
 def get_intercom_msg():
     lock = False
-    print("waiting....")
     receive()
     while not lock:
         i_msg = __thread_intercom_q.get()
         if i_msg is not None:
             lock = True
 
+    print("MESSAGE: " + __msg.content)
     return i_msg
 
+def flush_queues():
+    while not __in_queue.empty():
+        __in_queue.get()
+    while not __thread_intercom_q.empty():
+        __thread_intercom_q.get()
 
 from . import addframe
 from . import mainframe

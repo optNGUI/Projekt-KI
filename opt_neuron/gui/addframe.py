@@ -92,17 +92,17 @@ class AddFrame(Gtk.Window):
 
                 if i == 1:
                     if inputNum not in range(1,1000000):
-                        print(1)
+                        #print(1)
                         alert = Alert(self)
                         response = alert.run()
                         return
                 elif inputNum not in range(0,1000000):
-                    print(2)
+                    #print(2)
                     alert = Alert(self)
                     response = alert.run()
                     return
             except ValueError: 
-                print(3)
+                #print(3)
                 alert = Alert(self)
                 response = alert.run()
                 return
@@ -148,7 +148,7 @@ class AddFrame(Gtk.Window):
             elif  __argSpecs[__algos.index(__algo)].defaults == None:
                 param.set_text(str(0))
             else:
-                print(str(i))
+                #print(str(i))
                 param.set_text(str(__argSpecs[__algos.index(__algo)].defaults[i-2]))
             
             label = Gtk.Label(args[i])

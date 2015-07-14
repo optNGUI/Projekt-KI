@@ -4,7 +4,7 @@ from . import sshframe
 from .. import util
 from gi.repository import Gtk, Gdk
 import logging
-from .main import send_msg, get_msg, get_intercom_msg
+from .main import send_msg, get_msg, get_intercom_msg, flush_queues
 from threading import Thread
 #import numpy as np
 import re
@@ -106,12 +106,7 @@ class MainFrame(Gtk.Window):
     # +++ list store +++
         # (id, Alg_name, status, params)
         self.liststore = Gtk.ListStore(int, str, str, str)
-        #self.liststore.append((1, "smart algo1", "stand_by", "params"))
-        #self.liststore.append((2, "smart algo2", "stand_by", "params"))
-        #self.liststore.append((3, "smart algo3", "stand_by", "params"))
-        #self.liststore.append((4, "smart algo4", "stand_by", "params"))
-        #self.liststore.append((5, "smart algo5", "stand_by", "params"))
-  
+     
     # +++ view +++
         self.tree = Gtk.TreeView(self.liststore)
         self.tree.set_grid_lines(Gtk.TreeViewGridLines.HORIZONTAL)
@@ -169,10 +164,8 @@ class MainFrame(Gtk.Window):
         print("closing Gui!")
         self.__running = False
         send_msg(util.MESSAGE_EXIT)
+        flush_queues()
         Gtk.main_quit()
-        print("asd")
-
-
 
     def receive(self):
         # of a message comes along in here, it means a thread is ready.
@@ -185,7 +178,6 @@ class MainFrame(Gtk.Window):
             print("receiving...")
             msg = get_intercom_msg()
             print(msg.appendix)
-            print("thread still running: ")
             
             for i in self.running:
                 if i[1] == msg.cmd_id:
@@ -197,9 +189,6 @@ class MainFrame(Gtk.Window):
                                 if alg[0] == i[0]:
                                     alg[2] = "computing..."
                     except:
-                        print("====")
-                        print(msg.content)
-                        print("====")
                         for alg in self.liststore:
                             if alg[0] == i[0]:
                                 alg[2] = msg.content
@@ -213,36 +202,8 @@ class MainFrame(Gtk.Window):
                                 return
                             
                         self.cleanup()
-                                
                         return
-
-
-                
-
-            # get message return here.
-
-            #for x in self.running:
-                #if not .is_alive():
-                #    print("thread finished")
-                #    self.running[2] = "done"
-                #    return
-
-            # thread still alive!
-            # will possibly receive more messages
-        # print("thread started")
-        # while self.__running:
-            # print("waiting...")
-            # msg = self.in_queue.get()
-            # print("message received!")
-            # print(msg)
-
-            # alert = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, msg)
-            # alert.connect("delete-event", alert.destroy)
-            # alert.run()
-            # print("msg box closed")
-            # alert.destroy()
-        
-        # print("closed?")
+            #return
 
     def sendit(self, message):
         print(self)
@@ -265,10 +226,6 @@ class MainFrame(Gtk.Window):
     # running[i][2]: thread
     running = []
 
-    #running = None
-    #running_t = None
-    #running_
-
     def on_run(self, arg1):
         if len(self.liststore) == 0:
             return
@@ -280,8 +237,6 @@ class MainFrame(Gtk.Window):
         print("Run initiated...")
         
 
-    def intercom_message():
-        return
 
     def initiate(self):
         for alg in self.liststore:
@@ -295,29 +250,21 @@ class MainFrame(Gtk.Window):
                 c_message = util.CommandMessage(content = "start " + alg[1] + " " + runstr)
                 self.running.append([alg[0], c_message.id, None])
                 #                                     ^------- will be filled once thread is inbound
-                print(self.running[:])
+                #print(self.running[:])
                 send_msg(c_message, thread_intercom_id = c_message.id)
                 self.receive_t = Thread(target = self.receive)
                 self.receive_t.start()
-                #msg = get_msg()
-                #print("ASDASDASDAD")
-                #print(msg)
-                #thread = msg.appendix
-                
-                #sleep(0.05)
-                
-                #if(thread.is_alive()):
-                #    alg[2] = "computing..."
-                    #print(get_msg())
-                #    self.running[alg[0]] = thread
-                #    self.running = alg
-                #    self.receive_t = Thread(target = self.receive)
-                #    self.receive_t.start()
                 return
 
 
     def cleanup(self):
-        print("CLEANUP!!!")
+        self.runstop.set_label("Run")
+        self.runstop.disconnect_by_func(self.on_stop)
+        self.runstop.connect("clicked", self.on_run)
+
+        self.running = []
+
+        flush_queues()
         return
 
     def on_stop(self, arg1):
@@ -328,16 +275,20 @@ class MainFrame(Gtk.Window):
         print("Run aborted!")
 
         for alg in self.liststore:
-            print(alg[2])
             if alg[2] == "computing...":
-                print("computing in progress!")
+                for i in self.running:
+                    if i[0] == alg[0]:
+                        print("ABORT " + str(i[0]) + " " + str(i[1]) + ";")
+                        send_msg(util.CommandMessage(content = "stop " + str(i[1])))
+                        alg[2] = "aborted"
+                        self.running.remove(i)
+                # check if we're in perpetual mode:
 
     def on_add(self, arg1):
-        print("Addwin opens...")
         self.addbutton.set_sensitive(False)
-
         af = addframe.AddFrame(self)
         af.show_all()
+        
 
     def on_edit(self, arg1):
         return
@@ -364,20 +315,14 @@ class MainFrame(Gtk.Window):
         param_names = alg[1]
         param_values = alg[2]
 
-        print(algname)
-        print(alg)
-
         params_str = ""
         for i in range(0, len(param_values)):
-            print("<<<<<<<<<<")
             params_str = params_str + param_names[i+1] + "=" + param_values[i] + "; "
 
         params_str = params_str[:-2]
 
         
         self.liststore.append((id, algname, "stand-by", params_str))
-
-        print("set alg")
 
     def set_addButton_active(self):
         self.addbutton.set_sensitive(True)
@@ -394,11 +339,7 @@ class MainFrame(Gtk.Window):
             return
 
     def close_call(self, arg1, arg2):
-        # TODO check ob noch was laeuft, etc...
-        #self.out_queue.put(util.StatusMessage(content = "in OH MEIN GOTT WAS IST GESCHEHEN!?"))
-        #self.out_queue.put(util.MESSAGE_EXIT)
-        print("end")
-        self.cleanup()
+        #self.cleanup()
         self.destroy()
         self.__on_destroy()
         #Gtk.main_quit()
@@ -407,17 +348,26 @@ class MainFrame(Gtk.Window):
 
     def on_remove(self, arg1):
         # selection set at this point
-        print("REMOVE SIGNAL GET")
         iter = self.liststore.get_iter(self.active_select)
         self.liststore.remove(iter)
         return
 
     def on_abort(self, arg1):
         # selection set at this point
-        print("ABORT SIGNAL GET")
+        iter = self.liststore.get_iter(self.active_select)
+        r_id = self.liststore.get_value(iter, 0)
+        
+        for i in self.running:
+            if i[0] == r_id:
+                print("ABORT " + str(i[0]) + " " + str(i[1]) + ";")
+                send_msg(util.CommandMessage(content = "stop " + str(i[1])))
+                self.liststore.set_value(iter, 2, "aborted")
 
+                self.running.remove(i)
+                # check if we're in perpetual mode:
+                if self.runstop.get_label() == "STOP":
+                    self.initiate()
         return
-
 
     def on_rightclick(self, tv, event):
         if event.button == 3 and event.type == Gdk.EventType.BUTTON_PRESS:
@@ -428,16 +378,12 @@ class MainFrame(Gtk.Window):
 
             # +++ ACTIVE SELECTION SET +++
             self.active_select = tp
-            print("Treepath: " + str(self.active_select.to_string()))
             
-            #print(self.liststore.get_value(self.active_select, 0))
             iter = self.liststore.get_iter(tp)
             if self.liststore.get_value(iter, 2) == "computing...":
                 self.abort.set_sensitive(True)
             else:
                 self.rem.set_sensitive(True)
-
-            #print(self.liststore.get_value(iter, 2))
 
             self.menu.popup(None, None, None, None, 0, Gtk.get_current_event_time())
 
