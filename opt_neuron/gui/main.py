@@ -146,7 +146,21 @@ def engage_display():
     #af = addframe.AddFrame()
     #af.connect("delete-event", Gtk.main_quit)      Das zerstört nur die komplette GUI, wenn das x genutzt wird!
     #af.show_all()
-    
+
+    #modal_dialog_warn(mf)
+    #modal_dialog_error(mf)
+
     sf = sshframe.SshFrame(mf)
     sf.connect("delete-event", Gtk.main_quit)      #Das zerstört nur die komplette GUI, wenn das x genutzt wird!
     sf.show_all()
+
+
+def modal_dialog_warn(mf, mesg = "Don't clicky that sticky!"):
+    dialog = Gtk.MessageDialog(mf, flags = Gtk.DialogFlags.MODAL ,message_type = Gtk.MessageType.WARNING, buttons = Gtk.ButtonsType.CLOSE, text = mesg)
+    dialog.run()
+    dialog.destroy()
+
+def modal_dialog_error(mf, mesg = "Warning! Fish is actually food, too!"):
+    dialog = Gtk.MessageDialog(mf, flags = Gtk.DialogFlags.MODAL ,message_type = Gtk.MessageType.ERROR, buttons = Gtk.ButtonsType.CLOSE, text = mesg)
+    dialog.run()
+    dialog.destroy()

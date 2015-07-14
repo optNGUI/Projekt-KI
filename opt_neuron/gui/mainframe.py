@@ -28,8 +28,10 @@ class MainFrame(Gtk.Window):
         self.set_default_size(1000, 600)
 
         self.hb = Gtk.HeaderBar()
-        self.hb.set_show_close_button(True)
+        self.hb.props.show_close_button = True
         self.hb.props.title = "OPT Algorithmen Kommandant"
+        self.hb.set_decoration_layout = "menu:minimize,maximize,close"
+
 
         self.set_titlebar(self.hb)
 
