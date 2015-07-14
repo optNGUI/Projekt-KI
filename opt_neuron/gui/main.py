@@ -82,10 +82,10 @@ def receive():
                         if __utility_msgid == __msg.cmd_id:
                             __utility_q.put(__msg)
 
-                    print("data for something else")
-                    print("__msg: %s" % __msg)
-                    print("__msg.cmd_id: %s" % __msg.cmd_id)
-                    print("__utility_msgid: %s" % __utility_msgid)
+                    #print("data for something else")
+                    #print("__msg: %s" % __msg)
+                    #print("__msg.cmd_id: %s" % __msg.cmd_id)
+                    #print("__utility_msgid: %s" % __utility_msgid)
                 __msg_read = 1
         __msg_read = 0
 
