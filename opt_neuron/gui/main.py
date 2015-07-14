@@ -77,7 +77,7 @@ def receive():
                     #print("msg for thread things")
                 except:
                     if hasattr(__msg, 'cmd_id') and __msg.cmd_id is not None:
-                        print(__msg.cmd_id)
+                        #print(__msg.cmd_id)
                         if __utility_msgid == __msg.cmd_id:
                             __utility_q.put(__msg)
 

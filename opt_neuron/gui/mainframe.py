@@ -227,7 +227,7 @@ class MainFrame(Gtk.Window):
         self.load_b.set_sensitive(False)
 
         self.initiate()
-        print("Run initiated...")
+        #print("Run initiated...")
 
     def initiate(self):
         for alg in self.liststore:
