@@ -28,8 +28,10 @@ class MainFrame(Gtk.Window):
         self.set_default_size(1000, 600)
 
         self.hb = Gtk.HeaderBar()
-        self.hb.set_show_close_button(True)
+        self.hb.props.show_close_button = True
         self.hb.props.title = "OPT Algorithmen Kommandant"
+        self.hb.set_decoration_layout = "menu:minimize,maximize,close"
+
 
         self.set_titlebar(self.hb)
 
@@ -38,14 +40,29 @@ class MainFrame(Gtk.Window):
 
         # +++ context menu +++
 
-        self.rem = Gtk.MenuItem("remove")
-        self.rem.connect("activate", self.on_remove)
-        self.rem.set_sensitive(False)
-        self.menu.append(self.rem)
         self.abort = Gtk.MenuItem("abort")
         self.abort.connect("activate", self.on_abort)
         self.abort.set_sensitive(False)
         self.menu.append(self.abort)
+
+        self.reset = Gtk.MenuItem("reset")
+        self.reset.connect("activate", self.on_reset)
+        self.reset.set_sensitive(False)
+        self.menu.append(self.reset)
+
+        self.menu.append(Gtk.SeparatorMenuItem())
+
+        self.edit = Gtk.MenuItem("edit")
+        self.edit.connect("activate", self.on_edit)
+        self.edit.set_sensitive(False)
+        self.menu.append(self.edit)
+
+        self.rem = Gtk.MenuItem("remove")
+        self.rem.connect("activate", self.on_remove)
+        self.rem.set_sensitive(False)
+        self.menu.append(self.rem)
+
+
         self.menu.show_all()
 
 
@@ -382,11 +399,6 @@ class MainFrame(Gtk.Window):
         
         return True
 
-    def on_remove(self, arg1):
-        # selection set at this point
-        iter = self.liststore.get_iter(self.active_select)
-        self.liststore.remove(iter)
-        return
 
     def on_abort(self, arg1):
         # selection set at this point
@@ -407,6 +419,21 @@ class MainFrame(Gtk.Window):
                 if self.runstop.get_label() == "STOP":
                     self.initiate()
 
+        return
+
+    def on_reset(self, arg1):
+        return
+
+    def on_edit(self, arg1):
+        return
+
+    def on_remove(self, arg1):
+        # selection set at this point
+        iter = self.liststore.get_iter(self.active_select)
+        self.liststore.remove(iter)
+        return
+
+    def __sanitize_ctx_menu():
         return
 
     def on_rightclick(self, tv, event):

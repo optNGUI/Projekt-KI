@@ -7,9 +7,14 @@
 \usepackage{tikz-uml} 
 \usepackage{amsmath}
 \usepackage{savetrees}
-\usepackage{pdfpages}
+%\usepackage{pdfpages}
+
+\makepagestyle{nothing}{}{}{}
+\makeevenfoot{nothing}{}{}{}
+\makeoddfoot{nothing}{}{}{}
 
 \begin{document}
+\pagestyle{nothing}
 
 \begin{figure}[h!]
 \begin{tikzpicture}
