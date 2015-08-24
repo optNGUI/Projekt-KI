@@ -19,6 +19,7 @@
 \usepackage{hyperref}
 \usepackage{wrapfig}
 \usepackage{xcolor}
+\usepackage{todo}
 \xdefinecolor{unifarbe}{RGB}{0,75,90}
 
 \usepackage{sectsty}
@@ -51,10 +52,23 @@ Julian Wolff\\
 \end{titlepage}
 \tableofcontents\newpage
 \section{Einführung}
-Hier steht irgendwann mal irgendwas.
+\subsection{Ziel des Projektes}
+
+Mithilfe von künstlichen neuronalen Netzen wird versucht, Strukturen des menschlichen Gehirns zu simulieren. Die verwendeten Simulationen basieren dabei auf sehr vielen Parametern, deren Optimierung eine sehr langwierige Aufgabe darstellt. Es wurde im Rahmen dieses Projektes ein Framework erstellt, welches als Schnittstelle zwischen solchen Simulationen und Optimierungsalgorithmen fungiert. Dabei waren vor allem eine Modularisierung zwecks Erweiterbarkeit sowie eine einfache Bedienbarkeit über eine grafische Oberfläche Zentrum der Entwicklung.
 \section{Features}
+\begin{itemize}
+\item einfache Anbindung eines (neuen) Frontends möglich durch ein simples Nachrichtenprotokoll
+\item einfaches Hinzufügen von neuen Algorithmen
+\item Modularisierung erlaubt komplettes Austauschen einzelner Module ohne die Kernlogik zu kennen
+\item verteiltes Arbeiten möglich durch Anbindung des Simulationsclusters über SSH oder andere Protokolle
+\item Multithreading bereits nativ in Kernlogik implementiert; Kern verwaltet verschiedene Läufe von Algorithmen selbstständig
+\item kein aktives Warten notwendig; bei Terminierung eines Algorithmus' wird das Frontend automatisch benachrichtigt
+
+\end{itemize}
+
 
 \section{Architektur}
+Das Framework ist grob in zwei Teile gegliedert. Der \emph{Kern} verwaltet selbstständig alle Algorithmen und spricht die Simulation an. Die Kommunikation mit außen erfolgt über eine Messagequeue, über die eine grafische Benutzeroberfläche oder eine Kommandozeileninterface angeschlossen werden kann. Über die Messagequeue werden dem Kern Befehle erteilt, die das Einladen von Konfigurationen, Setzen von Parametern, Starten und Stoppen von Algorithmen sowie Statusabfragen umfassen.
 \subsection{Kern}
 \input{kern}
 \subsection{GUI}
