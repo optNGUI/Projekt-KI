@@ -71,7 +71,7 @@ Mithilfe von künstlichen neuronalen Netzen wird versucht, Strukturen des mensch
 
 
 \section{Architektur}
-Das Framework ist grob in zwei Teile gegliedert. Der \emph{Kern} verwaltet selbstständig alle Algorithmen und spricht die Simulation an. Die Kommunikation mit außen erfolgt über eine Messagequeue, über die eine grafische Benutzeroberfläche oder eine Kommandozeileninterface angeschlossen werden kann. Über die Messagequeue werden dem Kern Befehle erteilt, die das Einladen von Konfigurationen, Setzen von Parametern, Starten und Stoppen von Algorithmen sowie Statusabfragen umfassen.
+Das Framework ist in zwei Teile gegliedert. Der \emph{Kern} verwaltet selbstständig alle Algorithmen und spricht die Simulation an. Die Kommunikation zwischen dem Kern und der \emph{Benutzerschnittstelle} erfolgt über eine nachrichtenbasierte \emph{Kommunikationsschnittstelle}. Die Benutzerschnittstelle kann eine grafische Benutzeroberfläche oder ein Kommandozeileninterface sein. Über die Kommunikationsschnittstelle werden dem Kern Befehle erteilt, die das Einladen von Konfigurationen, Setzen von Parametern, Starten und Stoppen von Algorithmen sowie Statusabfragen umfassen.
 \subsection{Kern}
 \input{kern}
 \subsection{GUI}
@@ -79,7 +79,7 @@ Das Framework ist grob in zwei Teile gegliedert. Der \emph{Kern} verwaltet selbs
 \section{Benutzerhandbuch}
 \subsection{Ausführen der Anwendung}
 Zur Ausführung sind die Pakete \texttt{python3} und \texttt{sshpass} notwendig.\\
-Die Anwendung kann als Kommandozeilenanwendung mithilfe des Befehls \texttt{python3 main.py} oder alternativ mit grafischer Oberfläche mithilfe des Befehls \texttt{python3 main.py --gui} ausgeführt werden.
+Die Anwendung kann als Kommandozeilenanwendung mithilfe des Befehls \texttt{python3 main.py} oder alternativ mit grafischer Oberfläche mithilfe des Befehls \texttt{python3 main.py -{}-gui} ausgeführt werden.
 \subsection{CLI}
 Wird die Anwendung als Kommandozeilenanwendung gestartet, so kann sie mittels der folgenden Befehle gesteuert werden:\\
 \begin{tabular}{p{0.4\linewidth}|p{0.55\linewidth}}
@@ -112,7 +112,6 @@ Wird die Anwendung als Kommandozeilenanwendung gestartet, so kann sie mittels de
 \newline\\
 Bevor eine Optimierung gestartet wird sollten folgende Befehle
 aufgerufen werden:\\
-
 \begin{tabular}{p{0.4\linewidth}|p{0.55\linewidth}}
 	\toprule
 	Befehl & Auswirkung\tabularnewline
@@ -129,6 +128,7 @@ aufgerufen werden:\\
 \newline\\
 Anschließend können beliebige Optimierungsalgorithmen gestartet werden.\\
 \newline\\
+\begin{samepage}
 Beispiel:\\
 \texttt{
 \noindent\hspace*{10mm}	>set config SSH host "bachelor1@localhost"\\
@@ -138,5 +138,6 @@ Beispiel:\\
 \noindent\hspace*{10mm}	>set password\\
 \noindent\hspace*{10mm}	>start random\_search 4
 	}\\
+\end{samepage}
 \subsection{GUI}
 \end{document}
