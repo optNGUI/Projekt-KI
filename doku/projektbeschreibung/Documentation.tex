@@ -22,6 +22,7 @@
 \usepackage{wrapfig}
 \usepackage{xcolor}
 \usepackage{todo}
+\usepackage{booktabs}
 \xdefinecolor{unifarbe}{RGB}{0,75,90}
 
 \usepackage{sectsty}
@@ -76,5 +77,66 @@ Das Framework ist grob in zwei Teile gegliedert. Der \emph{Kern} verwaltet selbs
 \subsection{GUI}
 \input{gui}
 \section{Benutzerhandbuch}
-\subsection{Erste Untersektion}
+\subsection{Ausführen der Anwendung}
+Zur Ausführung sind die Pakete \texttt{python3} und \texttt{sshpass} notwendig.\\
+Die Anwendung kann als Kommandozeilenanwendung mithilfe des Befehls \texttt{python3 main.py} oder alternativ mit grafischer Oberfläche mithilfe des Befehls \texttt{python3 main.py --gui} ausgeführt werden.
+\subsection{CLI}
+Wird die Anwendung als Kommandozeilenanwendung gestartet, so kann sie mittels der folgenden Befehle gesteuert werden:\\
+\begin{tabular}{p{0.4\linewidth}|p{0.55\linewidth}}
+	\toprule
+	Befehl & Auswirkung\tabularnewline
+	\midrule
+	\texttt{help} & Liefert eine Liste möglicher Befehle, ähnlich dieser
+	Tabelle\tabularnewline
+	\texttt{get\ algorithms} & liefert eine Liste von implementierten
+		Algorithmen\tabularnewline
+	\texttt{get\ algorithms\ \textless{}name\textgreater{}} & liefert die
+	möglichen Parameter für den angegebenen Algorithmus\tabularnewline
+	\texttt{get\ config} & liefert alle in der Konfigurationsdatei
+	vorhandenen Sektionen\tabularnewline
+	\texttt{get\ config\ \textless{}section\textgreater{}} & liefert alle
+	Optionen unter der gegebenen Sektion\tabularnewline
+	\texttt{get\ config\ \textless{}section\textgreater{}\ \textless{}option\textgreater{}}
+	& liefert den Wert der angegebenen Option\tabularnewline
+	\texttt{set\ config\ \textless{}section\textgreater{}\ \textless{}option\textgreater{}\ \textless{}value\textgreater{}}
+	& Setzt die angegebene Option auf den angegebenen Wert\tabularnewline
+	\texttt{set\ password} & Öffnet eine Passworteingabe zur Eingabe des
+	Passworts der SSH-Verbindung zum neuronalen Netz\tabularnewline
+	\texttt{save\ config} & Speichert die Änderungen in der
+	Konfigurationsdatei\tabularnewline
+	\texttt{start\ \textless{}algorithm\textgreater{}\ \textless{}params...\textgreater{}}
+	& Startet einen Optimierungsalgorithmus mit den gegebenen
+	Parametern\tabularnewline
+	\bottomrule
+\end{tabular}\\
+\newline\\
+Bevor eine Optimierung gestartet wird sollten folgende Befehle
+aufgerufen werden:\\
+
+\begin{tabular}{p{0.4\linewidth}|p{0.55\linewidth}}
+	\toprule
+	Befehl & Auswirkung\tabularnewline
+	\midrule
+	\texttt{set\ password} & Setzt das SSH Passwort\tabularnewline
+	\texttt{set\ config\ SSH\ host\ \textless{}user@ip\textgreater{}} & Setzt
+	die Serveradresse\tabularnewline
+	\texttt{set\ config\ SSH\ net\ \textless{}cmd\textgreater{}} & Setzt
+	den Befehl zur Ausführung des neuronalen Netzes\tabularnewline
+	\texttt{set\ config\ SSH\ analysis\ \textless{}cmd\textgreater{}} &
+	Setzt den Befehl zur Ausführung der Analyse\tabularnewline
+	\bottomrule
+\end{tabular}\\
+\newline\\
+Anschließend können beliebige Optimierungsalgorithmen gestartet werden.\\
+\newline\\
+Beispiel:\\
+\texttt{
+\noindent\hspace*{10mm}	>set config SSH host "bachelor1@localhost"\\
+\noindent\hspace*{10mm}	>set config SSH net "cd  \raisebox{-0.6ex}{\~{ }}/acnet2 \&\& genesis acnet2.g"\\
+\noindent\hspace*{10mm}	>set config SSH analysis "cd  \raisebox{-0.6ex}{\~{ }}/acnet2 \&\& python ./analysis.py"\\
+\noindent\hspace*{10mm}	>save config\\
+\noindent\hspace*{10mm}	>set password\\
+\noindent\hspace*{10mm}	>start random\_search 4
+	}\\
+\subsection{GUI}
 \end{document}
