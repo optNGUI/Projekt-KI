@@ -23,6 +23,7 @@
 \usepackage{xcolor}
 \usepackage{todo}
 \usepackage{booktabs}
+\usepackage{pdfpages}
 \xdefinecolor{unifarbe}{RGB}{0,75,90}
 
 \usepackage{sectsty}
@@ -140,4 +141,36 @@ Beispiel:\\
 	}\\
 \end{samepage}
 \subsection{GUI}
+\begin{samepage}
+Wird das Programm mittels dem Befehl
+\begin{center}
+\texttt{python3 main.py -{}-gui}
+\end{center}
+gestartet, öffnet sich das Hauptfenster der graphischen Benutzeroberfläche.
+Abbildung 1 zeigt schematisch die Möglichkeiten, welche die GUI bietet:\\
+\begin{figure}[h]
+\includegraphics[scale = 2.5]{../presentation/GUI-use-case.png}
+\caption{Use-case Diagramm GUI}
+\end{figure}
+\newpage
+Die folgende Tabelle gibt eine kurze Beschreibung der Funktionen:\\[0.5cm]
+\begin{tabular}{p{0.4\linewidth}|p{0.55\linewidth}}
+	\toprule
+	Bezeichner & Funktion\tabularnewline
+	\midrule
+	\texttt{load session} & stellt die Daten einer zuvor gespeicherten Sitzung wieder her.\tabularnewline
+	\texttt{add\ algorithm} & öffnet das addframe\tabularnewline
+	\texttt{choose\ algorithm} & zeigt eine Auswahl der möglichen Algorithmen, von denen eine zu wählen ist.\tabularnewline
+	\texttt{set\ params} & ermöglicht die Einstellung algorithmenspezifischer Parameter.\tabularnewline
+	\texttt{view\ runtime} & liefert einen Überblick über die momentan gewählten Algorithmen und deren gegenwärtigen Status\tabularnewline
+	\texttt{remove} & entfernt den ausgewählten Algorithmus\tabularnewline
+	\texttt{run} & startet die Berechnung\tabularnewline
+	\texttt{set\ ssh\ Keys} & Öffnet das Eingabefenster zur Eingabe des
+	Passworts und anderer benötigter Parameter der SSH-Verbindung\tabularnewline
+	\texttt{stop} & stoppt die Berechnung\tabularnewline
+	\texttt{abort} & verwirft die Berechnung\tabularnewline
+	\texttt{export data} & speichert die aktuelle Sitzung\tabularnewline
+	\bottomrule
+\end{tabular}\\
+\end{samepage}
 \end{document}

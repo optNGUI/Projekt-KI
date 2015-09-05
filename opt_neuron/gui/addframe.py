@@ -39,7 +39,7 @@ class AddFrame(Gtk.Window):
         self.set_resizable(0)
         self.connect("delete-event", self.on_destroy)
         
-        Header = Gtk.HeaderBar(title = "Algorithm selection")
+        Header = Gtk.HeaderBar(title = "Algorithmenauswahl ")
         
         # define (global) variables
         __hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 6)
