@@ -174,4 +174,66 @@ Die folgende Tabelle liefert eine kurze Beschreibung der Funktionen:\\[0.5cm]
 \end{tabular}\\
 \end{samepage}
 
+\subsubsection{SSH-Verbindung}
+Direkt nach dem Aufruf der Applikation erscheint neben dem Hauptfenster das Fenster \texttt{ssh-Gate} in welchem die Credentials und Einstellungen der SSH-Verbindung.
+\begin{figure}[h]
+\includegraphics[scale=1]{ssh-frame.png}
+\caption{Fenster zur Einstellung der SSH-Verbindung}
+\end{figure}
+
+Schlägt die Verbindung fehl, öffnet sich dieses Fenster erneut.
+
+Durch clicken auf \textbf{Abbrechen} wird der dieses Fenster geschlossen, es können dann die Sessions weiter bearbeitet werden.
+
+\subsubsection{Algorithmen hinzufügen}
+Durch clicken auf \textbf{add algorithm} im Hauptfenster, erscheint das Menü zum Hinzufügen eines Algorithmus-Runs.
+\begin{figure}[h]
+\includegraphics[scale=1]{addalg.png}
+\caption{Fenster zur Hinzufügen eines Algorithmus-Runs zur Session}
+\end{figure}
+
+Nach einem klick auf \textbf{adopt} werden die Einstellungen zur Session hinzugefügt.
+
+Im linken Pull-Down-Menü sind die vorhandenen Algorithmen auswählbar.
+
+\newpage
+\subsubsection{Session Starten / Abbrechen}
+Sind Algorithmen nun in der Session hinzugefügt, kann die Session nun über den orangenen Button \textbf{Run} gestartet werden.
+
+\begin{figure}[h]
+\includegraphics[scale=.45]{mainframe.png}
+\caption{Fenster zur Hinzufügen eines Algorithmus-Runs zur Session}
+\end{figure}
+
+
+Eine Zeile in der Session-Tabelle ist eine Berechnung.
+
+Läuf die Berechnung, ändert sich der button zu \textbf{STOP}, über welchen die laufende Session abgebrochen werden kann.
+
+Es ist möglich, eine teilweise berechnete Session wieder aufzunehmen (weiterer Click auf \textbf{Run}).
+
+\subsubsection{Session-Tabelle}
+Die Tabelle gliedert sich in vier spalten, "ID", "Algorithm", "Status" und "Parameters".
+
+\begin{description}
+\item[ID] is eine fortlaufende Zahl. \\
+
+\item[Algorithm] enthält den Namen des Algorihmuses.
+
+\item[Status] zeigt den Status dieser Berechnung an. Wobei "stand-by" ein Algorithmus ist, der noch nicht berechnet wurde, "computing..." bedeutet die Berechnung findet gerade statt, "aborted" bedeutet die Berechnung wurde abgebrochen. Wurde eine Berechnung beended, befindet sich hier die Ausgabe.
+
+\item[Parameters] enthält die Parameter die für die gegebene Berechnung ausgewählt wurden.
+\end{description}
+
+Bei einem Rechtsclick auf eine Tabellenzeile öffnet sich ein Kontextmenü mit den Optionen einen Algorithmus aus der Liste zu entfernen, einen abgebrochenen Algorithmus zu resetten und somit bei einem weiteren Durchgang wieder zu berechnen. Wird die Berechnung gerade durchgeführt, kann man diese einzeln abbrechen, die restliche Session aber nicht. Eine weitere Berechnung findet statt.
+
+\subsubsection{Session laden / speichern}
+Ein Click auf \textbf{load session} erlaubt es eine vorher abgespeicherte Session in die Tabelle zu laden. Bestehende Tabelleninhalte werden dabei gelöscht!
+Es ist hierbei unerheblich, ob die Berechnungen bereits beendet sind, abgebrochen wurden, oder noch nicht durchgeführt worden sind.
+\vspace{\baselineskip}
+
+Ein Click auf \textbf{Export Data} erlaubt es diese Session abzuspeichern.
+Eine exportierte Session kann hinterher über \textbf{load session} wieder geladen werden. \\
+Die Daten werden als einfache CSV-Datei abgespeichert und können problemlos in Textverarbeitungsprogrammen genutzt werden.
+
 \end{document}
