@@ -1,0 +1,64 @@
+\hypertarget{namespaceopt__neuron_1_1util}{}\section{opt\+\_\+neuron.\+util Namespace Reference}
+\label{namespaceopt__neuron_1_1util}\index{opt\+\_\+neuron.\+util@{opt\+\_\+neuron.\+util}}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classopt__neuron_1_1util_1_1CommandMessage}{Command\+Message}
+\item 
+class \hyperlink{classopt__neuron_1_1util_1_1Message}{Message}
+\item 
+class \hyperlink{classopt__neuron_1_1util_1_1MessageQueue}{Message\+Queue}
+\item 
+class \hyperlink{classopt__neuron_1_1util_1_1MessageType}{Message\+Type}
+\item 
+class \hyperlink{classopt__neuron_1_1util_1_1RetValMessage}{Ret\+Val\+Message}
+\item 
+class \hyperlink{classopt__neuron_1_1util_1_1StatusMessage}{Status\+Message}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespaceopt__neuron_1_1util_af098e684cfbe107a15a9d310284628d3}{M\+E\+S\+S\+A\+G\+E\+\_\+\+F\+A\+I\+L\+U\+R\+E}
+\item 
+def \hyperlink{namespaceopt__neuron_1_1util_a2eb6a7a07da50fc7320697c48723e0b7}{M\+E\+S\+S\+A\+G\+E\+\_\+\+S\+U\+C\+C\+E\+S\+S}
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{namespaceopt__neuron_1_1util_ab57c39db5d02d0df922c1af5d3cbedc0}{}tuple {\bfseries logger} = logging.\+get\+Logger(\+\_\+\+\_\+name\+\_\+\+\_\+)\label{namespaceopt__neuron_1_1util_ab57c39db5d02d0df922c1af5d3cbedc0}
+
+\item 
+\hypertarget{namespaceopt__neuron_1_1util_a3337867d8d4764270f1ce370df558f79}{}tuple {\bfseries M\+E\+S\+S\+A\+G\+E\+\_\+\+E\+X\+I\+T} = \hyperlink{classopt__neuron_1_1util_1_1CommandMessage}{Command\+Message}(\textquotesingle{}C\+O\+R\+E-\/E\+X\+I\+T\textquotesingle{}, priority=-\/9001)\label{namespaceopt__neuron_1_1util_a3337867d8d4764270f1ce370df558f79}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}Contains utility.
+\end{DoxyVerb}
+ 
+
+\subsection{Function Documentation}
+\hypertarget{namespaceopt__neuron_1_1util_af098e684cfbe107a15a9d310284628d3}{}\index{opt\+\_\+neuron\+::util@{opt\+\_\+neuron\+::util}!M\+E\+S\+S\+A\+G\+E\+\_\+\+F\+A\+I\+L\+U\+R\+E@{M\+E\+S\+S\+A\+G\+E\+\_\+\+F\+A\+I\+L\+U\+R\+E}}
+\index{M\+E\+S\+S\+A\+G\+E\+\_\+\+F\+A\+I\+L\+U\+R\+E@{M\+E\+S\+S\+A\+G\+E\+\_\+\+F\+A\+I\+L\+U\+R\+E}!opt\+\_\+neuron\+::util@{opt\+\_\+neuron\+::util}}
+\subsubsection[{M\+E\+S\+S\+A\+G\+E\+\_\+\+F\+A\+I\+L\+U\+R\+E}]{\setlength{\rightskip}{0pt plus 5cm}def opt\+\_\+neuron.\+util.\+M\+E\+S\+S\+A\+G\+E\+\_\+\+F\+A\+I\+L\+U\+R\+E (
+\begin{DoxyParamCaption}
+\item[{}]{msg, }
+\item[{}]{status = {\ttfamily None}}
+\end{DoxyParamCaption}
+)}\label{namespaceopt__neuron_1_1util_af098e684cfbe107a15a9d310284628d3}
+\begin{DoxyVerb}Returns a message which indicates that the previous command failed.
+Fancy output by Julian.
+\end{DoxyVerb}
+ \hypertarget{namespaceopt__neuron_1_1util_a2eb6a7a07da50fc7320697c48723e0b7}{}\index{opt\+\_\+neuron\+::util@{opt\+\_\+neuron\+::util}!M\+E\+S\+S\+A\+G\+E\+\_\+\+S\+U\+C\+C\+E\+S\+S@{M\+E\+S\+S\+A\+G\+E\+\_\+\+S\+U\+C\+C\+E\+S\+S}}
+\index{M\+E\+S\+S\+A\+G\+E\+\_\+\+S\+U\+C\+C\+E\+S\+S@{M\+E\+S\+S\+A\+G\+E\+\_\+\+S\+U\+C\+C\+E\+S\+S}!opt\+\_\+neuron\+::util@{opt\+\_\+neuron\+::util}}
+\subsubsection[{M\+E\+S\+S\+A\+G\+E\+\_\+\+S\+U\+C\+C\+E\+S\+S}]{\setlength{\rightskip}{0pt plus 5cm}def opt\+\_\+neuron.\+util.\+M\+E\+S\+S\+A\+G\+E\+\_\+\+S\+U\+C\+C\+E\+S\+S (
+\begin{DoxyParamCaption}
+\item[{}]{msg, }
+\item[{}]{status = {\ttfamily None}}
+\end{DoxyParamCaption}
+)}\label{namespaceopt__neuron_1_1util_a2eb6a7a07da50fc7320697c48723e0b7}
+\begin{DoxyVerb}Returns a message which indicates that the previous command succeded.
+Fancy output by Julian.
+\end{DoxyVerb}
+ 
