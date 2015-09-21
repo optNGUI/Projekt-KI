@@ -1,6 +1,7 @@
-﻿### This script will take the parameter and initialize the core.
+﻿"""
+This script will take the parameter and initialize the core and gui.
 
-
+"""
 from .core import main as core_main
 #import core.main
 from . import __version__
@@ -13,6 +14,15 @@ shell = None
 
 
 def run(*sysargs):
+    """
+    Parses the arguments and prints failure messages.
+    Loads the config file, given by the argument --config. If this argument is not present,
+    a file named *conf.ini* will be searched.
+    The config is no parsed, the main queues are initialized and the core
+    is loaded.
+    If specified, the GUI will be loaded, too.
+    This function waits for the core thread to join.
+    """
     # Step 1: Parse the arguments
     
     parser = argparse.ArgumentParser()

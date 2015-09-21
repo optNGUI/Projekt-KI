@@ -1,4 +1,12 @@
-### Contains base class for algorithms ###
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+Contains available optimizing algorithms.
+If you want to add another algorithm, simply add it to this file and add the
+annotation '__add_alg' as already done in other algorithms.
+The first parameter must be *self*, the others are free.
+
+"""
 from threading import Thread
 from .main import send_msg
 import types, inspect, logging, sys, traceback
@@ -41,7 +49,6 @@ class ThreadedAlgorithm():
     IMPORTANT: While binding the function object, the first argument will
     be converted to implicit self argument!
     """
-    # TODO : HEAVY Refactoring!
     
     def __callWrapper(self, *args, **kwargs):
         global algkill

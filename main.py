@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # coding: utf8
 
-### Calls the opt_neuron package. ###
+"""
+Entry point to opt_neuron package. Will pass the given arguments.
+"""
 
 import opt_neuron.run
 import sys

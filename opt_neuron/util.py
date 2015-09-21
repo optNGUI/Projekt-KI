@@ -1,3 +1,6 @@
+"""
+Contains utility.
+"""
 from abc import ABCMeta
 from abc import abstractmethod
 from enum import Enum
@@ -16,6 +19,11 @@ class MessageType(Enum):
 
 
 class Message(metaclass=ABCMeta):
+    """
+    Message encapsulates a message.
+    A message has got a type (subclassed), an id, a priority and \
+    content, of course.
+    """
     _id_  = 0
     
     def __init__(self, content, priority=0):
@@ -27,6 +35,9 @@ class Message(metaclass=ABCMeta):
     @property
     @abstractmethod
     def type(self):
+        """
+        To be overwritten in subclasses. Should return a MessageType object.
+        """
         return self.__type
         
     @property
@@ -99,6 +110,10 @@ class RetValMessage(Message):
 MESSAGE_EXIT = CommandMessage('CORE-EXIT', priority=-9001)
 
 def MESSAGE_FAILURE(msg, status=None):
+    """
+    Returns a message which indicates that the previous command failed.
+    Fancy output by Julian.
+    """
     if status:
         if _platform == "linux" or _platform == "linux2":
             return RetValMessage(msg, appendix = False, content="\x1b[1;31m"+status+"\x1b[39;49m")
@@ -112,6 +127,10 @@ def MESSAGE_FAILURE(msg, status=None):
             
 
 def MESSAGE_SUCCESS(msg, status=None):
+    """
+    Returns a message which indicates that the previous command succeded.
+    Fancy output by Julian.
+    """
     if status:
         if _platform == "linux" or _platform == "linux2":
             return RetValMessage(msg, appendix = True, content="\x1b[1;32m"+status+"\x1b[39;49m")
@@ -122,6 +141,11 @@ def MESSAGE_SUCCESS(msg, status=None):
 
 
 class MessageQueue(PriorityQueue):
+    """
+    Adaption of the PriorityQueue class.
+    Only objects of type Message can be put in this queue as the name already suggests.
+    Every sent message will be logged (Level: DEBUG)
+    """
     def put(self, item, block=True, timeout=None):
         if not isinstance(item, Message) :
             logger.warning(str(type(item)))

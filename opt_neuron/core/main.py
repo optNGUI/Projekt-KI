@@ -1,6 +1,9 @@
 # coding: utf8
 
-### This file contains the main entry point for the core ###
+"""
+This file contains the main entry point for the core.
+
+"""
 
 import logging, configparser, getpass, sys, subprocess
 from threading import Thread
@@ -18,6 +21,10 @@ __out_queue = None
 __terminate = False # Indicates whether the core shall exit
 
 def send_msg(msg):
+    """
+    Sends a message or a set of messages.
+    :param msg: The message/s to be sent
+    """
     try:
         for i in msg:
             logger.debug("Sent message: {msg}".format(msg=str(i)))
@@ -31,6 +38,12 @@ from . import algorithms
 
 
 def main_loop(in_queue):
+    """
+    Starts the main loop of the core.
+    It processes new elements arriving in *in_queue* and calls parse_msg on them.
+    
+    :param in_queue: The queue object where messages for the core are arriving
+    """
     global __algorithm_argspec
     global __algorithm_funcs
     global __algorithm_names
@@ -52,6 +65,12 @@ def main_loop(in_queue):
 
         
 def parse_msg(msg):
+    """
+    Parses the given message. See also util.Message class 
+    Will execute the given command in the message and exits upon completion.
+    
+    :param msg: The message to be parsed
+    """
     global __terminate
     global __algorithm_names
     global __algorithm_funcs
@@ -184,6 +203,15 @@ def parse_msg(msg):
 __runOnce=False
 
 def init(in_queue, out_queue, config_):
+    """
+    Initializes the core. Will fail if the core has already been
+    initialized.
+    
+    :param in_queue The queue object from which commands will be read
+    :param out_queue The queue object which will be used for return messages
+    :param config_: The config object to use
+    :return: returns a reference to the mainloop object
+    """
     global __runOnce
     global __out_queue
     global config
